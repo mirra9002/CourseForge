@@ -1,8 +1,7 @@
 export default function Topsearcharea(){
     return(<>
     <section class="bg-[#0b1d3a] text-white py-24 px-4 text-center">
-        <br/>
-        <br/>
+
         <h1 class="text-5xl font-extrabold mb-4">Почніть навчання вже зараз!</h1>
         <p class="text-2xl mb-8">Знайдіть щось для себе</p>
 
