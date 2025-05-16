@@ -1,8 +1,8 @@
 export default function CourseFilters() {
     return (<>
-    <div class="mt-25">
+
         
-        <a href="#" class="block max-w-sm p-6 ml-10 mt-10 bg-white border border-gray-200 rounded-lg shadow-sm  dark:bg-gray-800 dark:border-gray-700 ">
+        <a href="#" class="block max-w-sm p-6 ml-10 bg-white border border-gray-200 rounded-lg shadow-sm  dark:bg-gray-800 dark:border-gray-700 ">
 
         <h4 class="text-2xl font-bold dark:text-white">Фільтри</h4>
                 <br/>
@@ -58,6 +58,6 @@ export default function CourseFilters() {
                     <label for="default-radio-1" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">10 годин і більше</label>
                 </div>
         </a>
-        </div>
+
     </>)
 }

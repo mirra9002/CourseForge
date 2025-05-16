@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 import Navbar from './Components/NavBar'
 import Topsearcharea from './Components/TopSearchArea'
 import Topcourses from './Components/TopCourses'
 import CourseFilters from './Components/CourseFilters'
+import Allcoursessection from './Components/AllCoursesSection'
+import Footer from './Components/Footer'
 function App() {
   const [count, setCount] = useState(0)
 
@@ -14,7 +15,13 @@ function App() {
       <Navbar></Navbar>
       <Topsearcharea></Topsearcharea>
       <Topcourses></Topcourses>
-      <CourseFilters></CourseFilters>
+      <h2 class="text-4xl font-bold text-center mt-25 mb-15 text-[#0b1d3a] ">Усі курси</h2>
+      <div class="flex items-center mb-2">
+        <CourseFilters></CourseFilters>
+        <Allcoursessection></Allcoursessection>
+      </div>
+      <Footer></Footer>
+      
     </>
   )
 }
