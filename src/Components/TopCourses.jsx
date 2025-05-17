@@ -1,14 +1,15 @@
+import { useNavigate } from "react-router-dom"
 export default function Topcourses() {
     return(<>
     <br/>
 <br/>
     <h2 class="text-4xl font-bold text-center mt-5 mb-5 text-[#0b1d3a]">Найкращі курси</h2>
     <div class="relative flex items-center justify-center mt-10">
-        <ScrollArrowButton rotation="left" isActive={false}/>
+        <ScrollArrowButton rotation="left"/>
         <div class="flex flex-wrap justify-center gap-6">
-            <TopCourseCardComponent/>
-            <TopCourseCardComponent/>
-            <TopCourseCardComponent/>
+            <TopCourseCardComponent courseId={'js-001'}/>
+            <TopCourseCardComponent courseId={'py-001'}/>
+            <TopCourseCardComponent courseId={'cs-001'}/>
         </div>
         <ScrollArrowButton rotation='right' isActive={true}/>
 
@@ -56,13 +57,17 @@ function TopCourseCardHeading() {
     </>)
 }
 
-function TopCourseCardComponent() {
+function TopCourseCardComponent(props) {
+    const navigate = new useNavigate();
+    function navigateToPage(courseId){
+        
+        navigate(`/courseinfo/${courseId}`)
+    }
     return(
-    <a href="#"
-            class="block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
-            <TopCourseCardHeading/>
-                
-            <br/>
-            <CourseRatingStars />
-            </a>)
+    <a href="" onClick={() => navigateToPage(props.courseId)}
+        class="block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
+        <TopCourseCardHeading/>        
+        <br/>
+        <CourseRatingStars />
+    </a>)
 }

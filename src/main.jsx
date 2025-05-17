@@ -14,7 +14,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/courseinfo',
+  path: '/courseinfo/:courseId',
   element: <Courseinfo />,
   errorElement: <Notfound/>
 },])
