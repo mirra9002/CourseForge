@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom"
+import { COURSES_DATA } from "../../example-courses-data"
 export default function Topcourses() {
     return(<>
     <br/>
@@ -50,14 +51,19 @@ function CourseRatingStars() {
             </div>)
 }
 
-function TopCourseCardHeading() {
+function TopCourseCardHeading(props) {
+    const title = props.title
+    const info = props.info
     return(<>
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-[#0b1d3a]">C# WinForms .NET</h5>
-            <p class="font-normal text-[#0b1d3a]">For old-style lovers</p>
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-[#0b1d3a]">{title}</h5>
+            <p class="font-normal text-[#0b1d3a]">{info}</p>
     </>)
 }
 
 function TopCourseCardComponent(props) {
+    const courseData = getCourseData(props.courseId)
+    const courseTitle = courseData.title;
+    const courseInfo = courseData.info
     const navigate = new useNavigate();
     function navigateToPage(courseId){
         
@@ -66,8 +72,12 @@ function TopCourseCardComponent(props) {
     return(
     <a href="" onClick={() => navigateToPage(props.courseId)}
         class="block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
-        <TopCourseCardHeading/>        
+        <TopCourseCardHeading title={courseTitle} info={courseInfo}/>        
         <br/>
         <CourseRatingStars />
     </a>)
+}
+
+function getCourseData(courseId){
+    return COURSES_DATA.find(course => course.id === courseId);
 }
