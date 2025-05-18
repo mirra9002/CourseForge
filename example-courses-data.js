@@ -73,3 +73,58 @@ export const COURSES_DATA = [
     ]
   }
 ];
+
+
+export const LESSONS_DATA = [
+  {
+    courseId: 'js-001',
+    lessons: [
+      {
+        lessonIdx: 1,
+      title: 'Вітаємо на першому уроці JavaScript для початківців!'
+    },
+    {
+        lessonIdx: 2,
+        title: 'Джаваскріпт урок 2'
+    },
+    {
+        lessonIdx: 3,
+        title: 'Джаваскріпт урок 3'
+    },
+    ]
+  },
+  {
+    courseId: 'py-001',
+    lessons: [
+      {
+        lessonIdx: 1,
+      title: 'Вітаємо на першому уроці Python для початківців!'
+    },
+    {
+        lessonIdx: 2,
+        title: 'Python урок 2'
+    },
+    {
+        lessonIdx: 3,
+        title: 'Python урок 3'
+    },
+    ]
+  },
+  {
+    courseId: 'cs-001',
+    lessons: [
+      {
+        lessonIdx: 1,
+      title: 'Вітаємо на першому уроці C# для початківців!'
+    },
+    {
+        lessonIdx: 2,
+        title: 'C# урок 2'
+    },
+    {
+        lessonIdx: 3,
+        title: 'C# урок 3'
+    },
+    ]
+  },
+]

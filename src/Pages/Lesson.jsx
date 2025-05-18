@@ -2,10 +2,14 @@ import { useEffect } from "react";
 import { Drawer } from "flowbite";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
+import { LESSONS_DATA } from "../../example-courses-data";
+
 export default function Lesson() {
      
     const params = useParams();
-    const lessonTitle = params.lessonId
+    const courseId = params.courseId
+    const lessonId = params.lessonId
+    const lessonTitle = FindCourseData(courseId, Number(lessonId)).title
   return (
     <>  
         <Navbar></Navbar>
@@ -15,7 +19,12 @@ export default function Lesson() {
     </>
   );
 }
+function FindCourseData(courseId, lessonIdx) {
+  const course = LESSONS_DATA.find(course => course.courseId === courseId);
+  const lesson = course.lessons.find(lesson => lesson.lessonIdx === lessonIdx);
+  return lesson
 
+}
 function LeftDrawer(props) {
     useEffect(() => {
     const drawerEl = document.getElementById('drawer-left-lesson-modules');
@@ -73,7 +82,7 @@ function CodeBlock(props){
 }
 
 function SmallHeading(props){
-    return(<><h2 class="text-2xl font-bold dark:text-white mb-5">Вітаємо на першому уроці JavaScript для початківців! {props.title}</h2></>)
+    return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.title}</h2></>)
 }
 
 function Text(props){

@@ -1,6 +1,6 @@
 import Navbar from '../Components/NavBar'
 import Footer from '../Components/Footer'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import {COURSES_DATA} from '../../example-courses-data.js'
 export default function Courseinfo() {
     const params = useParams()
@@ -18,8 +18,14 @@ function CourseInfoHeading(props) {
     const courseData = getCourseData(props.courseId)
     const title = courseData.title;
     const info = courseData.info
+
+    const navigate = useNavigate()
+    function navigateToPage(location){
+      navigate(location)
+    }
+
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
-        <button type="button" class="text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
+        <button type="button" onClick={() => navigateToPage( `/course/${courseData.id}/lesson/${1}`)} class="text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
         
         <p class="text-lg mb-3 mt-10  text-gray-500 dark:text-gray-400">{info}</p>
         </>)
