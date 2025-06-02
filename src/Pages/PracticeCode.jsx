@@ -5,7 +5,9 @@ import LeftDrawer from "../Components/LeftDrawer";
 export default function PracticeCode() {
   const [userCode, setUserCode] = useState("");
   const [output, setOutput] = useState("")
+  const [showSuccess, setShowSuccess] = useState(false);
 
+  
   function runCode() {
     const logs = [];
     const originalLog = console.log;
@@ -26,7 +28,15 @@ export default function PracticeCode() {
       }
 
       console.log = originalLog;
-      setOutput(logs.join("\n"));
+      
+      let userOutput = logs.join("\n")
+      setOutput(userOutput);
+      const success = checkOutput(userOutput, 'Hello World!')
+      
+      if (success) {
+        setShowSuccess(true);
+      }
+      
   }
 
   function clearConsole() {
@@ -39,8 +49,8 @@ export default function PracticeCode() {
   return (
   <>
     <Navbar />
-    <LeftDrawer width={"w-48"} backgroundColor={"bg-[#1e1e1e]"} textColor={"text-gray-300"}/>
-    <div className="flex bg-[#1e1e1e] w-full h-screen p-4 gap-2 pl-48 ml-2">
+    <LeftDrawer width={"w-64"} backgroundColor={"bg-[#1e1e1e]"} textColor={"text-gray-300"}/>
+    <div className="flex bg-[#1e1e1e] w-full h-screen p-4 gap-2 pl-64">
 
       {/* Left: Editor */}
       <div className="flex flex-col flex-1 gap-2">
@@ -95,17 +105,53 @@ export default function PracticeCode() {
             </button>
           </div>
           <div className="bg-[#1e1e1e] text-gray-300 font-mono p-4 h-full overflow-auto">
-            <pre className="whitespace-pre-wrap">{output}</pre>
+            {showSuccess ? <><pre className="whitespace-pre-wrap">{output}</pre><br /><SuccessMessage></SuccessMessage></> : <pre className="whitespace-pre-wrap">{output}</pre>}
           </div>
         </div>
       </div>
+      
     </div>
+    
+    
   </>
 );
-
 }
 
+function checkOutput(userOutput, expectedOutput) {
+  if(userOutput === expectedOutput){
+    return true
+  }
+  return false
+}
 
-
+function SuccessMessage() {
+  return(<>
+  <div id="alert-additional-content-3" class="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+  
+    <div class="flex items-center">
+      <svg class="shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+      </svg>
+      <span class="sr-only">Info</span>
+      <h3 class="text-lg font-medium">Усі тести пройдено!</h3>
+    </div>
+    <div class="mt-2 mb-4 text-sm">
+      Тут потрібно вставити якийсь текст... або взагалі не потрбіно... або якесь крінж-мотиваційне щось
+    </div>
+  
+    <div class="flex">
+      <button type="button" class="text-white bg-green-800 hover:bg-green-900  font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-green-600 dark:hover:bg-green-700 ">
+        <svg class="me-2 h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+          <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+        Подивитися рішення
+      </button>
+      <button type="button" class="text-green-800 bg-transparent border border-green-800 hover:bg-green-900 hover:text-white  font-medium rounded-lg text-xs px-3 py-1.5 text-center  dark:hover:text-white" data-dismiss-target="#alert-additional-content-3" aria-label="Close">
+        Переробити
+      </button>
+    </div>
+</div>
+</>)
+}
 
 
