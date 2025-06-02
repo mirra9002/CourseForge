@@ -49,7 +49,18 @@ export default function PracticeCode() {
   return (
   <>
     <Navbar />
-    <LeftDrawer width={"w-64"} backgroundColor={"bg-[#1e1e1e]"} textColor={"text-gray-300"}/>
+    
+    <LeftDrawer
+      width={"w-64"}
+      backgroundColor={"bg-[#1e1e1e]"}
+      textColor={"text-gray-300"}
+      moduleBackgoundColor={"bg-[#2b2b2b]"}
+      moduleHoverBackgroundColor={"hover:bg-[#3a3a3a]"}
+      moduleHeaderTextColor={"text-white"}
+      moduleTextColor={"text-gray-300"}
+    />
+
+
     <div className="flex bg-[#1e1e1e] w-full h-screen p-4 gap-2 pl-64">
 
       {/* Left: Editor */}

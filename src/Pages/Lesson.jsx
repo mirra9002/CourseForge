@@ -13,7 +13,7 @@ export default function Lesson() {
   return (
     <>  
         <Navbar></Navbar>
-        <LeftDrawer width={"w-80"} backgroundColor={'bg-gray-100'} textColor={"text-gray-700"}></LeftDrawer>
+        <LeftDrawer width={"w-80"} backgroundColor={'bg-gray-100'} textColor={"text-gray-700"} moduleBackgoundColor={"bg-gray-300"} moduleHoverBackgroundColor={"hover:bg-gray-400"}></LeftDrawer>
         <MainArea title={lessonTitle}></MainArea>
         
     </>
