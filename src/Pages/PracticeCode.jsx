@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
 import Navbar from "../Components/NavBar";
-
+import LeftDrawer from "../Components/LeftDrawer";
 export default function PracticeCode() {
   const [userCode, setUserCode] = useState("");
   const [output, setOutput] = useState("")
@@ -39,13 +39,15 @@ export default function PracticeCode() {
   return (
   <>
     <Navbar />
-    <div className="flex bg-[#1e1e1e] w-full h-screen p-4 gap-2">
+    <LeftDrawer width={"w-48"} backgroundColor={"bg-[#1e1e1e]"} textColor={"text-gray-300"}/>
+    <div className="flex bg-[#1e1e1e] w-full h-screen p-4 gap-2 pl-48 ml-2">
+
       {/* Left: Editor */}
       <div className="flex flex-col flex-1 gap-2">
         <div className="border-2 border-gray-600 overflow-hidden h-full">
           {/* File tab header with Run button aligned right */}
           <div className="flex justify-between items-center bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">
-            <span className="inline-block">main.js</span>
+            <span className="inline-block "> main.js</span>
             <button
               onClick={runCode}
               type="button"
@@ -83,7 +85,7 @@ export default function PracticeCode() {
         <div className="border-2 border-gray-600 overflow-hidden flex-1">
           {/* Console tab header with Clear button aligned right */}
           <div className="flex justify-between items-center bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">
-            <span className="inline-block">console.log</span>
+            <span className="inline-block">Console</span>
             <button
             onClick={clearConsole}
               type="button"
