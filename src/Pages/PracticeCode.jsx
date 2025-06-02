@@ -4,10 +4,37 @@ import Navbar from "../Components/NavBar";
 
 export default function PracticeCode() {
   const [userCode, setUserCode] = useState("");
+  const [output, setOutput] = useState("")
 
   function runCode() {
-    console.log(eval(userCode));
+    const logs = [];
+    const originalLog = console.log;
+    let usedConsoleLog = false;
+
+    console.log = (...args) => {
+      usedConsoleLog = true;
+      logs.push(args.join(" "));
+    };
+
+    try {
+      const result = eval(userCode);
+      if (result !== undefined && !usedConsoleLog) {
+        logs.push(String(result));
+      }
+      } catch (err) {
+        logs.push("Error: " + err.message);
+      }
+
+      console.log = originalLog;
+      setOutput(logs.join("\n"));
   }
+
+  function clearConsole() {
+    setOutput('')
+  }
+
+
+
 
   return (
   <>
@@ -58,6 +85,7 @@ export default function PracticeCode() {
           <div className="flex justify-between items-center bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">
             <span className="inline-block">console.log</span>
             <button
+            onClick={clearConsole}
               type="button"
               className="w-[100px] text-blue-700 bg-gray-200 hover:bg-gray-300 font-medium rounded-md text-sm px-4 py-2"
             >
@@ -65,7 +93,7 @@ export default function PracticeCode() {
             </button>
           </div>
           <div className="bg-[#1e1e1e] text-gray-300 font-mono p-4 h-full overflow-auto">
-            <pre className="whitespace-pre-wrap">// Output will appear here</pre>
+            <pre className="whitespace-pre-wrap">{output}</pre>
           </div>
         </div>
       </div>
