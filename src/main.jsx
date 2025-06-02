@@ -8,6 +8,7 @@ import Mainpage from './Pages/MainPage.jsx'
 import Courseinfo from './Pages/CourseInfo.jsx'
 import Notfound from './Pages/NotFound.jsx';
 import Lesson from './Pages/Lesson.jsx'
+import PracticeCode from './Pages/PracticeCode.jsx';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -22,6 +23,11 @@ const router = createBrowserRouter([{
 {
   path: '/course/:courseId/lesson/:lessonId',
   element: <Lesson />,
+  errorElement: <Notfound/>
+},
+{
+  path: '/code',
+  element: <PracticeCode />,
   errorElement: <Notfound/>
 },
 ])
