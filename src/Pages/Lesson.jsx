@@ -53,22 +53,22 @@ export default function Lesson() {
 }
 
 
-function CodeBlock(props){
-    const code = props.code
-    const blockHeight = props.height
-    const blockWidth = props.width;
-    return(<>
-    
-    <div className="relative mt-2 mb-4 block max-w-sm p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-        <code className="text-sm whitespace-pre">{code}</code>
-      </div>
-
-    </>)
+function CodeBlock({ data }) {
+  return (
+    <div className="relative mt-2 mb-4 p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-auto">
+      <code className="text-sm whitespace-pre-wrap break-words">{data}</code>
+    </div>
+  );
 }
 
 function SmallHeading(props){
-    return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.title}</h2></>)
+    return(<><h2 class="text-4xl font-bold dark:text-white mb-5">{props.title}</h2></>)
 }
+
+function TextHeading({data}){
+    return(<><h2 class="text-xl mt-8 font-bold dark:text-white mb-5">{data}</h2></>)
+}
+
 
 function Text({data}){
     console.log(data);
@@ -101,12 +101,20 @@ function Image(props){
 
 
 function MainArea({pageData, title, nextPageHandle}){
-    
+    const pageContents = pageData.content
     return(<>
     
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading title={title}></SmallHeading>
-        <Text data={pageData.content}/>
+        {pageContents.map((section, index) => {
+            if(section.type === "TEXT"){
+                return <Text data={section.content} />
+            } else if(section.type === "CODE"){
+                return <CodeBlock data={section.content} />
+            } else if(section.type === "HEADING"){
+                return <TextHeading data={section.content} />
+            }
+        })}
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
             <button onClick={nextPageHandle} type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
