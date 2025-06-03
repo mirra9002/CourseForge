@@ -29,6 +29,10 @@ export default function LeftDrawer({ data, clickHandler, width, backgroundColor,
       <h4 className={`inline-flex items-center mb-4 text-xl mt-4 font-semibold ${textColor}`}>
         {data.lessonTitle}
       </h4>
+      <br />
+      <h4 className={`inline-flex items-center mb-4 text-s font-semibold ${textColor}`}>
+        Розділи уроку:
+      </h4>
 
       <div className="flex flex-col gap-2">
         {pages.map((mod, index) => (
