@@ -26,7 +26,7 @@ export default function Lesson() {
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonData.lessonTitle} />
+        <MainArea title={lessonData.pages[0].pageTitle} pageData={lessonData.pages[0]} />
         </> 
         : <p>Loading...</p>}
         
@@ -53,17 +53,9 @@ function SmallHeading(props){
     return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.title}</h2></>)
 }
 
-function Text(props){
-    return(<p class="mb-4 text-gray-500 dark:text-gray-400">Track work across the enterprise through an open, 
-    collaborative platform. Link issues across Jira and ingest data from other software development tools, 
-    so your IT support and operations teams have richer contextual information to rapidly respond to requests, 
-    incidents, and changes. Track work across the enterprise through an open, 
-    collaborative platform. Link issues across Jira and ingest data from other software development tools, 
-    so your IT support and operations teams have richer contextual information to rapidly respond to requests, 
-    incidents, and changes. Track work across the enterprise through an open, 
-    collaborative platform. Link issues across Jira and ingest data from other software development tools, 
-    so your IT support and operations teams have richer contextual information to rapidly respond to requests, 
-    incidents, and changes.</p>)
+function Text({data}){
+    console.log(data);
+    return(<p class="mb-4 text-gray-500 dark:text-gray-400">{data}</p>)
 }
 
 function List(props){
@@ -91,18 +83,13 @@ function Image(props){
 }
 
 
-function MainArea(props){
-    const title=props.title
+function MainArea({pageData, title}){
+    
     return(<>
     
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading title={title}></SmallHeading>
-        <Text></Text>
-        <CodeBlock height={32} width={64} code={"print('Hello World') \nprint('Hello World') \nprint('Hello World')"}></CodeBlock>
-        <Text></Text>
-        <Text></Text>
-        <List></List>
-        <CodeBlock height={32} width={64} code={"print('Hello World') \nprint('Hello World') \nprint('Hello World')"}></CodeBlock>
+        <Text data={pageData.content}/>
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
             <button type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

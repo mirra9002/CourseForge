@@ -27,7 +27,7 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
       aria-labelledby="drawer-left-label"
     >
       <h4 className={`inline-flex items-center mb-4 text-xl mt-4 font-semibold ${textColor}`}>
-        План уроку
+        {data.lessonTitle}
       </h4>
 
       <div className="flex flex-col gap-2">
@@ -35,7 +35,7 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
           <ModuleItem
             key={index}
             title={mod.pageTitle}
-            content={mod.content}
+            content={mod.description}
             isOpen={openIndex === index}
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
             backgroundColor={moduleBackgoundColor}
