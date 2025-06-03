@@ -7,13 +7,19 @@ import LeftDrawer from "../Components/LeftDrawer";
 export default function Lesson() {
      
     const params = useParams();
-    const courseId = params.courseId
-    const lessonId = params.lessonId
-    const lessonTitle = FindCourseData(courseId, Number(lessonId)).title
+    // const courseId = params.courseId
+    // const lessonId = params.lessonId
+    // const lessonTitle = FindCourseData(courseId, Number(lessonId)).title
   return (
     <>  
         <Navbar></Navbar>
-        <LeftDrawer width={"w-80"} backgroundColor={'bg-gray-100'} textColor={"text-gray-700"} moduleBackgoundColor={"bg-gray-300"} moduleHoverBackgroundColor={"hover:bg-gray-400"}></LeftDrawer>
+        <LeftDrawer 
+            width={"w-80"}
+            backgroundColor={'bg-gray-100'} 
+            textColor={"text-gray-700"} 
+            moduleBackgoundColor={"bg-gray-200"} 
+            moduleHoverBackgroundColor={"hover:bg-gray-300"} 
+         />
         <MainArea title={lessonTitle}></MainArea>
         
     </>
@@ -94,6 +100,15 @@ function MainArea(props){
         <Text></Text>
         <List></List>
         <CodeBlock height={32} width={64} code={"print('Hello World') \nprint('Hello World') \nprint('Hello World')"}></CodeBlock>
+        {/* Кнопки навигации */}
+        <div className="flex justify-between mt-8">
+            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            Далі
+            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+            </button>
+        </div>
     </div>
     </>)
 }
