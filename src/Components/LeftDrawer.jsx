@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
 
-export default function LeftDrawer({ width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
+export default function LeftDrawer({ data, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -15,20 +15,9 @@ export default function LeftDrawer({ width, backgroundColor, textColor, moduleBa
     drawer.show();
   }, []);
 
-  const modules = [
-    {
-      title: "Що таке змінна?",
-      content: "Змінна — це контейнер для збереження даних у програмі.",
-    },
-    {
-      title: "Як писати коментарі",
-      content: "Коментарі — це рядки, які ігноруються при виконанні коду. Коментарі — це рядки, які ігноруються при виконанні коду. Коментарі — це рядки, які ігноруються при виконанні коду. Коментарі — це рядки, які ігноруються при виконанні коду. Коментарі — це рядки, які ігноруються при виконанні коду.",
-    },
-    {
-      title: "Як запускати код",
-      content: "Код можна запускати натиснувши кнопку Run або через термінал.",
-    },
-  ];
+  
+
+  const modules = data.lessons;
 
   return (
     <div
@@ -38,14 +27,14 @@ export default function LeftDrawer({ width, backgroundColor, textColor, moduleBa
       aria-labelledby="drawer-left-label"
     >
       <h4 className={`inline-flex items-center mb-4 text-xl mt-4 font-semibold ${textColor}`}>
-        Список модулів
+        План уроку
       </h4>
 
       <div className="flex flex-col gap-2">
         {modules.map((mod, index) => (
           <ModuleItem
             key={index}
-            title={mod.title}
+            title={mod.pageTitle}
             content={mod.content}
             isOpen={openIndex === index}
             onClick={() => setOpenIndex(openIndex === index ? null : index)}

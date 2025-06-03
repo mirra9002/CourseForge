@@ -1,35 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
-import { LESSONS_DATA } from "../../example-courses-data";
 import LeftDrawer from "../Components/LeftDrawer";
 
 export default function Lesson() {
-     
-    const params = useParams();
-    // const courseId = params.courseId
-    // const lessonId = params.lessonId
-    // const lessonTitle = FindCourseData(courseId, Number(lessonId)).title
+    const [lessonData, setLessonData] = useState();
+    useEffect(() => {
+      async function loadData() {
+        const response = await fetch('http://localhost:3000/api/course/module');
+        const lesson = await response.json();
+        setLessonData(lesson)
+      }
+      loadData();
+    }, );
+
   return (
     <>  
         <Navbar></Navbar>
-        <LeftDrawer 
+        {lessonData ?
+         <><LeftDrawer 
+            data = {lessonData}
             width={"w-80"}
             backgroundColor={'bg-gray-100'} 
             textColor={"text-gray-700"} 
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonTitle}></MainArea>
+        <MainArea title={lessonData.moduleTitle} />
+        </> 
+        : <p>Loading...</p>}
+        
         
     </>
   );
-}
-function FindCourseData(courseId, lessonIdx) {
-  const course = LESSONS_DATA.find(course => course.courseId === courseId);
-  const lesson = course.lessons.find(lesson => lesson.lessonIdx === lessonIdx);
-  return lesson
-
 }
 
 

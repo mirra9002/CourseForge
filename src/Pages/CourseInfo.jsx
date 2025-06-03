@@ -1,26 +1,26 @@
 import Navbar from '../Components/NavBar'
 import Footer from '../Components/Footer'
+import Skeleton from '../Components/Skeleton'
 import { useParams, useNavigate} from 'react-router-dom'
 import {useEffect, useState} from 'react'
-import { getCourseInfo } from '../fetching-data.js'
 
 export default function Courseinfo() {
-    const [courseData, setCourseData] = useState({})
+    const [courseData, setCourseData] = useState(null)
     const params = useParams()
+    
     useEffect(() => {
-      console.log('USE EFFECT CALLED');
       async function loadData() {
-        console.log('LOAD...');
-        const courseData = await getCourseInfo(params.courseId);
-        setCourseData(courseData);
-
+        const response = await fetch('http://localhost:3000/api/course');
+        const course = await response.json();
+        setCourseData(course)
       }
       loadData();
     }, [params.courseId]);
 
 
     return(<>
-    <Navbar></Navbar>
+    <Navbar/>
+    {courseData ? 
     <div className='mt-20 ml-25 mr-25'>   
         <CourseInfoHeading 
           courseId={params.courseId}
@@ -33,8 +33,11 @@ export default function Courseinfo() {
         <CourseSections courseId={params.courseId}
         modulesInfo={courseData.modules}
           />
-    </div>
-    <Footer></Footer></>)
+        <Footer/>
+      </div>
+       : <Skeleton/>}
+    
+    </>)
 }
 
 function CourseInfoHeading({courseId, title, description="to be done..."}) {
@@ -60,7 +63,7 @@ function CourseProgressBar({progress="45"}) {
     </>
   );
 }
-function CourseSection({title, description}){
+function CourseSection({title, content}){
   
     return<>
     <li class="mb-10 ms-6  hover:bg-gray-100">            
@@ -70,18 +73,19 @@ function CourseSection({title, description}){
         </svg>
       </span>
       <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{title} </h3>
-      <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{description}</p>
+      <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{content}</p>
     </li></>
 }
-function CourseSections({modulesInfo}) {
-
+function CourseSections({modulesInfo, courseId}) {
+  console.log('modules info comp', modulesInfo);
+  // modulesInfo = [{title: "title abdasbd", content: "aboboabob"}]
   return (
     <>
     <a href="#" class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Розділи курсу</h5>
         <ol class=" ml-2 relative border-s border-gray-200 dark:border-gray-700 ">                  
             
-            {modulesInfo.map((module, index) => <CourseSection key={index} title={module.title} description={module.content}/>)}
+            {modulesInfo.map((module, index) => <CourseSection key={index} title={module.title} content={module.content}/>) }
         </ol>
     </a>
     </>
