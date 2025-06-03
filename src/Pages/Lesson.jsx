@@ -4,7 +4,11 @@ import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 
 export default function Lesson() {
+    const { pageId } = useParams();
+    const PAGE_NUMBER = Number(pageId) - 1
+    console.log(PAGE_NUMBER, ' <- page');
     const [lessonData, setLessonData] = useState();
+    
     useEffect(() => {
       async function loadData() {
         const response = await fetch('http://localhost:3000/api/course/module/lesson');
@@ -12,7 +16,7 @@ export default function Lesson() {
         setLessonData(lesson)
       }
       loadData();
-    }, );
+    }, []);
 
   return (
     <>  
@@ -26,7 +30,7 @@ export default function Lesson() {
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonData.pages[0].pageTitle} pageData={lessonData.pages[0]} />
+        <MainArea title={lessonData.pages[PAGE_NUMBER].pageTitle} pageData={lessonData.pages[PAGE_NUMBER]} />
         </> 
         : <p>Loading...</p>}
         
