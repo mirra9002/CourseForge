@@ -7,7 +7,7 @@ export default function Lesson() {
     const [lessonData, setLessonData] = useState();
     useEffect(() => {
       async function loadData() {
-        const response = await fetch('http://localhost:3000/api/course/module');
+        const response = await fetch('http://localhost:3000/api/course/module/lesson');
         const lesson = await response.json();
         setLessonData(lesson)
       }
@@ -26,7 +26,7 @@ export default function Lesson() {
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonData.moduleTitle} />
+        <MainArea title={lessonData.lessonTitle} />
         </> 
         : <p>Loading...</p>}
         

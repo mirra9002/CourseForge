@@ -17,7 +17,7 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
 
   
 
-  const modules = data.lessons;
+  const pages = data.pages;
 
   return (
     <div
@@ -31,7 +31,7 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
       </h4>
 
       <div className="flex flex-col gap-2">
-        {modules.map((mod, index) => (
+        {pages.map((mod, index) => (
           <ModuleItem
             key={index}
             title={mod.pageTitle}
