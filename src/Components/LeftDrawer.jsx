@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
 
-export default function LeftDrawer({ data, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
+export default function LeftDrawer({ data, clickHandler, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -33,11 +33,15 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
       <div className="flex flex-col gap-2">
         {pages.map((mod, index) => (
           <ModuleItem
+            
             key={index}
             title={mod.pageTitle}
             content={mod.description}
             isOpen={openIndex === index}
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
+            onClick={() => {
+              setOpenIndex(openIndex === index ? null : index)
+              clickHandler(index)
+            }}
             backgroundColor={moduleBackgoundColor}
             hoverBackgroundColor={moduleHoverBackgroundColor}
             textHeaderColor={moduleHeaderTextColor}

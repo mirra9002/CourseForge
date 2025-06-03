@@ -1,28 +1,41 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 
 export default function Lesson() {
-    const { pageId } = useParams();
-    const PAGE_NUMBER = Number(pageId) - 1
-    console.log(PAGE_NUMBER, ' <- page');
+    const { courseId, lessonId, pageId: rawPageId } = useParams();
+    const pageId = rawPageId ?? "1";
+    const navigate = useNavigate();
+    const PAGE_NUMBER = Number(pageId) - 1;
     const [lessonData, setLessonData] = useState();
-    
-    useEffect(() => {
-      async function loadData() {
-        const response = await fetch('http://localhost:3000/api/course/module/lesson');
-        const lesson = await response.json();
-        setLessonData(lesson)
-      }
-      loadData();
-    }, []);
 
+    useEffect(() => {
+        async function loadData() {
+            const response = await fetch('http://localhost:3000/api/course/module/lesson');
+            const lesson = await response.json();
+            setLessonData(lesson);
+        }
+        loadData();
+    }, [pageId]);
+
+    function goToNextPage() {
+        console.log('clicked');
+        const nextPage = Number(pageId) + 1;
+        if (nextPage <= lessonData.pages.length) {
+            navigate(`/course/${courseId}/lesson/${lessonId}/page/${nextPage}`);
+        }
+    }
+    function goToPage(pageIndex) {
+        const targetPage = pageIndex + 1; // because pageId in URL is 1-based
+        navigate(`/course/${courseId}/lesson/${lessonId}/page/${targetPage}`);
+        }
   return (
     <>  
         <Navbar></Navbar>
         {lessonData ?
          <><LeftDrawer 
+            clickHandler={ goToPage}
             data = {lessonData}
             width={"w-80"}
             backgroundColor={'bg-gray-100'} 
@@ -30,7 +43,7 @@ export default function Lesson() {
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonData.pages[PAGE_NUMBER].pageTitle} pageData={lessonData.pages[PAGE_NUMBER]} />
+        <MainArea nextPageHandle={goToNextPage} title={lessonData.pages[PAGE_NUMBER].pageTitle} pageData={lessonData.pages[PAGE_NUMBER]} />
         </> 
         : <p>Loading...</p>}
         
@@ -87,7 +100,7 @@ function Image(props){
 }
 
 
-function MainArea({pageData, title}){
+function MainArea({pageData, title, nextPageHandle}){
     
     return(<>
     
@@ -96,7 +109,7 @@ function MainArea({pageData, title}){
         <Text data={pageData.content}/>
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={nextPageHandle} type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Далі
             <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
