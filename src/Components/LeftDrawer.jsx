@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
+import Skeleton from "./Skeleton";
 
 export default function LeftDrawer({ data, clickHandler, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
+    if (!data) return;
     const drawerEl = document.getElementById("drawer-left-lesson-modules");
     const drawer = new Drawer(drawerEl, {
       placement: "left",
@@ -13,14 +15,17 @@ export default function LeftDrawer({ data, clickHandler, width, backgroundColor,
       bodyScrolling: true,
     });
     drawer.show();
-  }, []);
+  }, [data]);
 
   
+ 
+  //const pages = data.pages;
 
-  const pages = data.pages;
+  //console.log(pages, 'pages');
+  //console.log('lesson data leftDrawer:', data);
 
   return (
-    <div
+    <>{data ? <div
       id="drawer-left-lesson-modules"
       className={`fixed top-16 left-0 z-10 h-screen p-4 overflow-y-auto transition-transform ${backgroundColor} ${width}`}
       tabIndex={-1}
@@ -35,7 +40,7 @@ export default function LeftDrawer({ data, clickHandler, width, backgroundColor,
       </h4>
 
       <div className="flex flex-col gap-2">
-        {pages.map((mod, index) => (
+        {data.pages.map((mod, index) => (
           <ModuleItem
             
             key={index}
@@ -44,7 +49,12 @@ export default function LeftDrawer({ data, clickHandler, width, backgroundColor,
             isOpen={openIndex === index}
             onClick={() => {
               setOpenIndex(openIndex === index ? null : index)
-              clickHandler(index)
+              if(mod.pageType === 'theory'){
+                clickHandler(index)
+              } else if (mod.pageType === 'codeTask'){
+                clickHandler(index, true)
+              }
+              
             }}
             backgroundColor={moduleBackgoundColor}
             hoverBackgroundColor={moduleHoverBackgroundColor}
@@ -52,7 +62,9 @@ export default function LeftDrawer({ data, clickHandler, width, backgroundColor,
             textColor={moduleTextColor}
             />
         ))}
+        
       </div>
-    </div>
+    </div> : <></>}</>
+    
   );
 }

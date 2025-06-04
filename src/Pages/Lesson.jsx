@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
+import Skeleton from '../Components/Skeleton'
 
 export default function Lesson() {
     const { courseId, lessonId, pageId: rawPageId } = useParams();
@@ -10,26 +11,46 @@ export default function Lesson() {
     const PAGE_NUMBER = Number(pageId) - 1;
     const [lessonData, setLessonData] = useState();
 
+
+
+
     useEffect(() => {
         async function loadData() {
             const response = await fetch('http://localhost:3000/api/course/module/lesson');
             const lesson = await response.json();
             setLessonData(lesson);
+           
         }
         loadData();
     }, [pageId]);
 
-    function goToNextPage() {
+     console.log(lessonData);
+
+    function goToNextPage(isCodePage = false) {
         console.log('clicked');
         const nextPage = Number(pageId) + 1;
-        if (nextPage <= lessonData.pages.length) {
+        if(isCodePage && nextPage <= lessonData.pages.length){
+            navigate(`/course/${courseId}/lesson/${lessonId}/page/${nextPage}/code`);
+        } else if (!isCodePage && nextPage <= lessonData.pages.length){
             navigate(`/course/${courseId}/lesson/${lessonId}/page/${nextPage}`);
         }
+        
     }
-    function goToPage(pageIndex) {
+    function goToPage(pageIndex, isCodePage = false) {
         const targetPage = pageIndex + 1; // because pageId in URL is 1-based
-        navigate(`/course/${courseId}/lesson/${lessonId}/page/${targetPage}`);
+        if(isCodePage){
+            navigate(`/course/${courseId}/lesson/${lessonId}/page/${targetPage}/code`);
+        } else {
+            navigate(`/course/${courseId}/lesson/${lessonId}/page/${targetPage}`);
         }
+        
+        
+    }
+
+    
+    
+
+    
   return (
     <>  
         <Navbar></Navbar>
@@ -45,12 +66,13 @@ export default function Lesson() {
          />
         <MainArea nextPageHandle={goToNextPage} title={lessonData.pages[PAGE_NUMBER].pageTitle} pageData={lessonData.pages[PAGE_NUMBER]} />
         </> 
-        : <p>Loading...</p>}
+        : <></>}
         
         
     </>
   );
 }
+
 
 
 function CodeBlock({ data }) {
@@ -102,9 +124,10 @@ function Image(props){
 
 function MainArea({pageData, title, nextPageHandle}){
     const pageContents = pageData.content
+    
     return(<>
     
-    <div class='ml-95 mt-15 mr-35 mb-15'>
+    <div class='ml-95 mt-15 mr-35 mb-15 '>
         <SmallHeading title={title}></SmallHeading>
         {pageContents.map((section, index) => {
             if(section.type === "TEXT"){
@@ -127,3 +150,4 @@ function MainArea({pageData, title, nextPageHandle}){
     </div>
     </>)
 }
+
