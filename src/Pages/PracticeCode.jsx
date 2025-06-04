@@ -23,9 +23,13 @@ export default function PracticeCode() {
         const response = await fetch('http://localhost:3000/api/course/module/lesson');
         const lesson = await response.json();
         setLessonData(lesson);
+        
       }
       loadData();
   }, []);
+  const pageIndex = parseInt(pageId || "1") - 1;
+  const codeTaskData = lessonData?.pages?.[pageIndex]?.task ?? null;
+
   
   // function goToNextPage() {
   //       console.log('clicked');
@@ -45,9 +49,9 @@ export default function PracticeCode() {
         
     }
   
-      
+    
   
-  function runCode() {
+  function runCode(expectedOutput) {
     const logs = [];
     const originalLog = console.log;
     let usedConsoleLog = false;
@@ -70,7 +74,7 @@ export default function PracticeCode() {
       
       let userOutput = logs.join("\n")
       setOutput(userOutput);
-      const success = checkOutput(userOutput, 'Hello World!')
+      const success = checkOutput(userOutput, expectedOutput)
       
       if (success) {
         setShowSuccess(true);
@@ -82,25 +86,25 @@ export default function PracticeCode() {
     setOutput('')
   }
 
+  
 
-
-
+console.log('Code TAsk data:', codeTaskData);
   return (
   <>
     <Navbar />
 
-<LeftDrawer
-  data={lessonData}
-  clickHandler={goToPage}
-  width={"w-64"}
-  
-  backgroundColor={"bg-gray-100"}
-  textColor={"text-gray-700"}
-  moduleBackgoundColor={"bg-gray-200"} 
-            moduleHoverBackgroundColor={"hover:bg-gray-300"} 
-  moduleHeaderTextColor={"text-black"}
-  moduleTextColor={"text-gray-700"}
-/>
+  <LeftDrawer
+    data={lessonData}
+    clickHandler={goToPage}
+    width={"w-64"}
+    
+    backgroundColor={"bg-gray-100"}
+    textColor={"text-gray-700"}
+    moduleBackgoundColor={"bg-gray-200"} 
+    moduleHoverBackgroundColor={"hover:bg-gray-300"} 
+    moduleHeaderTextColor={"text-black"}
+    moduleTextColor={"text-gray-700"}
+  />
 
 <div className="flex bg-white w-full h-screen p-4 gap-2 pl-64">
   {/* Left: Editor */}
@@ -110,7 +114,7 @@ export default function PracticeCode() {
       <div className="flex justify-between items-center bg-gray-100 text-black text-sm px-4 py-2 border-b border-gray-300">
         <span className="inline-block">main.js</span>
         <button
-          onClick={runCode}
+          onClick={() => runCode(codeTaskData.expectedOutput)}
           type="button"
           className="w-[100px] text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-md text-sm px-4 py-2"
         >
@@ -157,6 +161,7 @@ export default function PracticeCode() {
         </button>
       </div>
       <div className="bg-white text-black font-mono p-4 h-full overflow-auto">
+        {codeTaskData ? <Assignment codeTaskData={codeTaskData}/> : <></>}
         {showSuccess ? (
           <>
             <pre className="whitespace-pre-wrap">{output}</pre>
@@ -215,3 +220,58 @@ function SuccessMessage() {
 }
 
 
+
+
+
+function Assignment({ codeTaskData = null }) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  if (!codeTaskData) return null;
+
+  const { taskTitle, taskDescription } = codeTaskData;
+
+  return (
+    <div
+      className={`mb-4 border border-blue-300 rounded-lg transition-all duration-300 ${
+        collapsed ? "bg-blue-100/60 text-blue-900" : "bg-blue-50 text-blue-800"
+      }`}
+      role="alert"
+    >
+      <div
+        className={`flex items-center justify-between px-4 py-3 ${
+          collapsed ? "text-blue-900" : "text-blue-800"
+        }`}
+      >
+        <div className="flex items-center">
+          <svg
+            className="w-5 h-5 me-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9 9V5h2v4H9Zm0 2h2v2H9v-2Z" />
+          </svg>
+          <h3 className="text-lg font-semibold">{taskTitle}</h3>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setCollapsed(!collapsed)}
+          className="px-3 py-1 text-sm font-medium border border-blue-400 rounded-md hover:bg-blue-200 transition-colors duration-200 cursor-pointer"
+        >
+          {collapsed ? "Розгорнути" : "Згорнути"}
+        </button>
+      </div>
+
+      {/* Анимация блока */}
+      <div
+        className={`px-4 text-sm overflow-hidden transition-all duration-500 ease-in-out ${
+          collapsed ? "max-h-0 py-0" : "max-h-40 py-4"
+        }`}
+      >
+        {taskDescription}
+      </div>
+    </div>
+  );
+}

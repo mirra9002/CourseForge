@@ -17,9 +17,9 @@ export default function LeftDrawer({ data, clickHandler, width, backgroundColor,
     drawer.show();
   }, [data]);
 
+    
   
- 
-  //const pages = data.pages;
+    //const pages = data.pages;
 
   //console.log(pages, 'pages');
   //console.log('lesson data leftDrawer:', data);
