@@ -1,38 +1,12 @@
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 
-export default function Topcourses() {
+export default function Topcourses({courses}) {
 
-    const [topCourses, setTopCourses] = useState(null)
-    useEffect(() => {
-        const fetchData = async () => {
-        try {
-            const response = await fetch("http://127.0.0.1:8000/api/courses/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc`
-            },
-            });
-
-            const result = await response.json();
-            setTopCourses(result);
-        } catch (error) {
-            console.error("Error:", error);
-        }
-        };
-
-        fetchData();
-        
-    }, []);
-
-    console.log(topCourses);
-     if(!topCourses) return <></>
-    const topThreeCourses = [...topCourses.results].sort((a, b) => b.rating - a.rating).slice(0, 3);
-    console.log(topThreeCourses);
-
-   
-
+    if(!courses) return <></>
+    
+    const topThreeCourses = [...courses.results].sort((a, b) => b.rating - a.rating).slice(0, 3); // ask Tim to do this on
+    
     return(<>
     <br/>
     <br/>
@@ -103,11 +77,13 @@ function TopCourseCardComponent({data}) {
         navigate(`/courseinfo/${courseId}`)
     }
     return(
-    <a href="" onClick={() => navigateToPage(courseId)}
-        class="block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
+    <div
+        onClick={() => navigate(`/courseinfo/${courseId}`)}
+        className="cursor-pointer block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
         <TopCourseCardHeading title={courseTitle} info={courseInfo}/>        
         <br/>
         <CourseRatingStars rating={data.rating}/>
-    </a>)
+    
+    </div>)
 }
 

@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import './index.css'
 import App from './App.jsx'
 
@@ -10,14 +11,30 @@ import Notfound from './Pages/NotFound.jsx';
 import Lesson from './Pages/Lesson.jsx'
 import PracticeCode from './Pages/PracticeCode.jsx';
 
+import { getAllCourses, getCourseById } from './fetching-data.js';
+
 const router = createBrowserRouter([{
-  path: '/',
-  element: <Mainpage />,
-  errorElement: <Notfound/>
-},
+    path: '/',
+    element: <Mainpage />,
+    loader: async () => {
+      const data = await getAllCourses()
+      if (data.error){
+        throw new Response("Failed to load", { status: 500 });
+      }
+      return data
+    },
+    errorElement: <Notfound />,
+  },
 {
   path: '/courseinfo/:courseId',
   element: <Courseinfo />,
+    loader: async ({ params }) => {
+      const data = await getCourseById(params.courseId);
+      if (data.error) {
+        throw new Response("Failed to load", { status: 500 });
+      }
+      return data;
+    },
   errorElement: <Notfound/>
 },
 {
@@ -30,7 +47,10 @@ const router = createBrowserRouter([{
   element: <PracticeCode />,
   errorElement: <Notfound/>
 },
-])
+],
+{
+  fallbackElement: <div>Loading page...</div>  
+})
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
