@@ -1,16 +1,48 @@
 import { useNavigate } from "react-router-dom"
-import { COURSES_DATA } from "../../example-courses-data"
+import { useState, useEffect } from "react"
+
 export default function Topcourses() {
+
+    const [topCourses, setTopCourses] = useState(null)
+    useEffect(() => {
+        const fetchData = async () => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/courses/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc`
+            },
+            });
+
+            const result = await response.json();
+            setTopCourses(result);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+        };
+
+        fetchData();
+        
+    }, []);
+
+    console.log(topCourses);
+     if(!topCourses) return <></>
+    const topThreeCourses = [...topCourses.results].sort((a, b) => b.rating - a.rating).slice(0, 3);
+    console.log(topThreeCourses);
+
+   
+
     return(<>
     <br/>
-<br/>
+    <br/>
     <h2 class="text-4xl font-bold text-center mt-5 mb-5 text-[#0b1d3a]">Найкращі курси</h2>
     <div class="relative flex items-center justify-center mt-10">
         <ScrollArrowButton rotation="left"/>
         <div class="flex flex-wrap justify-center gap-6">
-            <TopCourseCardComponent courseId={'js-001'}/>
-            <TopCourseCardComponent courseId={'py-001'}/>
-            <TopCourseCardComponent courseId={'cs-001'}/>
+            <TopCourseCardComponent data={topThreeCourses[0]}/>
+            <TopCourseCardComponent data={topThreeCourses[1]}/>
+            <TopCourseCardComponent data={topThreeCourses[2]}/>
         </div>
         <ScrollArrowButton rotation='right' isActive={true}/>
 
@@ -27,7 +59,7 @@ function ScrollArrowButton(props){
             </svg>
         </button>)
 }
-function CourseRatingStars() {
+function CourseRatingStars({rating}) {
     return(
     <div class="flex items-center">
                 <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -45,7 +77,7 @@ function CourseRatingStars() {
                 <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                     <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
                 </svg>
-                <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+                <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">{rating}</p>
                 <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">out of</p>
                 <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">5</p>
             </div>)
@@ -60,24 +92,22 @@ function TopCourseCardHeading(props) {
     </>)
 }
 
-function TopCourseCardComponent(props) {
-    const courseData = getCourseData(props.courseId)
-    const courseTitle = courseData.title;
-    const courseInfo = courseData.info
-    const navigate = new useNavigate();
+function TopCourseCardComponent({data}) {
+
+    const courseId = data.id
+    const courseTitle = data.title;
+    const courseInfo = data.description
+    const navigate = useNavigate();
     function navigateToPage(courseId){
         
         navigate(`/courseinfo/${courseId}`)
     }
     return(
-    <a href="" onClick={() => navigateToPage(props.courseId)}
+    <a href="" onClick={() => navigateToPage(courseId)}
         class="block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
         <TopCourseCardHeading title={courseTitle} info={courseInfo}/>        
         <br/>
-        <CourseRatingStars />
+        <CourseRatingStars rating={data.rating}/>
     </a>)
 }
 
-function getCourseData(courseId){
-    return COURSES_DATA.find(course => course.id === courseId);
-}

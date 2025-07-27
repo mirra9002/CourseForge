@@ -8,27 +8,48 @@ export default function Courseinfo() {
     const [courseData, setCourseData] = useState(null)
     const params = useParams()
     
+    // useEffect(() => {
+    //   async function loadData() {
+    //     const response = await fetch('http://localhost:3000/api/course');
+    //     const course = await response.json();
+    //     setCourseData(course)
+    //   }
+    //   loadData();
+    // }, [params.courseId]);
+
     useEffect(() => {
-      async function loadData() {
-        const response = await fetch('http://localhost:3000/api/course');
-        const course = await response.json();
-        setCourseData(course)
-      }
-      loadData();
+        const fetchData = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/courses/${params.courseId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc`
+            },
+            });
+
+            const result = await response.json();
+            setCourseData(result);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+        };
+
+        fetchData();
+        
     }, [params.courseId]);
 
-
+    console.log(courseData);
     return(<>
     <Navbar/>
     {courseData ? 
     <div className='mt-20 ml-25 mr-25'>   
         <CourseInfoHeading 
           courseId={params.courseId}
-          title={courseData.courseTitle}
-          description=" " />
+          title={courseData.title}
+          description={courseData.description} />
         <CourseProgressBar 
           courseId={params.courseId}
-          
           />
         <CourseSections courseId={params.courseId}
         modulesInfo={courseData.modules}
@@ -63,7 +84,7 @@ function CourseProgressBar({progress="45"}) {
     </>
   );
 }
-function CourseSection({title, content}){
+function CourseSection({title, description}){
   
     return<>
     <li class="mb-10 ms-6  hover:bg-gray-100">            
@@ -73,7 +94,7 @@ function CourseSection({title, content}){
         </svg>
       </span>
       <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{title} </h3>
-      <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{content}</p>
+      <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{description}</p>
     </li></>
 }
 function CourseSections({modulesInfo, courseId}) {
@@ -85,7 +106,7 @@ function CourseSections({modulesInfo, courseId}) {
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Розділи курсу</h5>
         <ol class=" ml-2 relative border-s border-gray-200 dark:border-gray-700 ">                  
             
-            {modulesInfo.map((module, index) => <CourseSection key={index} title={module.title} content={module.content}/>) }
+            {modulesInfo.map((module, index) => <CourseSection key={index} title={module.title} description={module.description}/>) }
         </ol>
     </a>
     </>
