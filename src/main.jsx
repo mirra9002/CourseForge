@@ -11,6 +11,7 @@ import Courseinfo from './Pages/CourseInfo.jsx'
 import Notfound from './Pages/NotFound.jsx';
 import Lesson from './Pages/Lesson.jsx'
 import PracticeCode from './Pages/PracticeCode.jsx';
+import Auth from './Pages/Auth.jsx';
 
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById } from './fetching-data.js';
 
@@ -65,6 +66,11 @@ const router = createBrowserRouter([{
 {
   path: '/code',
   element: <PracticeCode />,
+  errorElement: <Notfound/>
+},
+{
+  path: '/auth',
+  element: <Auth />,
   errorElement: <Notfound/>
 },
 ],
