@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 export default function Topcourses({courses}) {
 
     if(!courses) return <></>
+    console.log(courses);
     
     const topThreeCourses = [...courses.results].sort((a, b) => b.rating - a.rating).slice(0, 3); // ask Tim to do this on
     

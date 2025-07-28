@@ -11,7 +11,7 @@ import Notfound from './Pages/NotFound.jsx';
 import Lesson from './Pages/Lesson.jsx'
 import PracticeCode from './Pages/PracticeCode.jsx';
 
-import { getAllCourses, getCourseById } from './fetching-data.js';
+import { getAllCourses, getCourseById, getLessonAndAllLessonsById } from './fetching-data.js';
 
 const router = createBrowserRouter([{
     path: '/',
@@ -40,6 +40,25 @@ const router = createBrowserRouter([{
 {
   path: '/course/:courseId/lesson/:lessonId',
   element: <Lesson />,
+  loader: async ({params}) => {
+    const data = await getLessonAndAllLessonsById(params.lessonId)
+    if (data.error) {
+      throw new Response("Failed to load", { status: 500 });
+    }
+    return data;
+  },
+  errorElement: <Notfound/>
+},
+{
+  path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageNumber',
+  element: <Lesson />,
+  loader: async ({params}) => {
+    const data = await getLessonAndAllLessonsById(params.lessonId)
+    if (data.error) {
+      throw new Response("Failed to load", { status: 500 });
+    }
+    return data;
+  },
   errorElement: <Notfound/>
 },
 {

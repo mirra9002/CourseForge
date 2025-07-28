@@ -1,11 +1,11 @@
+const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc'
 export async function getAllCourses() {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/courses/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc`
-      },
+        "Authorization": `Bearer ${ACCESS_TOKEN}`},
     });
       const result = await response.json();
       return result
@@ -21,8 +21,7 @@ export async function getCourseById(id) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc`
-      },
+        "Authorization": `Bearer ${ACCESS_TOKEN}`},
     });
 
     if (!response.ok) {
@@ -37,4 +36,43 @@ export async function getCourseById(id) {
       console.error("Error:", error);
       return {error: true, message: "error, couldn't fetch data"}
     }
+}
+
+
+export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it module NUMBER or ID? here - it's ID
+  const response = await fetch(`http://127.0.0.1:8000/api/lessons/${lessonId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${ACCESS_TOKEN}`},
+    });
+
+  const lessonResult = await response.json()
+  // const moduleNumber = lessonResult.module
+  // console.log(moduleNumber);
+
+
+  // const Course = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Authorization": `Bearer ${ACCESS_TOKEN}`},
+  //   });
+  // const courseResults = await responseLessons.json()
+  // const moduleId = courseResults.modules[moduleNumber]
+
+  const moduleId = lessonResult.module
+
+  const responseLessons = await fetch(`http://127.0.0.1:8000/api/modules/${moduleId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${ACCESS_TOKEN}`},
+    });
+  const lessonsResult = await responseLessons.json()
+
+  return {
+    currentLesson: lessonResult,
+    allLessons: lessonsResult 
+  }
 }

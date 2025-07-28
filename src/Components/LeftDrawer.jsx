@@ -17,7 +17,9 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
 
   
 
-  const modules = data.lessons;
+  const lessonSections = data.pages;
+  
+  console.log('LEFT DRAWER: ', lessonSections);
 
   return (
     <div
@@ -31,11 +33,11 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
       </h4>
 
       <div className="flex flex-col gap-2">
-        {modules.map((mod, index) => (
+        {lessonSections.map((lesson, index) => (
           <ModuleItem
             key={index}
-            title={mod.pageTitle}
-            content={mod.content}
+            title={lesson.title}
+            content={lesson.content}
             isOpen={openIndex === index}
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
             backgroundColor={moduleBackgoundColor}

@@ -1,23 +1,24 @@
+import { useLoaderData } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 
 export default function Lesson() {
-    const [lessonData, setLessonData] = useState();
-    useEffect(() => {
-      async function loadData() {
-        const response = await fetch('http://localhost:3000/api/course/module');
-        const lesson = await response.json();
-        setLessonData(lesson)
-      }
-      loadData();
-    }, );
+    const data = useLoaderData();
+    const lessonData = data.currentLesson;
+    const lessonPageData = data.currentLesson.pages[0];
+
+    
+    console.log('data', data);
+    console.log('lessonData', lessonData);
+
+    const lessonPageContent = lessonPageData.data;
 
   return (
     <>  
         <Navbar></Navbar>
-        {lessonData ?
+        {lessonPageData ?
          <><LeftDrawer 
             data = {lessonData}
             width={"w-80"}
@@ -26,7 +27,7 @@ export default function Lesson() {
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonData.moduleTitle} />
+        <MainArea title={lessonPageData.title} data={lessonPageContent} />
         </> 
         : <p>Loading...</p>}
         
@@ -37,33 +38,22 @@ export default function Lesson() {
 
 
 function CodeBlock(props){
-    const code = props.code
-    const blockHeight = props.height
-    const blockWidth = props.width;
     return(<>
     
     <div className="relative mt-2 mb-4 block max-w-sm p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-        <code className="text-sm whitespace-pre">{code}</code>
+        <code className="text-sm whitespace-pre">{props.data}</code>
       </div>
 
     </>)
 }
 
 function SmallHeading(props){
-    return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.title}</h2></>)
+    return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.data}</h2></>)
 }
 
 function Text(props){
-    return(<p class="mb-4 text-gray-500 dark:text-gray-400">Track work across the enterprise through an open, 
-    collaborative platform. Link issues across Jira and ingest data from other software development tools, 
-    so your IT support and operations teams have richer contextual information to rapidly respond to requests, 
-    incidents, and changes. Track work across the enterprise through an open, 
-    collaborative platform. Link issues across Jira and ingest data from other software development tools, 
-    so your IT support and operations teams have richer contextual information to rapidly respond to requests, 
-    incidents, and changes. Track work across the enterprise through an open, 
-    collaborative platform. Link issues across Jira and ingest data from other software development tools, 
-    so your IT support and operations teams have richer contextual information to rapidly respond to requests, 
-    incidents, and changes.</p>)
+
+    return(<p class="mb-4 text-gray-500 dark:text-gray-400">{props.data}</p>)
 }
 
 function List(props){
@@ -93,16 +83,23 @@ function Image(props){
 
 function MainArea(props){
     const title=props.title
+    const data = props.data
+
     return(<>
     
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading title={title}></SmallHeading>
-        <Text></Text>
-        <CodeBlock height={32} width={64} code={"print('Hello World') \nprint('Hello World') \nprint('Hello World')"}></CodeBlock>
-        <Text></Text>
-        <Text></Text>
-        <List></List>
-        <CodeBlock height={32} width={64} code={"print('Hello World') \nprint('Hello World') \nprint('Hello World')"}></CodeBlock>
+        
+        {data.map((element, index) => { 
+            if(element.type === 'HEADING'){
+                return <SmallHeading key={index} data={element.content}/>
+            } else if(element.type === 'TEXT') {
+                return <Text key={index} data={element.content}/>
+            } else if(element.type === 'CODE'){
+                return <CodeBlock key={index} data={element.content}/>
+            }
+            })}
+
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
             <button type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -114,4 +111,5 @@ function MainArea(props){
         </div>
     </div>
     </>)
+    
 }

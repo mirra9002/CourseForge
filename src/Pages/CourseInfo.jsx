@@ -6,41 +6,17 @@ import {useEffect, useState} from 'react'
 import { useLoaderData } from 'react-router-dom';
 
 export default function Courseinfo() {
-    // const [courseData, setCourseData] = useState(null)
     const params = useParams()
-  
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //     try {
-    //         const response = await fetch(`http://127.0.0.1:8000/api/courses/${params.courseId}`, {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1MzU0MDU3LCJpYXQiOjE3NTM1Mzk2NTcsImp0aSI6ImM3ZjlmZmRhMGYwMjRiODE4ODhhY2NkZjZlOTkyZmE0IiwidXNlcl9pZCI6ImJiZDU1ZDM1LWY4ZTAtNDlmZC04ZWQ3LTk3ZTJiY2NiMDRkMiJ9.24ZxF1Oa99OylMTShP6INQXl4jhMBGtfX8i64WIENGc`
-    //         },
-    //         });
-
-    //         const result = await response.json();
-    //         setCourseData(result);
-    //     } catch (error) {
-    //         console.error("Error:", error);
-    //     }
-    //     };
-
-    //     fetchData();
-        
-    // }, [params.courseId]);
-
-
     const courseData = useLoaderData();
+    const firstModuleId = courseData.modules[0].id
     
-
-    console.log(courseData);
+    console.log('courseDATA', courseData);
     return(<>
     <Navbar/>
     {courseData ? 
     <div className='mt-20 ml-25 mr-25'>   
-        <CourseInfoHeading 
+        <CourseInfoHeading
+          firstModuleId={firstModuleId} 
           courseId={params.courseId}
           title={courseData.title}
           description={courseData.description} />
@@ -57,7 +33,7 @@ export default function Courseinfo() {
     </>)
 }
 
-function CourseInfoHeading({courseId, title, description="to be done..."}) {
+function CourseInfoHeading({courseId, title, description="to be done...", firstModuleId}) {
 
     const navigate = useNavigate()
     function navigateToPage(location){
@@ -65,7 +41,7 @@ function CourseInfoHeading({courseId, title, description="to be done..."}) {
     }
 
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
-      <button type="button" onClick={() => navigateToPage( `/course/${courseId}/lesson/${1}`)} class="text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
+      <button type="button" onClick={() => navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${1}/page/${1}`)} class="text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
       <p class="text-lg mb-3 mt-10  text-gray-500 dark:text-gray-400">{description}</p>
     </>)
 }
