@@ -4,7 +4,7 @@ import Skeleton from '../Components/Skeleton'
 import { useParams, useNavigate} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import { useLoaderData } from 'react-router-dom';
-
+import LoadingBar from '../Components/LoadingBar'
 export default function Courseinfo() {
     const params = useParams()
     const courseData = useLoaderData();
@@ -13,6 +13,7 @@ export default function Courseinfo() {
     console.log('courseDATA', courseData);
     return(<>
     <Navbar/>
+    <LoadingBar/>
     {courseData ? 
     <div className='mt-20 ml-25 mr-25'>   
         <CourseInfoHeading
