@@ -69,7 +69,11 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/auth',
+  path: '/auth/:isRegister',
+  loader: async ({params}) => {
+    const data = await params.isRegister
+    return Number(data)
+  },
   element: <Auth />,
   errorElement: <Notfound/>
 },
