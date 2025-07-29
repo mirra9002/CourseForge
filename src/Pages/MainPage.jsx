@@ -12,7 +12,7 @@ export default function Mainpage() {
 
     return <>
       <Navbar/>
-        <Topsearcharea />
+        <Topsearcharea courses={courses}/>
         <Topcourses courses={courses} />
           <h2 class="text-4xl font-bold text-center mt-25 mb-15 text-[#0b1d3a] ">Усі курси</h2>
           <div class="flex items-center mb-2">

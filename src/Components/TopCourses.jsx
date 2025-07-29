@@ -7,7 +7,7 @@ export default function Topcourses({courses}) {
     console.log(courses);
     
     const topThreeCourses = [...courses.results].sort((a, b) => b.rating - a.rating).slice(0, 3); // ask Tim to do this on
-    
+    console.log('top three coursese', topThreeCourses);
     return(<>
     <br/>
     <br/>
@@ -68,15 +68,14 @@ function TopCourseCardHeading(props) {
 }
 
 function TopCourseCardComponent({data}) {
+    
+    if(!data) return null
 
     const courseId = data.id
     const courseTitle = data.title;
     const courseInfo = data.description
     const navigate = useNavigate();
-    function navigateToPage(courseId){
-        
-        navigate(`/courseinfo/${courseId}`)
-    }
+   
     return(
     <div
         onClick={() => navigate(`/courseinfo/${courseId}`)}

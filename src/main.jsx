@@ -12,6 +12,7 @@ import Notfound from './Pages/NotFound.jsx';
 import Lesson from './Pages/Lesson.jsx'
 import PracticeCode from './Pages/PracticeCode.jsx';
 import Auth from './Pages/Auth.jsx';
+import SearchedCourses from './Pages/SearchedCourses.jsx';
 
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById } from './fetching-data.js';
 
@@ -39,18 +40,18 @@ const router = createBrowserRouter([{
     },
   errorElement: <Notfound/>
 },
-{
-  path: '/course/:courseId/lesson/:lessonId',
-  element: <Lesson />,
-  loader: async ({params}) => {
-    const data = await getLessonAndAllLessonsById(params.lessonId)
-    if (data.error) {
-      throw new Response("Failed to load", { status: 500 });
-    }
-    return data;
-  },
-  errorElement: <Notfound/>
-},
+// {
+//   path: '/course/:courseId/lesson/:lessonId',
+//   element: <Lesson />,
+//   loader: async ({params}) => {
+//     const data = await getLessonAndAllLessonsById(params.lessonId)
+//     if (data.error) {
+//       throw new Response("Failed to load", { status: 500 });
+//     }
+//     return data;
+//   },
+//   errorElement: <Notfound/>
+// },
 {
   path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageNumber',
   element: <Lesson />,
@@ -75,6 +76,23 @@ const router = createBrowserRouter([{
     return Number(data)
   },
   element: <Auth />,
+  errorElement: <Notfound/>
+},
+{
+  path: '/search/',
+  element: <SearchedCourses />,
+  loader: async ({request }) => {
+      const url = new URL(request.url);
+      const query = url.searchParams.get('q') || '';
+      const data = await getAllCourses()
+      if (data.error){
+        throw new Response("Failed to load", { status: 500 });
+      }
+      return {
+        courses: data,
+        request: query
+      }
+    },
   errorElement: <Notfound/>
 },
 ],
