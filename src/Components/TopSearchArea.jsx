@@ -38,7 +38,7 @@ export default function Topsearcharea({courses}){
             />
             <button
                 type="submit"
-                class="absolute end-2.5 bottom-2.5 text-white bg-blue-700 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2"
+                class="cursor-pointer absolute end-2.5 bottom-2.5 text-white bg-blue-700 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2"
             >
                 Пошук
             </button>

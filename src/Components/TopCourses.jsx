@@ -13,27 +13,29 @@ export default function Topcourses({courses}) {
     <br/>
     <h2 class="text-4xl font-bold text-center mt-5 mb-5 text-[#0b1d3a]">Найкращі курси</h2>
     <div class="relative flex items-center justify-center mt-10">
-        <ScrollArrowButton rotation="left"/>
-        <div class="flex flex-wrap justify-center gap-6">
+        <ScrollArrowButton direction="right" isActive={true}/>
+        <div class="flex flex-wrap justify-center gap-6 ">
             <TopCourseCardComponent data={topThreeCourses[0]}/>
             <TopCourseCardComponent data={topThreeCourses[1]}/>
             <TopCourseCardComponent data={topThreeCourses[2]}/>
         </div>
-        <ScrollArrowButton rotation='right' isActive={true}/>
+        <ScrollArrowButton direction="left" isActive={false}/>
 
     </div></>)
 }
-
-function ScrollArrowButton(props){
-    const rotation = props.direction === 'left' ? 180 : 0
-    return(<button type="button"
-            class="mr-25 absolute right-0 z-10 bg-blue-700  hover:bg-[#0b1d3a]  text-white font-medium rounded-full p-3 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-            </svg>
-        </button>)
+function ScrollArrowButton(props) {
+  const isLeft = props.direction === 'left';
+  const isActive = props.isActive
+  return (
+    <button type="button" className={`cursor-pointer mr-25 ml-25 absolute ${isLeft ? 'left-0' : 'right-0'} z-10 ${isActive ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-500 hover:bg-gray-600"} text-white font-medium rounded-full p-3 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500`}>
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        {isLeft ? (<path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />)}
+      </svg>
+    </button>
+  );
 }
+
 function CourseRatingStars({rating}) {
     return(
     <div class="flex items-center">

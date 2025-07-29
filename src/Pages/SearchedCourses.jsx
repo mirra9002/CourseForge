@@ -4,7 +4,7 @@ import {useLoaderData} from "react-router-dom"
 import { searchCourses } from "../utils/search-top-courses";
 
 import Navbar from "../Components/NavBar";
-// import CourseDetailedCard from "../Components/CourseDetailedCard";
+import CourseFilters from "../Components/CourseFilters";
 
 export default function SearchedCourses() {
     const navigate = useNavigate()
@@ -31,25 +31,39 @@ export default function SearchedCourses() {
     <>
     <Navbar/>
     <div className="m-8">
-        <CoursesSearchArea query={searchQuery || ''} handleSubmit={handleSearch} />
-            <hr className="mt-12 border-t-1 border-gray-300 dark:border-gray-700 w-3/4 mx-auto" />
-            <div className="flex flex-col items-center mt-8 gap-8">
-                
-                {searchQuery.trim() !== '' && (
-                resultCourses.length === 0 ? (
-                    <p className="text-center text-gray-500 mt-6 text-lg">
-                        We couldn't find a match for <strong>"{searchQuery.trim() || ' '}"</strong>. Try another keyword.
-                        </p>) : (
-                    <div className="flex flex-col items-center mt-8 gap-8">
-                    {resultCourses.map((course, index) => (
-                        <CourseDetailedCard key={index} course={course} handleClick={(courseId) => navigate(`/courseinfo/${courseId}`)}/>
-                    ))}
-                    </div>
-                )
-                )}
-                
-            </div>
+  <CoursesSearchArea query={searchQuery || ''} handleSubmit={handleSearch} />
+
+  <hr className="mt-12 border-t-1 border-gray-300 dark:border-gray-700 w-3/4 mx-auto" />
+  {resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Courses ({resultCourses.length})</h2> : null}
+    
+  {searchQuery.trim() !== '' && (
+    <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
+        {/* Filters section */}
+        {resultCourses.length > 0 ? <div className="w-72">
+            <CourseFilters />
+        </div> : null}
+        
+
+        {/* Results section */}
+        <div className="flex flex-col gap-8 overflow-y-auto max-h-[815px] ">
+            {resultCourses.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg">
+                We couldn't find a match for <strong>"{searchQuery.trim() || ' '}"</strong>. Try another keyword.
+            </p>
+            ) : (
+            resultCourses.map((course, index) => (
+                <CourseDetailedCard
+                key={index}
+                course={course}
+                handleClick={(courseId) => navigate(`/courseinfo/${courseId}`)}
+                />
+            ))
+            )}
+        </div>
+        </div>
+    )}
     </div>
+
     </>
   );
 }
@@ -87,7 +101,7 @@ function CourseDetailedCard({course, handleClick}){
     console.log(courseId);
   return (
     <>
-    <div onClick={() =>{handleClick(courseId)}} class="cursor-pointer w-256 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div onClick={() =>{handleClick(courseId)}} class="cursor-pointer w-248 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div class="hover:bg-blue-700 flex flex-wrap text-sm font-medium text-center text-gray-100 border-b border-gray-200 rounded-t-lg bg-blue-600 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab">
             <p class="inline-block p-2 pl-8">{course.category}</p>
         </div>
