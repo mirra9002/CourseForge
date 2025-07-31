@@ -1,4 +1,4 @@
-const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NTk0OTUyLCJpYXQiOjE3NTM3ODA1NTIsImp0aSI6IjVjYTM2ZTM3N2FiNzRkNzY4OTU1MjRjMDBjN2UzYzIwIiwidXNlcl9pZCI6IjQwZDI5Y2Y2LTFlMzMtNGJlYy1hOTQ2LTEyZTNmYThhMWM4MCJ9.7T45jQu04wAbFjC7TfS9XMWFJK1Xh-P0zeor4hxqToQ'
+const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzY2MTc1LCJpYXQiOjE3NTM5NTE3NzUsImp0aSI6ImI0NzE3MTE3MWI2NDRlZThhNTA1NGEwOTFlYmNkYzFlIiwidXNlcl9pZCI6Ijk2YTI2Nzg0LTYyNGItNDU1NC04ODQzLTAxOTI2YzJmNjM1MCJ9.YKq6kah9uAtLcNkM4e2IV_NrGmAVl2wsmJpsUzyv8ic'
 export async function getAllCourses() {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/courses/", {
@@ -15,28 +15,62 @@ export async function getAllCourses() {
     }
 }
 
-export async function getCourseById(id) {
-  try {
-      const response = await fetch(`http://127.0.0.1:8000/api/courses/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${ACCESS_TOKEN}`},
-    });
+export async function getCourseById(courseId) {
+  // 1. Fetch course
+  const responseCourse = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${ACCESS_TOKEN}`
+    },
+  });
 
-    if (!response.ok) {
-      throw new Response("Failed to fetch course", { status: response.status });
-    }
+  const resultCourse = await responseCourse.json(); 
 
-      const result = await response.json();
-      console.log('result of fetch by id:', result);
-      return result
+  // 2. Get first module ID
+  const firstModuleId = resultCourse.modules[0]?.id;
 
-    } catch (error) {
-      console.error("Error:", error);
-      return {error: true, message: "error, couldn't fetch data"}
-    }
+  // 3. Fetch module
+  const responseModule = await fetch(`http://127.0.0.1:8000/api/modules/${firstModuleId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${ACCESS_TOKEN}`
+    },
+  });
+
+  const resultModule = await responseModule.json(); 
+
+  const firstLessonId = resultModule.lessons[0]?.id;
+
+  // 4. Fetch lesson
+  const responseLesson = await fetch(`http://127.0.0.1:8000/api/lessons/${firstLessonId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${ACCESS_TOKEN}`
+    },
+  });
+
+  const resultLesson = await responseLesson.json(); 
+
+  const firstPageId = resultLesson.pages[0]?.id;
+
+  console.log('FETCHING...', {
+    courseData: resultCourse,
+    firstModuleId,
+    firstLessonId,
+    firstPageId
+  });
+
+  return {
+    courseData: resultCourse,
+    firstModuleId,
+    firstLessonId,
+    firstPageId
+  };
 }
+
 
 
 export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it module NUMBER or ID? here - it's ID
@@ -76,3 +110,46 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
     allLessons: lessonsResult 
   }
 }
+
+
+
+
+
+// export async function getFirst_Module_Lesson_PageByCourseId(courseId) {
+//     const responseCourse = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": `Bearer ${ACCESS_TOKEN}`},
+//     });
+//     const firstModuleId = responseCourse.modules[0].id
+
+//     const responseModule = await fetch(`http://127.0.0.1:8000/api/modules/${firstModuleId}`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": `Bearer ${ACCESS_TOKEN}`},
+//     });
+//     const firstLessonId = responseModule.lessons[0].id;
+
+//     const responseLesson = await fetch(`http://127.0.0.1:8000/api/lessons/${firstLessonId}`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": `Bearer ${ACCESS_TOKEN}`},
+//     });
+//     const firstPageId = firstLessonId.pages[0].id
+
+//     const firstLessonData = await responseLesson.json()
+
+//     console.log({
+//       firstLessonData: firstLessonData,
+//       firstPageId: firstPageId
+//     });
+
+//     return {
+//       firstLessonData: firstLessonData,
+//       firstPageId: firstPageId
+//     }
+
+// }

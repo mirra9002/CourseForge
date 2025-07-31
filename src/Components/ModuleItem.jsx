@@ -31,7 +31,7 @@ export function ModuleItem({ title, content, isOpen, onClick, backgroundColor, h
         }}
         className={`${textColor} text-sm`}
       >
-        <div className="mt-2 pb-2">{content}</div>
+        <div className="mt-2 pb-2"><i>{content}</i></div>
       </div>
     </div>
   );

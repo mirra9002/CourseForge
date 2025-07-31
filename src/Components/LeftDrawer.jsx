@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
 
-export default function LeftDrawer({ data, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
+export default function LeftDrawer({ handleClick, data, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -14,6 +14,7 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
     });
     drawer.show();
   }, []);
+
 
   
 
@@ -37,9 +38,12 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
           <ModuleItem
             key={index}
             title={lesson.title}
-            content={lesson.content}
+            content={lessonTypePrettyPrinter(lesson.type)}
             isOpen={openIndex === index}
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
+            onClick={() => {
+              setOpenIndex(openIndex === index ? null : index)
+              handleClick(index-1)
+            }}
             backgroundColor={moduleBackgoundColor}
             hoverBackgroundColor={moduleHoverBackgroundColor}
             textHeaderColor={moduleHeaderTextColor}
@@ -49,4 +53,11 @@ export default function LeftDrawer({ data, width, backgroundColor, textColor, mo
       </div>
     </div>
   );
+}
+
+function lessonTypePrettyPrinter(type){
+  if(type === 'QUIZ') return 'Quiz'
+  if(type === 'LESSON') return 'Theory'
+  if(type === 'CODE') return 'Code Practice'
+  return ''
 }

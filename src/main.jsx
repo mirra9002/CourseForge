@@ -33,6 +33,7 @@ const router = createBrowserRouter([{
   element: <Courseinfo />,
     loader: async ({ params }) => {
       const data = await getCourseById(params.courseId);
+      // const data = await getFirst_Module_Lesson_PageByCourseId(params.courseId)
       if (data.error) {
         throw new Response("Failed to load", { status: 500 });
       }
@@ -53,10 +54,11 @@ const router = createBrowserRouter([{
 //   errorElement: <Notfound/>
 // },
 {
-  path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageNumber',
+  path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId',
   element: <Lesson />,
   loader: async ({params}) => {
     const data = await getLessonAndAllLessonsById(params.lessonId)
+    //const data = await getFirst_Module_Lesson_PageByCourseId(params.courseId)
     if (data.error) {
       throw new Response("Failed to load", { status: 500 });
     }

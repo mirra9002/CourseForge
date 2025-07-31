@@ -7,8 +7,11 @@ import { useLoaderData } from 'react-router-dom';
 import LoadingBar from '../Components/LoadingBar'
 export default function Courseinfo() {
     const params = useParams()
-    const courseData = useLoaderData();
-    const firstModuleId = courseData.modules[0].id
+    const data = useLoaderData();
+    const courseData = data.courseData
+    const firstModuleId = data.firstModuleId;
+    const firstLessonId = data.firstLessonId;
+    const firstPageId = data.firstPageId
     
     console.log('courseDATA', courseData);
     return(<>
@@ -18,6 +21,8 @@ export default function Courseinfo() {
     <div className='mt-20 ml-25 mr-25'>   
         <CourseInfoHeading
           firstModuleId={firstModuleId} 
+          firstLessonId = {firstLessonId}
+          firstPageId = {firstPageId}
           courseId={params.courseId}
           title={courseData.title}
           description={courseData.description} />
@@ -34,7 +39,7 @@ export default function Courseinfo() {
     </>)
 }
 
-function CourseInfoHeading({courseId, title, description="to be done...", firstModuleId}) {
+function CourseInfoHeading({courseId, title, description="to be done...", firstModuleId,firstLessonId, firstPageId}) {
 
     const navigate = useNavigate()
     function navigateToPage(location){
@@ -42,7 +47,7 @@ function CourseInfoHeading({courseId, title, description="to be done...", firstM
     }
 
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
-      <button type="button" onClick={() => navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${1}/page/${1}`)} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
+      <button type="button" onClick={() => navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
       <p class="text-lg mb-3 mt-10  text-gray-500 dark:text-gray-400">{description}</p>
     </>)
 }

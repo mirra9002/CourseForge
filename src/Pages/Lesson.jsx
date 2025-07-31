@@ -1,25 +1,48 @@
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 
 export default function Lesson() {
+    const params = useParams()
+    const navigate = useNavigate()
     const data = useLoaderData();
     const lessonData = data.currentLesson;
-    const lessonPageData = data.currentLesson.pages[0];
+    const currentPageId = Number(params.pageId)
+    const lessonPageData = data.currentLesson.pages.find(p => p.id === currentPageId);
 
     
-    console.log('data', data);
-    console.log('lessonData', lessonData);
+    const currentPageIndex = lessonData.pages.findIndex(p => p.id === currentPageId);
+    const nextPage = lessonData.pages[currentPageIndex + 1];
+    const nextPageId = nextPage ? nextPage.id : null;
+    console.log('currentPagId', currentPageId);
+    console.log('nextPag', nextPage);
+    console.log('nextPageId', nextPageId);
+
+
+    console.log(currentPageIndex);
+    console.log('LESSON', data);
 
     const lessonPageContent = lessonPageData.data;
+
+    function handleClickNextPage(nextPageId) {
+        
+        navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
+    }
+
+    function handleClickLeftDrawer(index) {
+        const nextPage = lessonData.pages[index + 1];
+        const nextPageId = nextPage ? nextPage.id : null;
+        navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
+    }
 
   return (
     <>  
         <Navbar></Navbar>
         {lessonPageData ?
          <><LeftDrawer 
+            handleClick = {handleClickLeftDrawer}
             data = {lessonData}
             width={"w-80"}
             backgroundColor={'bg-gray-100'} 
@@ -27,7 +50,7 @@ export default function Lesson() {
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
          />
-        <MainArea title={lessonPageData.title} data={lessonPageContent} />
+        <MainArea title={lessonPageData.title} data={lessonPageContent} nextPageId={nextPageId} handleClick={handleClickNextPage}/>
         </> 
         : <p>Loading...</p>}
         
@@ -40,7 +63,7 @@ export default function Lesson() {
 function CodeBlock(props){
     return(<>
     
-    <div className="relative mt-2 mb-4 block max-w-sm p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <div className="relative mt-2 mb-4 block max-w-full p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         <code className="text-sm whitespace-pre">{props.data}</code>
       </div>
 
@@ -84,6 +107,8 @@ function Image(props){
 function MainArea(props){
     const title=props.title
     const data = props.data
+    const nextPageId = props.nextPageId
+    const handleClick = props.handleClick
 
     return(<>
     
@@ -102,7 +127,7 @@ function MainArea(props){
 
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={() => handleClick(nextPageId)} type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Далі
             <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
