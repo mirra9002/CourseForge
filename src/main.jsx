@@ -41,18 +41,7 @@ const router = createBrowserRouter([{
     },
   errorElement: <Notfound/>
 },
-// {
-//   path: '/course/:courseId/lesson/:lessonId',
-//   element: <Lesson />,
-//   loader: async ({params}) => {
-//     const data = await getLessonAndAllLessonsById(params.lessonId)
-//     if (data.error) {
-//       throw new Response("Failed to load", { status: 500 });
-//     }
-//     return data;
-//   },
-//   errorElement: <Notfound/>
-// },
+
 {
   path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId',
   element: <Lesson />,

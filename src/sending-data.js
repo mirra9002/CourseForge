@@ -1,4 +1,4 @@
-const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzY2MTc1LCJpYXQiOjE3NTM5NTE3NzUsImp0aSI6ImI0NzE3MTE3MWI2NDRlZThhNTA1NGEwOTFlYmNkYzFlIiwidXNlcl9pZCI6Ijk2YTI2Nzg0LTYyNGItNDU1NC04ODQzLTAxOTI2YzJmNjM1MCJ9.YKq6kah9uAtLcNkM4e2IV_NrGmAVl2wsmJpsUzyv8ic'
+const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2Mjg3OTUxLCJpYXQiOjE3NTQ0NzM1NTEsImp0aSI6ImE1OTlmMjBmMWIxYTQ4NTg5NjIwNzllM2JmYjk4N2FjIiwidXNlcl9pZCI6Ijk2YTI2Nzg0LTYyNGItNDU1NC04ODQzLTAxOTI2YzJmNjM1MCJ9.x6aTCUL9txcI2VGuwzdpXeOgicu5d6KZZ20FpPpDTek'
 export async function sendUserRegister(userInput) {
 
     const response = await fetch(`http://127.0.0.1:8000/api/users/`, {
@@ -8,7 +8,9 @@ export async function sendUserRegister(userInput) {
         "Authorization": `Bearer ${ACCESS_TOKEN}`},
        body: JSON.stringify(userInput)
     });
-    return await response.json();
+    const data = await response.json();
+    console.log(data);
+    return data
 }
 
 export async function sendUserLogin(userInput) {

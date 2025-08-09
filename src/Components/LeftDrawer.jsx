@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
 
-export default function LeftDrawer({ handleClick, data, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
+export default function LeftDrawer({ handleClick, data, moduleSelectedBackgroundColor, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function LeftDrawer({ handleClick, data, width, backgroundColor, 
               setOpenIndex(openIndex === index ? null : index)
               handleClick(index-1)
             }}
-            backgroundColor={moduleBackgoundColor}
+            backgroundColor={openIndex === index ? moduleSelectedBackgroundColor : moduleBackgoundColor}
             hoverBackgroundColor={moduleHoverBackgroundColor}
             textHeaderColor={moduleHeaderTextColor}
             textColor={moduleTextColor}

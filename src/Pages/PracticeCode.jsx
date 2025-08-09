@@ -50,7 +50,7 @@ export default function PracticeCode() {
   <>
     <Navbar />
     
-    <LeftDrawer
+    {/* <LeftDrawer
       width={"w-64"}
       backgroundColor={"bg-[#1e1e1e]"}
       textColor={"text-gray-300"}
@@ -58,13 +58,13 @@ export default function PracticeCode() {
       moduleHoverBackgroundColor={"hover:bg-[#3a3a3a]"}
       moduleHeaderTextColor={"text-white"}
       moduleTextColor={"text-gray-300"}
-    />
+    /> */}
 
 
-    <div className="flex bg-[#1e1e1e] w-full h-screen p-4 gap-2 pl-64">
+    <div className="flex bg-[#1e1e1e] w-full h-screen p-2 gap-2 pl-82">
 
       {/* Left: Editor */}
-      <div className="flex flex-col flex-1 gap-2">
+      <div className="flex flex-col flex-1 gap-2 ">
         <div className="border-2 border-gray-600 overflow-hidden h-full">
           {/* File tab header with Run button aligned right */}
           <div className="flex justify-between items-center bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">

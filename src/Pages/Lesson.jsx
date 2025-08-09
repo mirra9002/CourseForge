@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
+import PracticeCode from './PracticeCode';
+
 
 export default function Lesson() {
     const params = useParams()
@@ -11,24 +13,16 @@ export default function Lesson() {
     const lessonData = data.currentLesson;
     const currentPageId = Number(params.pageId)
     const lessonPageData = data.currentLesson.pages.find(p => p.id === currentPageId);
-
     
     const currentPageIndex = lessonData.pages.findIndex(p => p.id === currentPageId);
     const nextPage = lessonData.pages[currentPageIndex + 1];
     const nextPageId = nextPage ? nextPage.id : null;
-    console.log('currentPagId', currentPageId);
-    console.log('nextPag', nextPage);
-    console.log('nextPageId', nextPageId);
-
-
-    console.log(currentPageIndex);
-    console.log('LESSON', data);
 
     const lessonPageContent = lessonPageData.data;
 
     function handleClickNextPage(nextPageId) {
-        
-        navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
+        const finalPageId = nextPageId === null ? currentPageId : nextPageId;
+        navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${finalPageId}`)
     }
 
     function handleClickLeftDrawer(index) {
@@ -41,7 +35,9 @@ export default function Lesson() {
     <>  
         <Navbar></Navbar>
         {lessonPageData ?
+         
          <><LeftDrawer 
+            currentPageIndex={currentPageIndex}
             handleClick = {handleClickLeftDrawer}
             data = {lessonData}
             width={"w-80"}
@@ -49,9 +45,16 @@ export default function Lesson() {
             textColor={"text-gray-700"} 
             moduleBackgoundColor={"bg-gray-200"} 
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
+            moduleSelectedBackgroundColor={"bg-gray-300"}
          />
-        <MainArea title={lessonPageData.title} data={lessonPageContent} nextPageId={nextPageId} handleClick={handleClickNextPage}/>
+         {data.currentLesson.pages[currentPageIndex].type === 'LESSON' ? 
+         <PracticeCode/>
+         : <PracticeCode/>
+        }
+        
         </> 
+        
+        
         : <p>Loading...</p>}
         
         
@@ -124,6 +127,7 @@ function MainArea(props){
                 return <CodeBlock key={index} data={element.content}/>
             }
             })}
+        <Test/>
 
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
@@ -137,4 +141,55 @@ function MainArea(props){
     </div>
     </>)
     
+}
+
+function Test({task}){
+    
+    const [answer, setAnswer] = useState({
+        userAnswered: false,
+        isCorrect: false
+    })
+    task = {
+            question: "What is JSX?",
+            type: "MULTISELECT / SINGLESELECT",
+            variants: [
+                {
+                    option: "This is just some radom letter",
+                    isCorrect: false
+                },
+                {
+                    option: "This is a React second-name",
+                    isCorrect: false
+                },
+                {
+                    option: "This is a special syntax extension to JavaScript",
+                    isCorrect: true
+                },
+            ]
+        }
+
+    return (
+        <div className="space-y-6 mt-8 ">
+            <div  className="p-4 border border-gray-300 rounded-md shadow-sm">
+                    <h3 className="font-semibold text-gray-800 mb-3">{task.question}</h3>
+                    <ul className="space-y-2">
+                        {task.variants.map((variant, i) => (
+                            <li key={i} >
+                                <label className="inline-flex items-center space-x-2">
+                                    <input
+                                        type="radio"
+                                        name={`question`}
+                                        className="form-radio text-blue-600 cursor-pointer"
+                                    />
+                                    <span>{variant.option}</span>
+                                </label>
+                            </li>
+                        ))}
+                    </ul>
+                    <button type="button" class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Check answer
+                </button>
+                </div>
+        </div>
+    );
 }

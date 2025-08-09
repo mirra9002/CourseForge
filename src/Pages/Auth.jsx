@@ -1,7 +1,7 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
 import Navbar from "../Components/NavBar";
-import {sendUserRegister} from '../sending-data.js'
+import {sendUserRegister, sendUserLogin} from '../sending-data.js'
 import { useNavigate } from 'react-router-dom';
 export default function Auth() {
 
@@ -36,9 +36,7 @@ function Register({input, handleChange}) {
         setSuccess(null)
         const response = await sendUserRegister(data)
         if(response.id){
-            setTimeout(() => {
-               navigate('/')
-            }, 1000)
+            
         } else {
         }
     }
@@ -93,10 +91,9 @@ function LogIn({input, handleChange}) {
         setError(null)
         setSuccess(null)
         const response = await sendUserLogin(data)
-        if(response.id){
-            setTimeout(() => {
-               navigate('/')
-            }, 1000)
+        if(response.access){
+            console.log(response.access);
+            document.cookie=`accessToken=${response.access}; refreshToken=${response.refresh}`
         } else {
         }
     }
