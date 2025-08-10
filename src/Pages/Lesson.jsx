@@ -4,21 +4,26 @@ import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import PracticeCode from './PracticeCode';
-
+import { theoryPage } from '../mock-data';
+import CustomMarkdownEditor from '../Components/CustomMarkdownEditor';
 
 export default function Lesson() {
     const params = useParams()
     const navigate = useNavigate()
     const data = useLoaderData();
     const lessonData = data.currentLesson;
+   
+    console.log('lesson data', lessonData);
     const currentPageId = Number(params.pageId)
-    const lessonPageData = data.currentLesson.pages.find(p => p.id === currentPageId);
-    
+    //const lessonPageData = data.currentLesson.pages.find(p => p.id === currentPageId);
+    const lessonPageData = theoryPage
     const currentPageIndex = lessonData.pages.findIndex(p => p.id === currentPageId);
     const nextPage = lessonData.pages[currentPageIndex + 1];
     const nextPageId = nextPage ? nextPage.id : null;
 
-    const lessonPageContent = lessonPageData.data;
+    const lessonPageContent = lessonPageData.data
+
+
 
     function handleClickNextPage(nextPageId) {
         const finalPageId = nextPageId === null ? currentPageId : nextPageId;
@@ -36,7 +41,27 @@ export default function Lesson() {
         <Navbar></Navbar>
         {lessonPageData ?
          
+         <>
+         {data.currentLesson.pages[currentPageIndex].type !== 'LESSON' ? 
+         <>
+         <LeftDrawer 
+            isLesson={false}
+            currentPageIndex={currentPageIndex}
+            handleClick = {handleClickLeftDrawer}
+            data = {lessonData}
+            width={"w-80"}
+            backgroundColor={'bg-[#1e1e1e]'} 
+            textColor={"text-gray-100"} 
+            moduleBackgoundColor={"bg-[#303030]"} 
+            moduleHoverBackgroundColor={"hover:bg-[#404040]"} 
+            moduleSelectedBackgroundColor={"bg-[#404040]"}
+            moduleHeaderTextColor={"text-gray-100"}
+         />
+         <PracticeCode data={lessonPageContent}/></>
+
+         : 
          <><LeftDrawer 
+            isLesson={true}
             currentPageIndex={currentPageIndex}
             handleClick = {handleClickLeftDrawer}
             data = {lessonData}
@@ -47,9 +72,7 @@ export default function Lesson() {
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
             moduleSelectedBackgroundColor={"bg-gray-300"}
          />
-         {data.currentLesson.pages[currentPageIndex].type === 'LESSON' ? 
-         <PracticeCode/>
-         : <PracticeCode/>
+         <MainArea title={lessonPageData.title} data={lessonPageContent} nextPageId={nextPageId} handleClick={handleClickNextPage}/></>
         }
         
         </> 
@@ -82,28 +105,24 @@ function Text(props){
     return(<p class="mb-4 text-gray-500 dark:text-gray-400">{props.data}</p>)
 }
 
-function List(props){
-    return(<>
-    
-    <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Password requirements:</h2>
-    <ul class="mb-4 max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
-        <li>
-            At least 10 characters (and up to 100 characters)
-        </li>
-        <li>
-            At least one lowercase character
-        </li>
-        <li>
-            Inclusion of at least one special character, e.g., ! @ # ?
-        </li>
-    </ul>
 
-
-    </>)
+function Image({ data }) {
+  return <img src={data.src} alt={data.alt || ""} className="rounded-md"/>;
 }
 
-function Image(props){
-
+function Video({ data }) {
+  return (
+    <figure style={{ width: "100%", margin: 0 }}>
+      <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: "0.5rem",}}>
+        <video src={data.url} poster={data.poster || ""} controls style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", borderRadius: "0.5rem", }}/>
+      </div>
+      {data.caption && (
+        <figcaption style={{fontSize: "0.875rem", color: "#666", marginTop: "0.5rem" }}>
+          {data.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
 }
 
 
@@ -118,7 +137,7 @@ function MainArea(props){
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading title={title}></SmallHeading>
         
-        {data.map((element, index) => { 
+        {/* {data.map((element, index) => { 
             if(element.type === 'HEADING'){
                 return <SmallHeading key={index} data={element.content}/>
             } else if(element.type === 'TEXT') {
@@ -127,7 +146,19 @@ function MainArea(props){
                 return <CodeBlock key={index} data={element.content}/>
             }
             })}
-        <Test/>
+        <Test/> */}
+    
+        {data.map((element, index) => {
+        return (
+            <div key={index} className="mb-5"> 
+                {element.type === "MD" && (<CustomMarkdownEditor data={element.content} />)}
+                {element.type === "IMAGE" && <Image data={element} />}
+                {element.type === "CODE" && <CodeBlock data={element.content} />}
+                {element.type === "VIDEO" && <Video data={element}/>}
+            </div>
+            );
+        })}
+        
 
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">

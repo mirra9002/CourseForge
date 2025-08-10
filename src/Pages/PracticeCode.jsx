@@ -2,66 +2,35 @@ import { useState } from "react";
 import Editor from "@monaco-editor/react";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
-export default function PracticeCode() {
+import { mockData } from "../mock-data";
+import CustomMarkdownEditor from "../Components/CustomMarkdownEditor";
+export default function PracticeCode({data}) {
   const [userCode, setUserCode] = useState("");
   const [output, setOutput] = useState("")
   const [showSuccess, setShowSuccess] = useState(false);
 
-  
-  function runCode() {
-    const logs = [];
-    const originalLog = console.log;
-    let usedConsoleLog = false;
-
-    console.log = (...args) => {
-      usedConsoleLog = true;
-      logs.push(args.join(" "));
-    };
-
-    try {
-      const result = eval(userCode);
-      if (result !== undefined && !usedConsoleLog) {
-        logs.push(String(result));
-      }
-      } catch (err) {
-        logs.push("Error: " + err.message);
-      }
-
-      console.log = originalLog;
-      
-      let userOutput = logs.join("\n")
-      setOutput(userOutput);
-      const success = checkOutput(userOutput, 'Hello World!')
-      
-      if (success) {
-        setShowSuccess(true);
-      }
-      
-  }
 
   function clearConsole() {
     setOutput('')
   }
 
 
+  const taskDescription = mockData.data.task_description
 
-
+  
   return (
   <>
-    <Navbar />
-    
-    {/* <LeftDrawer
-      width={"w-64"}
-      backgroundColor={"bg-[#1e1e1e]"}
-      textColor={"text-gray-300"}
-      moduleBackgoundColor={"bg-[#2b2b2b]"}
-      moduleHoverBackgroundColor={"hover:bg-[#3a3a3a]"}
-      moduleHeaderTextColor={"text-white"}
-      moduleTextColor={"text-gray-300"}
-    /> */}
 
+    <div className="flex bg-[#1e1e1e] w-full h-screen p-2 gap-2 pl-16">
 
-    <div className="flex bg-[#1e1e1e] w-full h-screen p-2 gap-2 pl-82">
+      <div className="flex flex-col w-100 border-2 border-gray-600 bg-[#1e1e1e] overflow-auto">
+        <div className="bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">
+          <span className="inline-block">Task</span>
+        </div>
+        <div className="p-4 text-gray-200 text-sm" >
+          <CustomMarkdownEditor data={taskDescription} className='markdown'/>
+        </div>
+    </div>
 
       {/* Left: Editor */}
       <div className="flex flex-col flex-1 gap-2 ">
@@ -70,10 +39,9 @@ export default function PracticeCode() {
           <div className="flex justify-between items-center bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">
             <span className="inline-block "> main.js</span>
             <button
-              onClick={runCode}
+
               type="button"
-              className="w-[100px] text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            >
+              className="w-[100px] text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-md text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
               Run
             </button>
           </div>
@@ -81,7 +49,7 @@ export default function PracticeCode() {
             height="100%"
             theme="vs-dark"
             defaultLanguage="javascript"
-            defaultValue="// Ваш код ось тут..."
+            defaultValue={mockData.data.languages.JS}
             options={{
               fontSize: 16,
               padding: {
@@ -102,7 +70,7 @@ export default function PracticeCode() {
       </div>
 
       {/* Right: Console */}
-      <div className="flex flex-col w-1/2 gap-2">
+      <div className="flex flex-col w-1/3 gap-2">
         <div className="border-2 border-gray-600 overflow-hidden flex-1">
           {/* Console tab header with Clear button aligned right */}
           <div className="flex justify-between items-center bg-[#252526] text-white text-sm px-4 py-2 border-b border-gray-700">
@@ -164,5 +132,4 @@ function SuccessMessage() {
 </div>
 </>)
 }
-
 
