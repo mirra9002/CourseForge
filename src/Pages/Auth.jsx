@@ -34,11 +34,20 @@ function Register({input, handleChange}) {
     const sendData = async (data) => {
         setError(null)
         setSuccess(null)
-        const response = await sendUserRegister(data)
-        if(response.id){
-            
+        const responseRegister = await sendUserRegister(data)
+        if(responseRegister){
+            console.log('Register data sent', responseRegister);
+            const responseLogin = await sendUserLogin({username: data.username, password: data.password})
+            if (responseLogin) {
+                console.log('Login data sent', responseLogin);
+            } else {
+                console.log('error in login');
+            }
         } else {
+            console.log('error in register');
         }
+        
+       
     }
 
 
@@ -86,15 +95,14 @@ function LogIn({input, handleChange}) {
     const [success, setSuccess] = useState(null)
 
 
-    // YET TO BE DONE!!!
     const sendData = async (data) => {
         setError(null)
         setSuccess(null)
-        const response = await sendUserLogin(data)
-        if(response.access){
-            console.log(response.access);
-            document.cookie=`accessToken=${response.access}; refreshToken=${response.refresh}`
+        const responseLogin = await sendUserLogin({username: data.username, password: data.password})
+        if (responseLogin) {
+            console.log('Login data sent', responseLogin);
         } else {
+            console.log('error in login');
         }
     }
 
@@ -106,8 +114,8 @@ function LogIn({input, handleChange}) {
     
         <form class="space-y-6">
         <div>
-            <input onChange={(e) => handleChange(e)} value={input.email || ''} name="email"
-            type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email or username" required />
+            <input onChange={(e) => handleChange(e)} value={input.username || ''} name="username"
+            type="username" id="username" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email or username" required />
         </div>
         <div>
             <input onChange={(e) => handleChange(e)} value={input.password || ''} name="password"
