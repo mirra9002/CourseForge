@@ -1,7 +1,10 @@
 import {useState, useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
 import Navbar from "../Components/NavBar";
+import AuthInit from '../State/AuthInit';
 import {sendUserRegister, sendUserLogin} from '../sending-data.js'
+import { useDispatch } from "react-redux";
+import { setLoading, setUser, setError } from "../State/authSlice"; 
 import { useNavigate } from 'react-router-dom';
 export default function Auth() {
 
@@ -18,6 +21,7 @@ export default function Auth() {
     }
     return (
     <>
+    <AuthInit/>
     <Navbar/>
         {isRegister === 1 ? <Register input={input} handleChange={handleChange}/> 
         : <LogIn input={input} handleChange={handleChange}/>}
@@ -26,6 +30,7 @@ export default function Auth() {
 }
 
 function Register({input, handleChange}) {
+    const dispatch = useDispatch();
     const navigate = useNavigate()
 
     const [error, setError] = useState(null)
@@ -40,6 +45,11 @@ function Register({input, handleChange}) {
             const responseLogin = await sendUserLogin({username: data.username, password: data.password})
             if (responseLogin) {
                 console.log('Login data sent', responseLogin);
+                dispatch(setLoading());
+                const res = await fetch("/api/me", { credentials: "include" });
+                const me = res.ok ? await res.json() : null;
+                dispatch(setUser(me));
+                console.log('dispatch register', dispatch);
             } else {
                 console.log('error in login');
             }
@@ -52,6 +62,7 @@ function Register({input, handleChange}) {
 
 
     return  <>
+    <AuthInit />
     <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
     <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
         <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Register</h2>
@@ -90,6 +101,7 @@ function Register({input, handleChange}) {
 }
 
 function LogIn({input, handleChange}) {
+    const dispatch = useDispatch();
     const navigate = useNavigate()
     const [error, setError] = useState(null)
     const [success, setSuccess] = useState(null)
@@ -101,6 +113,8 @@ function LogIn({input, handleChange}) {
         const responseLogin = await sendUserLogin({username: data.username, password: data.password})
         if (responseLogin) {
             console.log('Login data sent', responseLogin);
+            dispatch(setUser({username: data.username}));
+            
         } else {
             console.log('error in login');
         }

@@ -82,19 +82,6 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
     });
 
   const lessonResult = await response.json()
-  // const moduleNumber = lessonResult.module
-  // console.log(moduleNumber);
-
-
-  // const Course = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Authorization": `Bearer ${ACCESS_TOKEN}`},
-  //   });
-  // const courseResults = await responseLessons.json()
-  // const moduleId = courseResults.modules[moduleNumber]
-
   const moduleId = lessonResult.module
 
   const responseLessons = await fetch(`http://127.0.0.1:8000/api/modules/${moduleId}`, {
@@ -113,43 +100,9 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
 
 
 
-
-
-// export async function getFirst_Module_Lesson_PageByCourseId(courseId) {
-//     const responseCourse = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": `Bearer ${ACCESS_TOKEN}`},
-//     });
-//     const firstModuleId = responseCourse.modules[0].id
-
-//     const responseModule = await fetch(`http://127.0.0.1:8000/api/modules/${firstModuleId}`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": `Bearer ${ACCESS_TOKEN}`},
-//     });
-//     const firstLessonId = responseModule.lessons[0].id;
-
-//     const responseLesson = await fetch(`http://127.0.0.1:8000/api/lessons/${firstLessonId}`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": `Bearer ${ACCESS_TOKEN}`},
-//     });
-//     const firstPageId = firstLessonId.pages[0].id
-
-//     const firstLessonData = await responseLesson.json()
-
-//     console.log({
-//       firstLessonData: firstLessonData,
-//       firstPageId: firstPageId
-//     });
-
-//     return {
-//       firstLessonData: firstLessonData,
-//       firstPageId: firstPageId
-//     }
-
-// }
+export async function getMe() {
+  const res = await fetch("http://127.0.0.1:8000/api/auth/users/me", { credentials: "include" });
+  const data = res.ok ? await res.json() : null;
+  console.log("[fetching-data] data", data);
+  return data
+}

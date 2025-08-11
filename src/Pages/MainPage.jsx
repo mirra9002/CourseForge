@@ -1,4 +1,5 @@
 import { useLoaderData } from 'react-router-dom';
+import AuthInit from '../State/AuthInit';
 import Navbar from '../Components/NavBar'
 import Topsearcharea from '../Components/TopSearchArea'
 import Topcourses from '../Components/TopCourses'
@@ -8,9 +9,11 @@ import Footer from '../Components/Footer'
 
 export default function Mainpage() {
 
-  const courses = useLoaderData();
-
+  //const data = useLoaderData();
+  //const courses = data.data
+  const courses = useLoaderData()
     return <>
+    <AuthInit />
       <Navbar/>
         <Topsearcharea courses={courses}/>
         <Topcourses courses={courses} />

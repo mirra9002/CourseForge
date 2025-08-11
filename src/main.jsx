@@ -2,7 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import 'nprogress/nprogress.css';
-
+import { Provider } from 'react-redux';
+import { store } from './State/store.js';
 
 import './index.css'
 import App from './App.jsx'
@@ -15,13 +16,14 @@ import PracticeCode from './Pages/PracticeCode.jsx';
 import Auth from './Pages/Auth.jsx';
 import SearchedCourses from './Pages/SearchedCourses.jsx';
 
-import { getAllCourses, getCourseById, getLessonAndAllLessonsById } from './fetching-data.js';
+import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe } from './fetching-data.js';
 
 const router = createBrowserRouter([{
     path: '/',
     element: <Mainpage />,
     loader: async () => {
       const data = await getAllCourses()
+
       if (data.error){
         throw new Response("Failed to load", { status: 500 });
       }
@@ -94,6 +96,8 @@ const router = createBrowserRouter([{
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <Provider store={store}>
     <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )
