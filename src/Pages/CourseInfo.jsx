@@ -4,6 +4,7 @@ import Skeleton from '../Components/Skeleton'
 import { useParams, useNavigate} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import { useLoaderData } from 'react-router-dom';
+import AuthInit from "../State/AuthInit";
 import LoadingBar from '../Components/LoadingBar'
 export default function Courseinfo() {
     const params = useParams()
@@ -15,7 +16,10 @@ export default function Courseinfo() {
     
     console.log('courseDATA', courseData);
     return(<>
+    <AuthInit/>
+    <div className='bg-gray-50 min-h-screen'>
     <Navbar/>
+    
     <LoadingBar/>
     {courseData ? 
     <div className='mt-20 ml-25 mr-25'>   
@@ -34,8 +38,9 @@ export default function Courseinfo() {
           />
         <Footer/>
       </div>
+      
        : <Skeleton/>}
-    
+    </div>
     </>)
 }
 

@@ -15,12 +15,26 @@ import Lesson from './Pages/Lesson.jsx'
 import PracticeCode from './Pages/PracticeCode.jsx';
 import Auth from './Pages/Auth.jsx';
 import SearchedCourses from './Pages/SearchedCourses.jsx';
-
+import Me from './Pages/Me.jsx';
+import MyCourses from './Pages/MyCourses.jsx';
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe } from './fetching-data.js';
 
 const router = createBrowserRouter([{
     path: '/',
     element: <Mainpage />,
+    loader: async () => {
+      const data = await getAllCourses()
+
+      if (data.error){
+        throw new Response("Failed to load", { status: 500 });
+      }
+      return data
+    },
+    errorElement: <Notfound />,
+  },
+  {
+    path: '/me',
+    element: <Me />,
     loader: async () => {
       const data = await getAllCourses()
 
@@ -89,6 +103,11 @@ const router = createBrowserRouter([{
     },
   errorElement: <Notfound/>
 },
+{
+  path: "/mycourses",
+  element: <MyCourses/>,
+  errorElement: <Notfound/>
+}
 ],
 {
   fallbackElement: <div>Loading page...</div>  

@@ -50,6 +50,9 @@ function Register({input, handleChange}) {
                 const me = res.ok ? await res.json() : null;
                 dispatch(setUser(me));
                 console.log('dispatch register', dispatch);
+                setTimeout(() => {
+                    navigate('/')
+                }, 1000)
             } else {
                 console.log('error in login');
             }
@@ -114,7 +117,9 @@ function LogIn({input, handleChange}) {
         if (responseLogin) {
             console.log('Login data sent', responseLogin);
             dispatch(setUser({username: data.username}));
-            
+            setTimeout(() => {
+                    navigate('/')
+                }, 1000)
         } else {
             console.log('error in login');
         }

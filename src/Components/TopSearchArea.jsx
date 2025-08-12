@@ -27,7 +27,7 @@ export default function Topsearcharea({courses}){
         <h1 class="text-5xl font-extrabold mb-4">Почніть навчання вже зараз!</h1>
         <p class="text-2xl mb-8">Знайдіть щось для себе</p>
 
-        <form class="max-w-md mx-auto" onSubmit={handleSubmit}>
+        <form class="max-w-md mx-auto pb-32" onSubmit={handleSubmit}>
             <div class="relative">
             <input
                 onChange={(e) => handleChange(e)} value={input || ''} name="input"
@@ -44,5 +44,6 @@ export default function Topsearcharea({courses}){
             </button>
             </div>
         </form>
+        
     </section></>)
 }

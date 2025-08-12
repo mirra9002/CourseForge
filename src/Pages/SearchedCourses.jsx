@@ -96,7 +96,7 @@ function CoursesSearchArea({query, handleSubmit}) {
 </>
 }
 
-function CourseDetailedCard({course, handleClick}){
+export function CourseDetailedCard({course, handleClick}){
     const courseId = course.id
     console.log(courseId);
   return (

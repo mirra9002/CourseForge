@@ -1,9 +1,14 @@
 // src/state/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  user: null,                         // {id, name, ...} or null
-  status: 'loading',                  // 'loading' | 'authed' | 'guest'
+const persisted = (() => {
+  try { return JSON.parse(localStorage.getItem('authState')) || null; }
+  catch { return null; }
+})();
+
+const initialState = persisted ?? {
+  user: null,
+  status: 'guest',    // sensible default instead of 'loading'
   error: null,
 };
 
@@ -18,7 +23,7 @@ const authSlice = createSlice({
       state.error = null;
     },
     setError(state, action) { state.error = action.payload; state.status = 'guest'; },
-    resetAuth() { return initialState; },
+    resetAuth() { return { user:null, status:'guest', error:null }; },
   },
 });
 

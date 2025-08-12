@@ -1,25 +1,33 @@
 // src/state/AuthInit.jsx
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser, setError } from "./authSlice";
-import { getMe } from "../fetching-data";
+
 export default function AuthInit() {
   const dispatch = useDispatch();
+  const { status } = useSelector(s => s.auth); // restored from storage
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadUser() {
       try {
-        dispatch(setLoading());
+        // Only show loading spinner if we’re not already authed
+        if (status !== 'authed') dispatch(setLoading());
+
         const res = await fetch("http://127.0.0.1:8000/api/auth/users/me", { credentials: "include" });
         const data = res.ok ? await res.json() : null;
-        console.log("[AUTHINIT] data", data);
-        dispatch(setUser(data));
+        if (!cancelled) dispatch(setUser(data));
       } catch (err) {
-        dispatch(setError(err.message));
+        if (!cancelled) dispatch(setError(err.message));
       }
     }
-    loadUser();
-  }, []);
 
-  return <></>; // no UI
+    // If we’re already authed (restored), you can skip the call or still refresh it:
+    loadUser();
+    return () => { cancelled = true; };
+  }, [dispatch]); // intentionally not depending on status to avoid loops
+
+  return null;
 }
+
