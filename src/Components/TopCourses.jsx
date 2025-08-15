@@ -1,33 +1,45 @@
 import { useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function Topcourses({courses}) {
 
     if(!courses) return <></>
-    console.log(courses);
-    
-    const topThreeCourses = [...courses.results].sort((a, b) => b.rating - a.rating).slice(0, 3); // ask Tim to do this on
-    console.log('top three coursese', topThreeCourses);
-    return(<>
-    <br/>
-    <br/>
-    <h2 class="text-4xl font-bold text-center mt-5 mb-5 text-[#0b1d3a]">Найкращі курси</h2>
-    <div class="relative flex items-center justify-center mt-10">
-        <ScrollArrowButton direction="right" isActive={true}/>
-        <div class="flex flex-wrap justify-center gap-6 ">
-            <TopCourseCardComponent data={topThreeCourses[0]}/>
-            <TopCourseCardComponent data={topThreeCourses[1]}/>
-            <TopCourseCardComponent data={topThreeCourses[2]}/>
-        </div>
-        <ScrollArrowButton direction="left" isActive={false}/>
 
-    </div></>)
+    const [currentPage, setCurrentPage] = useState(1)
+    const startIndex = (currentPage - 1) * 3; 
+    const lastIndex = startIndex + 3;
+
+    console.log('[TOPCOURSES]', courses, startIndex, lastIndex);
+    
+    const sortedCoursesByRating = [...courses.results].sort((a, b) => b.rating - a.rating)
+    const currentPageSortedCourses = sortedCoursesByRating.slice(startIndex, lastIndex)
+
+    return(<>
+    <div className="mt-20">
+        <h2 class="text-4xl font-bold text-center mt-5 mb-5 text-[#0b1d3a]">Найкращі курси</h2>
+        <div className="relative mt-10 flex items-center justify-center">
+            <ScrollArrowButton direction="right" isActive={lastIndex < sortedCoursesByRating.length} onClick={() => setCurrentPage((p) => p + 1)}/>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[1fr] items-stretch w-full max-w-7xl px-6">
+                {currentPageSortedCourses.map((c) => (
+                <TopCourseCardComponent data={c} key={c.id} />
+                ))}
+            </div>
+
+            <ScrollArrowButton direction="left" isActive={currentPage !== 1} onClick={() => setCurrentPage((p) => p - 1)}/>
+        </div>
+    </div>
+    </>)
 }
+
+
 function ScrollArrowButton(props) {
   const isLeft = props.direction === 'left';
   const isActive = props.isActive
+  const handleClick = props.onClick
+
   return (
-    <button type="button" className={`cursor-pointer mr-25 ml-25 absolute ${isLeft ? 'left-0' : 'right-0'} z-10 ${isActive ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-500 hover:bg-gray-600"} text-white font-medium rounded-full p-3 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500`}>
+    <button onClick={handleClick} type="button" disabled={!isActive} className={`mr-25 ml-25 absolute ${isLeft ? 'left-0' : 'right-0'} z-10 ${isActive ? "bg-blue-700 hover:bg-blue-800 cursor-pointer" : "bg-gray-300 "} text-white font-medium rounded-full p-3 shadow-md focus:outline-none focus:ring-2`}>
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         {isLeft ? (<path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />) : (
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />)}
@@ -81,11 +93,12 @@ function TopCourseCardComponent({data}) {
     return(
     <div
         onClick={() => navigate(`/courseinfo/${courseId}`)}
-        className="cursor-pointer block max-w-sm p-16 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
+        className="cursor-pointer block max-w-sm py-16 px-12 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors duration-300">
         <TopCourseCardHeading title={courseTitle} info={courseInfo}/>        
         <br/>
         <CourseRatingStars rating={data.rating}/>
     
     </div>)
 }
+
 
