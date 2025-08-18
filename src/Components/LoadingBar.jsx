@@ -6,13 +6,13 @@ import NProgress from 'nprogress';
 export default function LoadingBar() {
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (navigation.state === "loading") {
-      NProgress.start();
-    } else {
-      NProgress.done();
-    }
-  }, [navigation.state]);
+  // useEffect(() => {
+  //   if (navigation.state === "loading") {
+  //     NProgress.start();
+  //   } else {
+  //     NProgress.done();
+  //   }
+  // }, [navigation.state]);
 
   return null;
 }

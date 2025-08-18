@@ -39,7 +39,10 @@ export default function Navbar() {
                 <span className="font-medium text-gray-600 dark:text-gray-300">
                 {userInitials || null}
                 </span>
+                
             </div>
+
+
                 {/* Dropdown menu */}
                 <div id="userDropdown" className={`absolute right-0 top-full  mt-2 z-10 w-62 bg-white dark:bg-gray-700 divide-y divide-gray-100 dark:divide-gray-600 rounded-lg shadow-sm transform transition-all duration-200 ease-out
                     ${profileMenuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-2 invisible"}`}
@@ -70,7 +73,7 @@ export default function Navbar() {
             </>
              : 
             <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                <button onClick={() => havigateToPage('/auth/1')} type="button" class="cursor-pointer text-white bg-blue-700  hover:bg-blue-700  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-[#1f7ef2] dark:hover:bg-[#1f7ef2] dark:focus:ring-blue-800">Sign up</button>
+                <button onClick={() => havigateToPage('/auth/1')} type="button" class="cursor-pointer text-white bg-blue-700  hover:bg-blue-700  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 text-center dark:bg-[#1f7ef2] dark:hover:bg-[#1f7ef2] dark:focus:ring-blue-800">Sign up</button>
                 <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">

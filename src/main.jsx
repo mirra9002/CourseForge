@@ -17,6 +17,7 @@ import Auth from './Pages/Auth.jsx';
 import SearchedCourses from './Pages/SearchedCourses.jsx';
 import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
+import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe } from './fetching-data.js';
 
 const router = createBrowserRouter([{
@@ -107,6 +108,11 @@ const router = createBrowserRouter([{
   path: "/mycourses",
   element: <MyCourses/>,
   errorElement: <Notfound/>
+}, 
+{
+  path: "/create/course/:courseId",
+  element: <CreateCourseDetails/>,
+  errorElement: <Notfound/>
 }
 ],
 {
@@ -116,6 +122,7 @@ const router = createBrowserRouter([{
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
+
     <RouterProvider router={router} />
     </Provider>
   </StrictMode>,

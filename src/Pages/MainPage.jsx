@@ -5,17 +5,17 @@ import Topsearcharea from '../Components/TopSearchArea'
 import Topcourses from '../Components/TopCourses'
 import CourseFilters from '../Components/CourseFilters'
 import Allcoursessection from '../Components/AllCoursesSection'
+import TopCategories from '../Components/TopCategories';
 import Footer from '../Components/Footer'
 import mascot_course_forge1 from '../assets/mascot_course_forge1.png'
 
 export default function Mainpage() {
 
-  //const data = useLoaderData();
-  //const courses = data.data
+
   const courses = useLoaderData()
     return <>
     <AuthInit />
-    <div className='bg-gray-50 min-h-screen'>
+    <div className='bg-gray-100 min-h-screen '>
       <Navbar/>
         <Topsearcharea courses={courses}/>
         <div className="relative flex justify-center mt-35">
@@ -26,10 +26,9 @@ export default function Mainpage() {
           />
         </div>
         <Topcourses courses={courses} />
-          <h2 class="text-4xl font-bold text-center mt-25 mb-15 text-[#0b1d3a] ">Усі курси</h2>
-          <div class="flex items-center mb-2">
-            <CourseFilters></CourseFilters>
-            <Allcoursessection courses={courses}></Allcoursessection>
+          <h2 class="text-4xl font-bold text-center mt-25 mb-15 text-[#0b1d3a] ">Популярні напрямки</h2>
+          <div class="flex justify-center my-2">
+            <TopCategories/>
           </div>
         <Footer/>
         </div>

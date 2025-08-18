@@ -23,9 +23,12 @@ export default function Auth() {
     <>
     <AuthInit/>
     <Navbar/>
+    <div className='-mt-20'>
         {isRegister === 1 ? <Register input={input} handleChange={handleChange}/> 
         : <LogIn input={input} handleChange={handleChange}/>}
+    </div>
     </>
+    
   );
 }
 
@@ -52,7 +55,7 @@ function Register({input, handleChange}) {
                 console.log('dispatch register', dispatch);
                 setTimeout(() => {
                     navigate('/')
-                }, 1000)
+                }, 500)
             } else {
                 console.log('error in login');
             }
@@ -65,7 +68,7 @@ function Register({input, handleChange}) {
 
 
     return  <>
-    <AuthInit />
+
     <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
     <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
         <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Register</h2>

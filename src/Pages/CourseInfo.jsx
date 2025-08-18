@@ -1,6 +1,6 @@
 import Navbar from '../Components/NavBar'
 import Footer from '../Components/Footer'
-import Skeleton from '../Components/Skeleton'
+import {TextSkeleton} from '../Components/Skeleton'
 import { useParams, useNavigate} from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import { useLoaderData } from 'react-router-dom';
@@ -39,7 +39,7 @@ export default function Courseinfo() {
         <Footer/>
       </div>
       
-       : <Skeleton/>}
+       : <TextSkeleton/>}
     </div>
     </>)
 }

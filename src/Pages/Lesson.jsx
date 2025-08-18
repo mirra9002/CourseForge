@@ -6,6 +6,7 @@ import LeftDrawer from "../Components/LeftDrawer";
 import PracticeCode from './PracticeCode';
 import { theoryPage } from '../mock-data';
 import CustomMarkdownEditor from '../Components/CustomMarkdownEditor';
+import { ImageSkeleton } from '../Components/Skeleton';
 
 export default function Lesson() {
     const params = useParams()
@@ -107,7 +108,13 @@ function Text(props){
 
 
 function Image({ data }) {
-  return <img src={data.src} alt={data.alt || ""} className="rounded-md"/>;
+    const [isLoaded, setIsLoaded] = useState(false)
+
+    return<>
+    {!isLoaded ? <ImageSkeleton/> : <></>}
+    <img onLoad={() => setIsLoaded(true)} src={data.src} alt={data.alt || ""} className="rounded-md"/> 
+    </>
+    
 }
 
 function Video({ data }) {

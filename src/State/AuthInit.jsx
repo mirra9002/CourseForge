@@ -15,7 +15,7 @@ export default function AuthInit() {
         // Only show loading spinner if we’re not already authed
         if (status !== 'authed') dispatch(setLoading());
 
-        const res = await fetch("http://127.0.0.1:8000/api/auth/users/me", { credentials: "include" });
+        const res = await fetch("http://127.0.0.1:8000/api/users/me", { credentials: "include" });
         const data = res.ok ? await res.json() : null;
         if (!cancelled) dispatch(setUser(data));
       } catch (err) {

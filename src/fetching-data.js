@@ -106,3 +106,7 @@ export async function getMe() {
   console.log("[fetching-data] data", data);
   return data
 }
+
+// export async function getMyCourses(userId) {
+//   const res = await fetch('')
+// }

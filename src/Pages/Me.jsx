@@ -6,6 +6,9 @@ import AuthInit from "../State/AuthInit";
 export default function ProfileCard() {
   const [avatar, setAvatar] = useState(null);
   const { user, status } = useSelector(s => s.auth);
+
+  if(status != 'authed') return
+
   console.log('USER', user);
   console.log(user);
   return (
