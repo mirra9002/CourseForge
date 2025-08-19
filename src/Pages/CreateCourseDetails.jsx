@@ -9,7 +9,8 @@ export default function CreateCourseDetails() { // main component
   const stepMap = {
     0: <CourseDetails/>,
     1: <ModulesDetails/>,
-    2: <LessonsDetails/>
+    2: <LessonsDetails/>,
+    3: <PagesDetails/>
   }
 
   console.log(creationStep)
@@ -105,7 +106,7 @@ function ModulesDetails() {
 }
 
 
-function LessonsDetails() {
+function LessonsDetails() { // (3)
   const [modules, setModules] = useState([]);
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("modules_details") || "[]");
@@ -226,5 +227,147 @@ function ModulesList({ modules }) {
         </div>
       </div>
     </>
+  );
+}
+
+function PagesDetails() {
+  const [data, setData] = useState([]); // modules -> lessons
+
+  useEffect(() => {
+    const modules = JSON.parse(localStorage.getItem("modules_details") || "[]");
+    const lessons = JSON.parse(localStorage.getItem("lessons_by_module") || "[]");
+    const data = [];
+    for (let i = 0; i < modules.length; i++) {
+      data.push({ [modules[i]]: lessons[i] });
+    }
+    setData(data);
+  }, []);
+
+  return (
+    <>
+      <h2 className="text-4xl font-bold dark:text-white">Сторінки курсу</h2>
+
+      {/* Дві колонки: зліва дерево/крихти, справа плейсхолдер */}
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-[1.1fr_1.4fr] gap-6 items-start">
+
+        {/* LEFT: як інші компоненти — світла картка, без зайвих відступів вправо */}
+        <div className="rounded-lg border border-slate-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+          <CourseTree />
+          <div className="mt-4">
+            <BreadcrumbStepper module={"Module 1"} lesson={"Lesson 1"} page={"Page 1"} />
+          </div>
+        </div>
+
+        {/* RIGHT: плейсхолдер редактора/контенту сторінки */}
+        <div className="min-h-[420px] rounded-xl border-2 border-dashed border-slate-300 p-6
+                        bg-white/70 dark:bg-slate-900/40 dark:border-slate-600
+                        flex flex-col items-center justify-center text-center">
+          <svg
+            aria-hidden="true"
+            className="w-8 h-8 mb-3 text-slate-400 dark:text-slate-500"
+            viewBox="0 0 24 24" fill="currentColor"
+          >
+            <path d="M4 6h16v2H4V6zm0 5h10v2H4v-2zm0 5h16v2H4v-2z" />
+          </svg>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Плейсхолдер сторінки</h3>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-[36ch]">
+            Тут буде редактор сторінок або попередній перегляд. Оберіть урок зліва, щоб відкрити його вміст.
+          </p>
+
+          {/* Кнопка-заглушка (необов’язково) */}
+          <button
+            type="button"
+            className="mt-4 inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium
+                       bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Створити першу сторінку
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+
+function BreadcrumbStepper({module, lesson, page}) {
+  return<>
+  <ol class="flex items-center w-full space-x-2 text-sm font-medium text-center text-gray-500 rounded-lg dark:text-gray-400 sm:text-base dark:bg-gray-800 dark:border-gray-700 sm:p-4 sm:space-x-4 rtl:space-x-reverse">
+      <li class="flex items-center text-blue-600 dark:text-blue-500">
+          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-blue-600 rounded-full shrink-0 dark:border-blue-500">
+              1
+          </span>
+          {module} 
+          <svg class="w-3 h-3 ms-2 sm:ms-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
+          </svg>
+      </li>
+      <li class="flex items-center">
+          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+              2
+          </span>
+          {lesson}
+          <svg class="w-3 h-3 ms-2 sm:ms-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
+          </svg>
+      </li>
+      <li class="flex items-center">
+          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+              3
+          </span>
+          {page}
+      </li>
+  </ol>
+</>
+}
+
+function CourseTree() {
+  const [courseData, setCourseData] = useState([]);
+const [selectedLesson, setSelectedLesson] = useState(null);
+  useEffect(() => {
+    const modules = JSON.parse(localStorage.getItem("modules_details") || "[]");      // ["Вступ...", "React Hooks...", ...]
+    const lessons  = JSON.parse(localStorage.getItem("lessons_by_module") || "[]");   // [ ['L1','L2'], ['L1',...], ...]
+
+    // Normalize to [{ title, lessons }]
+    const data = modules.map((title, i) => ({
+      title,
+      lessons: Array.isArray(lessons[i]) ? lessons[i] : [],
+    }));
+
+    setCourseData(data);
+  }, []);
+
+  return (
+    <ul className="pl-5 max-w-md space-y-1 text-gray-600 text-lg list-inside dark:text-gray-400 list-none">
+      {courseData.map((mod, i) => (
+        <li key={i} className="mb-2">
+          <span className="font-semibold text-gray-900 dark:text-gray-100">
+            {mod.title}
+          </span>
+
+          {mod.lessons.length > 0 && (
+            <ul className="list-[circle] pl-5 mt-1 space-y-1">
+              {mod.lessons.map((lesson, j) => {
+                const isActive = selectedLesson === `${i}-${j}`;
+                return (
+                  <li
+                    key={j}
+                    onClick={() => setSelectedLesson(`${i}-${j}`)}
+                    className={`cursor-pointer rounded-md px-2 py-1 transition 
+                      ${
+                        isActive
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800"
+                      }`}
+                  >
+                    {lesson}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+
   );
 }
