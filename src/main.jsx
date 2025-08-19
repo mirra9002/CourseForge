@@ -18,7 +18,7 @@ import SearchedCourses from './Pages/SearchedCourses.jsx';
 import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
-import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe } from './fetching-data.js';
+import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses } from './fetching-data.js';
 
 const router = createBrowserRouter([{
     path: '/',
@@ -107,6 +107,13 @@ const router = createBrowserRouter([{
 {
   path: "/mycourses",
   element: <MyCourses/>,
+  loader: async () => {
+    const data = await getMyCourses()
+    if (data.error){
+        throw new Response("Failed to load", { status: 500 });
+      }
+      return data
+  },
   errorElement: <Notfound/>
 }, 
 {

@@ -6,14 +6,26 @@ import {useEffect, useState} from 'react'
 import { useLoaderData } from 'react-router-dom';
 import AuthInit from "../State/AuthInit";
 import LoadingBar from '../Components/LoadingBar'
+import { useSelector } from 'react-redux'
+
+import {enrollUserOnCourse} from '../sending-data'
+
 export default function Courseinfo() {
     const params = useParams()
     const data = useLoaderData();
+    const { user, status } = useSelector(s => s.auth);
+
     const courseData = data.courseData
     const firstModuleId = data.firstModuleId;
     const firstLessonId = data.firstLessonId;
     const firstPageId = data.firstPageId
     
+    async function enrollStudentOnCourse(courseId) {
+      const res = await enrollUserOnCourse(user.id, courseId)
+      console.log('[ENROLLMENT]:', res)
+    }
+
+
     console.log('courseDATA', courseData);
     return(<>
     <AuthInit/>
@@ -24,6 +36,7 @@ export default function Courseinfo() {
     {courseData ? 
     <div className='mt-20 ml-25 mr-25'>   
         <CourseInfoHeading
+          onEnrollClick={(courseId) => enrollStudentOnCourse(courseId)}
           firstModuleId={firstModuleId} 
           firstLessonId = {firstLessonId}
           firstPageId = {firstPageId}
@@ -44,7 +57,7 @@ export default function Courseinfo() {
     </>)
 }
 
-function CourseInfoHeading({courseId, title, description="to be done...", firstModuleId,firstLessonId, firstPageId}) {
+function CourseInfoHeading({onEnrollClick, courseId, title, description="to be done...", firstModuleId,firstLessonId, firstPageId}) {
 
     const navigate = useNavigate()
     function navigateToPage(location){
@@ -52,7 +65,9 @@ function CourseInfoHeading({courseId, title, description="to be done...", firstM
     }
 
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
-      <button type="button" onClick={() => navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
+      <button type="button" onClick={() => {
+        onEnrollClick(courseId)
+        navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
       <p class="text-lg mb-3 mt-10  text-gray-500 dark:text-gray-400">{description}</p>
     </>)
 }

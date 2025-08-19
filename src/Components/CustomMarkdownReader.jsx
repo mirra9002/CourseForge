@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import '../Styles/markdown.css'
-export default function CustomMarkdownEditor({data}) {
+export default function CustomMarkdownReader({data}) {
 
   return <>
     <ReactMarkdown

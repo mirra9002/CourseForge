@@ -107,6 +107,8 @@ export async function getMe() {
   return data
 }
 
-// export async function getMyCourses(userId) {
-//   const res = await fetch('')
-// }
+export async function getMyCourses() {
+  const res = await fetch('http://127.0.0.1:8000/api/courses/enrolled/', {credentials: "include"});
+  const data = res.ok ? await res.json() : null
+  return data
+}

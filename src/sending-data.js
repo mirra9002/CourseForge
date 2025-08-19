@@ -25,3 +25,15 @@ export async function sendUserLogin(userInput) {
     });
     return await response.json();
 }
+
+export async function enrollUserOnCourse(userId, courseId){
+  const response = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        },
+       body: JSON.stringify({"student_id": [userId]}),
+       credentials: "include"
+    });
+    return await response.json();
+}

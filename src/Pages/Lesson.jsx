@@ -5,7 +5,7 @@ import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import PracticeCode from './PracticeCode';
 import { theoryPage } from '../mock-data';
-import CustomMarkdownEditor from '../Components/CustomMarkdownEditor';
+import CustomMarkdownReader from '../Components/CustomMarkdownReader';
 import { ImageSkeleton } from '../Components/Skeleton';
 
 export default function Lesson() {
@@ -158,7 +158,7 @@ function MainArea(props){
         {data.map((element, index) => {
         return (
             <div key={index} className="mb-5"> 
-                {element.type === "MD" && (<CustomMarkdownEditor data={element.content} />)}
+                {element.type === "MD" && (<CustomMarkdownReader data={element.content} />)}
                 {element.type === "IMAGE" && <Image data={element} />}
                 {element.type === "CODE" && <CodeBlock data={element.content} />}
                 {element.type === "VIDEO" && <Video data={element}/>}

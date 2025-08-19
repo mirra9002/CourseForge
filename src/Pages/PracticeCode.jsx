@@ -3,7 +3,7 @@ import Editor from "@monaco-editor/react";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import { mockData } from "../mock-data";
-import CustomMarkdownEditor from "../Components/CustomMarkdownEditor";
+import CustomMarkdownReader from "../Components/CustomMarkdownReader";
 export default function PracticeCode({data}) {
   const [userCode, setUserCode] = useState("");
   const [output, setOutput] = useState("")
@@ -28,7 +28,7 @@ export default function PracticeCode({data}) {
           <span className="inline-block">Task</span>
         </div>
         <div className="p-4 text-gray-200 text-sm" >
-          <CustomMarkdownEditor data={taskDescription} className='markdown'/>
+          <CustomMarkdownReader data={taskDescription} className='markdown'/>
         </div>
     </div>
 

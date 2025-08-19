@@ -1,4 +1,4 @@
-import { useState, useEffect  } from "react";
+import React, { useState, useEffect  } from "react";
 import NavBar from '../Components/NavBar'
 import AuthInit from '../State/AuthInit'
 import DragAndDrop from "../Components/DragAndDrop";
@@ -54,7 +54,7 @@ function CourseDetails() { // (1)
     console.log(courseDetailsData)
     
     return<>
-    <h2 class="text-4xl font-bold dark:text-white">Дані про курс</h2>
+    <h2 class="text-4xl font-bold dark:text-white">Основна інформація про курс</h2>
     <p className="text-3xs mb-6 text-gray-600 max-w-200">Вкажіть основні відомості про ваш курс: назву, короткий опис та категорію. Це допоможе студентам зрозуміти, про що цей курс і чого очікувати від навчання.</p>
     <form class="max-w-xl w-3xl mx-auto mr-72">
          <div class="mb-5">
@@ -92,6 +92,7 @@ function ModulesDetails() {
 
       <div className="max-w-xl w-3xl mx-auto mr-72">
         <DragAndDrop
+         storedInstanced={"MODULES"}
           initialModules={modules}
           onChange={handleModulesChange}
           addModuleHandleClick={(title, allTitles) => {
@@ -105,11 +106,20 @@ function ModulesDetails() {
 
 
 function LessonsDetails() {
+  const [modules, setModules] = useState([]);
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("modules_details") || "[]");
+    setModules(saved.length ? saved : ["Модуль 1", "Модуль 2"]);
+  }, []);
 
-  return<>
-    <h2 class="text-4xl font-bold dark:text-white">Уроки</h2>
-    <p className="text-3xs mb-6 text-gray-600 max-w-200">Вкажіть основні відомості про ваш курс: назву, короткий опис та категорію. Це допоможе студентам зрозуміти, про що цей курс і чого очікувати від навчання.</p>
+    return<>
+    <h2 className="text-4xl font-bold dark:text-white">Уроки курсу</h2>
+    <p class="text-3xs mb-6 text-gray-600 max-w-200">Уроки — це окремі частини всередині модулів. Вони деталізують навчальний матеріал та дозволяють крок за кроком пояснити кожну тему. У кожному уроці ви зможете додати текст, відео, завдання чи інші інтерактивні елементи. Додаючи уроки, ви формуєте логічну послідовність навчання для студентів</p>
     
+    <h3 className="text-xl font-bold dark:text-white mb-4">Додайти уроки до кожного модуля</h3>
+    <div className="max-w-xl w-5xl mx-auto mr-72">
+      <ModulesList modules={modules}/>
+    </div>
     </>
 }
 
@@ -126,7 +136,7 @@ function CourseCreationSteps({handleStepChange}) { // main left drawer for cours
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-64 border-r border-gray-200 bg-white p-4">
+      <aside className="w-64 -ml-35 border-r border-gray-200 bg-white p-4">
         <h2 className="text-lg font-semibold mb-4">Сплануйте курс</h2>
         <ul className="space-y-2">
           {steps.map((step, index) => (
@@ -159,3 +169,62 @@ function DropDown({onSelectedCategory, selectedValue}) {
 </>
 }
 
+
+function ModulesList({ modules }) {
+  const [selectedModule, setSelectedModule] = useState(0);
+  const [lessonsByModule, setLessonsByModule] = useState({}); // { [moduleIndex]: string[] }
+
+  // Load from LS and ensure defaults per module
+  useEffect(() => {
+    const savedMap = JSON.parse(localStorage.getItem("lessons_by_module") || "{}");
+    const withDefaults = { ...savedMap };
+    modules.forEach((_, idx) => {
+      if (!Array.isArray(withDefaults[idx])) {
+        withDefaults[idx] = ["Урок 1", "Урок 2"];
+      }
+    });
+    setLessonsByModule(withDefaults);
+  }, [modules]);
+
+  const currentLessons = lessonsByModule[selectedModule] || [];
+
+  const persist = (nextLessons) => {
+    const nextMap = { ...lessonsByModule, [selectedModule]: nextLessons };
+    setLessonsByModule(nextMap);
+    localStorage.setItem("lessons_by_module", JSON.stringify(nextMap));
+  };
+
+  return (
+    <>
+      <div className="md:flex">
+        {/* Left: modules list */}
+        <ul className="flex-column space-y space-y-4 text-sm font-medium text-gray-500 md:me-4 mb-4 md:mb-0">
+          {modules.map((module, idx) => (
+            <li key={idx}>
+              <a
+                onClick={() => setSelectedModule(idx)}
+                className={`transition max-w-100 w-60 cursor-pointer inline-block px-4 py-3 border-1 border-gray-400 ${
+                  selectedModule === idx
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-white text-gray-500 hover:bg-gray-100"
+                } rounded-lg`}
+              >
+                {module.length<=40 ? module : module.substring(0,40)+"..."}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Right: lessons for the selected module */}
+        <div className="p-4 -mr-45 max-w-150 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
+          <DragAndDrop
+            storedInstanced={"LESSONS"}
+            initialModules={currentLessons}
+            onChange={(titles) => persist(titles)}
+            addModuleHandleClick={(title, allTitles) => persist(allTitles)}
+          />
+        </div>
+      </div>
+    </>
+  );
+}

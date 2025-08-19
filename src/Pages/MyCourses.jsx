@@ -1,17 +1,13 @@
-// src/Pages/MyCourses.jsx
-import { useMemo } from "react";
 import AuthInit from "../State/AuthInit";
 import Navbar from "../Components/NavBar";
+import { useLoaderData } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function MyCourses() {
-  // minimal mock data to render something
-  const courses = useMemo(
-    () => [
-      { id: 1, track: "Професія Python developer", title: "Python Basics", progress: 1 },
-      { id: 2, track: "Професія Frontend developer", title: "React Fundamentals", progress: 34 },
-    ],
-    []
-  );
+  const navigate = useNavigate()
+  const data = useLoaderData()
+  const courses = data.results
+  console.log('my courses:', data)
 
   return (
     <>
@@ -47,7 +43,7 @@ export default function MyCourses() {
           {/* Empty state (shows when list is empty) */}
           {courses.length === 0 && (
             <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-600">
-              Тут поки що порожньо. Додайте свій перший курс.
+              Тут поки що порожньо. <a className="underline text-blue-600 cursor-pointer" onClick={() => navigate('/search')}>Додайте свій перший курс.</a>
             </div>
           )}
         </div>

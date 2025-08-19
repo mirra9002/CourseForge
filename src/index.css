@@ -3,6 +3,7 @@
 @import "flowbite/src/themes/default";
 @source "../node_modules/flowbite";
 @import "nprogress/nprogress.css";
+@plugin "flowbite-typography";
 #nprogress .bar {
   background: #3b82f6 !important; /* Tailwind blue-500 */
   height: 2px;
