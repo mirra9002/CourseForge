@@ -13,7 +13,7 @@ export default function ProfileCard() {
   console.log(user);
   return (
     <>
-    <AuthInit/>
+    {/* <AuthInit/> */}
     <div className="bg-gray-100 min-h-screen">
     <Navbar/>
     

@@ -20,6 +20,7 @@ import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses } from './fetching-data.js';
 
+
 const router = createBrowserRouter([{
     path: '/',
     element: <Mainpage />,
@@ -129,8 +130,9 @@ const router = createBrowserRouter([{
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-
-    <RouterProvider router={router} />
+      <App>
+        <RouterProvider router={router} />
+      </App>  
     </Provider>
   </StrictMode>,
 )

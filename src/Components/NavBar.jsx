@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux"; 
 import {useState, useEffect} from 'react'
 import course_forge_test_logo from '../assets/course-forge-test-logo.png'
 import icon_user_black100 from '../assets/icon_user_black100.png'
@@ -9,19 +8,27 @@ import icon_settings_black100 from '../assets/icon_settings_black100.png'
 import icon_messages_black100 from '../assets/icon_messages_black100.png'
 import icon_logout_black100 from '../assets/icon_logout_black100.png'
 
-
+import { useSelector, useDispatch } from "react-redux";
+// import { setLoading, setError, setUser,resetAuth } from "../State/authSlice";
 
 export default function Navbar() {
+    const { user, status } = useSelector(s => s.auth);
+    console.log("[NAVBAR] Redux state:", { user, status });
+
     const navigate = useNavigate();
     function havigateToPage(location){
         navigate(location)
     }
 
+    function LogOut() {
+        // console.log('clicked logout');
+        // setLoading()
+
+        // waiting for backend...
+    }
+
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
 
-
-    const { user, status } = useSelector(s => s.auth);
-    console.log("[NAVBAR] Redux state:", { user, status });
     const userInitials = user?.username ? user.username.slice(0, 2).toUpperCase() : null;
     return(<>
   
@@ -66,7 +73,8 @@ export default function Navbar() {
                         </li>
                        </ul>
                     <div className="py-1">
-                        <a className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Log out</a>
+                        <a onClick={LogOut} 
+                        className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Log out</a>
                     </div>
                 </div>
             </div>

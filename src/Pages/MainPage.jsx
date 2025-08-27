@@ -14,7 +14,7 @@ export default function Mainpage() {
 
   const courses = useLoaderData()
     return <>
-    <AuthInit />
+    {/* <AuthInit /> */}
     <div className='bg-gray-100 min-h-screen '>
       <Navbar/>
         <Topsearcharea courses={courses}/>

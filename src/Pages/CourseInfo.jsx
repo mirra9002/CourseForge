@@ -28,7 +28,7 @@ export default function Courseinfo() {
 
     console.log('courseDATA', courseData);
     return(<>
-    <AuthInit/>
+    {/* <AuthInit/> */}
     <div className='bg-gray-50 min-h-screen'>
     <Navbar/>
     

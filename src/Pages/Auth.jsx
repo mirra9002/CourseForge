@@ -3,14 +3,19 @@ import { useLoaderData } from 'react-router-dom';
 import Navbar from "../Components/NavBar";
 import AuthInit from '../State/AuthInit';
 import {sendUserRegister, sendUserLogin} from '../sending-data.js'
-import { useDispatch } from "react-redux";
-import { setLoading, setUser, setError } from "../State/authSlice"; 
+
 import { useNavigate } from 'react-router-dom';
+
+// import { setLoading, setUser, setError } from "../State/authSlice"; 
+import { useSelector, useDispatch } from "react-redux";
+import {login, logout} from '../State/authSlice.js'
+
+
 export default function Auth() {
 
-    // 0 -> login; 1 -> register
-
+    const dispatch = useDispatch()
     const isRegister = useLoaderData() 
+
     const [input, setInput] = useState({})
     const handleChange = (e) => {
         const {name, value} = e.target
@@ -19,113 +24,118 @@ export default function Auth() {
             [name]: value
         }))
     }
+    
+    function handleLogin(userData) {
+        dispatch(login(userData))
+    }
+
+    function handleRegister(userData) {
+        dispatch(login(userData))
+    }
+
+
     return (
     <>
-    <AuthInit/>
     <Navbar/>
     <div className='-mt-20'>
-        {isRegister === 1 ? <Register input={input} handleChange={handleChange}/> 
-        : <LogIn input={input} handleChange={handleChange}/>}
+        {isRegister === 1 ? 
+        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)}/> :
+        <LogIn input={input} handleChange={handleChange} loginUser={(data) => handleLogin(data)}/>}
     </div>
     </>
     
   );
 }
 
-function Register({input, handleChange}) {
-    const dispatch = useDispatch();
+function Register({input, handleChange, registerUser}) {
+
     const navigate = useNavigate()
 
     const [error, setError] = useState(null)
     const [success, setSuccess] = useState(null)
 
-    const sendData = async (data) => {
+    async function sendData(data) {
         setError(null)
         setSuccess(null)
+        
         const responseRegister = await sendUserRegister(data)
-        if(responseRegister){
-            console.log('Register data sent', responseRegister);
-            const responseLogin = await sendUserLogin({username: data.username, password: data.password})
-            if (responseLogin) {
-                console.log('Login data sent', responseLogin);
-                dispatch(setLoading());
-                const res = await fetch("/api/me", { credentials: "include" });
-                const me = res.ok ? await res.json() : null;
-                dispatch(setUser(me));
-                console.log('dispatch register', dispatch);
-                setTimeout(() => {
-                    navigate('/')
-                }, 500)
-            } else {
-                console.log('error in login');
-            }
-        } else {
-            console.log('error in register');
+        if(!responseRegister) {
+            setError(true)
+            return null
+        }
+
+        const responseLogin = await sendUserLogin({username: data.username, password: data.password})
+        if(!responseLogin) {
+            setError(true)
+            return null
         }
         
-       
+        const res = await fetch("/api/me", { credentials: "include" });
+        const me = res.ok ? await res.json() : null;
+
+        setError(false)
+        registerUser(me)
+
     }
 
 
     return  <>
-
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-    <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
-        <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Register</h2>
-    
-        <form class="space-y-6">
+        <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+        <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
+            <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Register</h2>
+        
+            <form class="space-y-6">
+                <div>
+                <input 
+                    onChange={(e) => handleChange(e)} value={input.username || ''} name="username"
+                    type="username" id="username" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required />
+            </div>
             <div>
-            <input 
-                onChange={(e) => handleChange(e)} value={input.username || ''} name="username"
-                type="username" id="username" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" required />
+                <input 
+                    onChange={(e) => handleChange(e)} value={input.email || ''} name="email"
+                    type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email" required />
+            </div>
+            <div>
+                <input 
+                    onChange={(e) => handleChange(e)} value={input.password || ''} name="password"
+                    type="password" id="password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password" required />
+            </div>
+            <div>
+                <input 
+                    onChange={(e) => handleChange(e)} value={input.re_password || ''} name="re_password"
+                    type="password" id="re_password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Repeat password" required />
+            </div>
+            <div class="flex items-start">
+                <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Already have an account? <a href="#" onClick={(e)=> {e.preventDefault(); navigate('/auth/0')}} class="text-blue-600 hover:underline dark:text-blue-500">Log In</a></label>
+            </div>
+            {error && <p className="text-red-500 text-sm">Invalid credentials!</p>}
+            {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
+            <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register</button>
+            </form>
         </div>
-        <div>
-            <input 
-                onChange={(e) => handleChange(e)} value={input.email || ''} name="email"
-                type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email" required />
         </div>
-        <div>
-            <input 
-                onChange={(e) => handleChange(e)} value={input.password || ''} name="password"
-                type="password" id="password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password" required />
-        </div>
-        <div>
-            <input 
-                onChange={(e) => handleChange(e)} value={input.re_password || ''} name="re_password"
-                type="password" id="re_password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Repeat password" required />
-        </div>
-        <div class="flex items-start">
-            <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Already have an account? <a href="#" onClick={(e)=> {e.preventDefault(); navigate('/auth/0')}} class="text-blue-600 hover:underline dark:text-blue-500">Log In</a></label>
-        </div>
-        {error && <p className="text-red-500 text-sm">Invalid credentials!</p>}
-        {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
-        <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register</button>
-        </form>
-    </div>
-    </div>
     </>
 }
 
-function LogIn({input, handleChange}) {
-    const dispatch = useDispatch();
+function LogIn({input, handleChange, loginUser}) {
+    
     const navigate = useNavigate()
     const [error, setError] = useState(null)
     const [success, setSuccess] = useState(null)
 
 
-    const sendData = async (data) => {
+    async function sendData(data){
         setError(null)
         setSuccess(null)
-        const responseLogin = await sendUserLogin({username: data.username, password: data.password})
-        if (responseLogin) {
-            console.log('Login data sent', responseLogin);
-            dispatch(setUser({username: data.username}));
-            setTimeout(() => {
-                    navigate('/')
-                }, 1000)
-        } else {
-            console.log('error in login');
+        const me = await sendUserLogin({username: data.username, password: data.password})
+        
+        if(!me) {
+            setError(true)
+            return null
         }
+
+        setError(false)
+        loginUser(me)
     }
 
     

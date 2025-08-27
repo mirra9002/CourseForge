@@ -16,7 +16,7 @@ export default function CreateCourseDetails() { // main component
   console.log(creationStep)
   return (
     <>
-    <AuthInit/>
+    {/* <AuthInit/> */}
     <NavBar/>
     <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
       <CourseCreationSteps handleStepChange={(idx) => setCreationStep(idx)}/>

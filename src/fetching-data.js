@@ -5,6 +5,7 @@ export async function getAllCourses() {
     try {
       const response = await fetch(`${SERVER_URL}/api/courses/discover`, {
       method: "GET",
+      credentials: 'include',
       headers: { "Content-Type": "application/json"},
     });
       const result = await response.json();
@@ -19,6 +20,7 @@ export async function getCourseById(courseId) {
   // 1. Fetch course
   const responseCourse = await fetch(`${SERVER_URL}/api/courses/${courseId}`, {
     method: "GET",
+    credentials: 'include',
     headers: { "Content-Type": "application/json"},
   });
 
@@ -30,6 +32,7 @@ export async function getCourseById(courseId) {
   // 3. Fetch module
   const responseModule = await fetch(`${SERVER_URL}/api/modules/${firstModuleId}`, {
     method: "GET",
+    credentials: 'include',
     headers: { "Content-Type": "application/json"},
   });
 
@@ -40,6 +43,7 @@ export async function getCourseById(courseId) {
   // 4. Fetch lesson
   const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${firstLessonId}`, {
     method: "GET",
+    credentials: 'include',
     headers: { "Content-Type": "application/json"},
   });
 
@@ -67,6 +71,7 @@ export async function getCourseById(courseId) {
 export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it module NUMBER or ID? here - it's ID
   const response = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
       method: "GET",
+      credentials: 'include',
       headers: { "Content-Type": "application/json"},
     });
 
@@ -75,6 +80,7 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
 
   const responseLessons = await fetch(`${SERVER_URL}/api/modules/${moduleId}`, {
       method: "GET",
+      credentials: 'include',
       headers: { "Content-Type": "application/json"},
     });
   const lessonsResult = await responseLessons.json()
@@ -88,14 +94,14 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
 
 
 export async function getMe() {
-  const res = await fetch("${SERVER_URL}/api/auth/users/me", { credentials: "include" });
+  const res = await fetch(`${SERVER_URL}/api/users/me/`, { credentials: "include" });
   const data = res.ok ? await res.json() : null;
   console.log("[fetching-data] data", data);
   return data
 }
 
 export async function getMyCourses() {
-  const res = await fetch('${SERVER_URL}/api/courses/enrolled/', {credentials: "include"});
+  const res = await fetch(`${SERVER_URL}/api/courses/enrolled/`, {credentials: "include"});
   const data = res.ok ? await res.json() : null
   return data
 }
