@@ -1,7 +1,8 @@
 const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU2Mjg3OTUxLCJpYXQiOjE3NTQ0NzM1NTEsImp0aSI6ImE1OTlmMjBmMWIxYTQ4NTg5NjIwNzllM2JmYjk4N2FjIiwidXNlcl9pZCI6Ijk2YTI2Nzg0LTYyNGItNDU1NC04ODQzLTAxOTI2YzJmNjM1MCJ9.x6aTCUL9txcI2VGuwzdpXeOgicu5d6KZZ20FpPpDTek'
+import {SERVER_URL} from '../dev_data.js'
 export async function sendUserRegister(userInput) {
 
-    const response = await fetch(`http://127.0.0.1:8000/api/auth/users/`, {
+    const response = await fetch(`${SERVER_URL}/api/users/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -15,7 +16,7 @@ export async function sendUserRegister(userInput) {
 
 export async function sendUserLogin(userInput) {
 
-    const response = await fetch(`http://127.0.0.1:8000/api/users/auth/login/`, {
+    const response = await fetch(`${SERVER_URL}/api/users/auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +28,7 @@ export async function sendUserLogin(userInput) {
 }
 
 export async function enrollUserOnCourse(userId, courseId){
-  const response = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
+  const response = await fetch(`${SERVER_URL}/api/courses/${courseId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -27,6 +27,7 @@
     "@tiptap/pm": "^3.2.0",
     "@tiptap/react": "^3.2.0",
     "@tiptap/starter-kit": "^3.2.0",
+    "dotenv": "^17.2.1",
     "flowbite": "^3.1.2",
     "flowbite-react": "^0.11.9",
     "flowbite-typography": "^1.0.5",

@@ -1,11 +1,11 @@
 const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzY2MTc1LCJpYXQiOjE3NTM5NTE3NzUsImp0aSI6ImI0NzE3MTE3MWI2NDRlZThhNTA1NGEwOTFlYmNkYzFlIiwidXNlcl9pZCI6Ijk2YTI2Nzg0LTYyNGItNDU1NC04ODQzLTAxOTI2YzJmNjM1MCJ9.YKq6kah9uAtLcNkM4e2IV_NrGmAVl2wsmJpsUzyv8ic'
+import {SERVER_URL} from '../dev_data.js'
+
 export async function getAllCourses() {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/courses/", {
+      const response = await fetch(`${SERVER_URL}/api/courses/discover`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${ACCESS_TOKEN}`},
+      headers: { "Content-Type": "application/json"},
     });
       const result = await response.json();
       return result
@@ -17,12 +17,9 @@ export async function getAllCourses() {
 
 export async function getCourseById(courseId) {
   // 1. Fetch course
-  const responseCourse = await fetch(`http://127.0.0.1:8000/api/courses/${courseId}`, {
+  const responseCourse = await fetch(`${SERVER_URL}/api/courses/${courseId}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${ACCESS_TOKEN}`
-    },
+    headers: { "Content-Type": "application/json"},
   });
 
   const resultCourse = await responseCourse.json(); 
@@ -31,12 +28,9 @@ export async function getCourseById(courseId) {
   const firstModuleId = resultCourse.modules[0]?.id;
 
   // 3. Fetch module
-  const responseModule = await fetch(`http://127.0.0.1:8000/api/modules/${firstModuleId}`, {
+  const responseModule = await fetch(`${SERVER_URL}/api/modules/${firstModuleId}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${ACCESS_TOKEN}`
-    },
+    headers: { "Content-Type": "application/json"},
   });
 
   const resultModule = await responseModule.json(); 
@@ -44,12 +38,9 @@ export async function getCourseById(courseId) {
   const firstLessonId = resultModule.lessons[0]?.id;
 
   // 4. Fetch lesson
-  const responseLesson = await fetch(`http://127.0.0.1:8000/api/lessons/${firstLessonId}`, {
+  const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${firstLessonId}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${ACCESS_TOKEN}`
-    },
+    headers: { "Content-Type": "application/json"},
   });
 
   const resultLesson = await responseLesson.json(); 
@@ -74,21 +65,17 @@ export async function getCourseById(courseId) {
 
 
 export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it module NUMBER or ID? here - it's ID
-  const response = await fetch(`http://127.0.0.1:8000/api/lessons/${lessonId}`, {
+  const response = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${ACCESS_TOKEN}`},
+      headers: { "Content-Type": "application/json"},
     });
 
   const lessonResult = await response.json()
   const moduleId = lessonResult.module
 
-  const responseLessons = await fetch(`http://127.0.0.1:8000/api/modules/${moduleId}`, {
+  const responseLessons = await fetch(`${SERVER_URL}/api/modules/${moduleId}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${ACCESS_TOKEN}`},
+      headers: { "Content-Type": "application/json"},
     });
   const lessonsResult = await responseLessons.json()
 
@@ -101,14 +88,14 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
 
 
 export async function getMe() {
-  const res = await fetch("http://127.0.0.1:8000/api/auth/users/me", { credentials: "include" });
+  const res = await fetch("${SERVER_URL}/api/auth/users/me", { credentials: "include" });
   const data = res.ok ? await res.json() : null;
   console.log("[fetching-data] data", data);
   return data
 }
 
 export async function getMyCourses() {
-  const res = await fetch('http://127.0.0.1:8000/api/courses/enrolled/', {credentials: "include"});
+  const res = await fetch('${SERVER_URL}/api/courses/enrolled/', {credentials: "include"});
   const data = res.ok ? await res.json() : null
   return data
 }
