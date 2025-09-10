@@ -19,7 +19,9 @@ import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses } from './fetching-data.js';
+import { redirect } from 'react-router-dom';
 
+import { useSelector } from 'react-redux';
 
 const router = createBrowserRouter([{
     path: '/',
@@ -52,7 +54,11 @@ const router = createBrowserRouter([{
   element: <Courseinfo />,
     loader: async ({ params }) => {
       const data = await getCourseById(params.courseId);
-      // const data = await getFirst_Module_Lesson_PageByCourseId(params.courseId)
+      console.log('courseinfo', data);
+      if(data.error && data.message === 'Unauthorized'){
+        return redirect('/auth/1');
+      }
+
       if (data.error) {
         throw new Response("Failed to load", { status: 500 });
       }

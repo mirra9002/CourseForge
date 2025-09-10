@@ -1,8 +1,9 @@
-import { useEffect } from "react"
+import { use, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import {login, logout} from './State/authSlice.js'
 import { SERVER_URL } from "../dev_data"
 import { getMe } from "./fetching-data"
+import { status } from "nprogress"
 function App({children}) {
   
   const dispatch = useDispatch()
@@ -16,7 +17,8 @@ function App({children}) {
         dispatch(logout())
         return
       }
-      dispatch(login(me))
+      const user = {username: me.username, status: 'authed'}
+      dispatch(login(user))
     }
     getUser()
   }, []);

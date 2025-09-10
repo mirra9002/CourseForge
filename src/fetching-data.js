@@ -24,6 +24,12 @@ export async function getCourseById(courseId) {
     headers: { "Content-Type": "application/json"},
   });
 
+  console.log(responseCourse);
+
+  if(responseCourse.status != 200){
+    return {error: true, message: responseCourse.statusText}
+  }
+
   const resultCourse = await responseCourse.json(); 
 
   // 2. Get first module ID
@@ -35,6 +41,8 @@ export async function getCourseById(courseId) {
     credentials: 'include',
     headers: { "Content-Type": "application/json"},
   });
+
+  
 
   const resultModule = await responseModule.json(); 
 
