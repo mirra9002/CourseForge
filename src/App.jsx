@@ -6,22 +6,19 @@ import { getMe } from "./fetching-data"
 function App({children}) {
   
   const dispatch = useDispatch()
-  const {user, status} = useSelector(state => state.auth)
+
   
   
   useEffect(() => {
     async function getUser() {
-      console.log('INSIDE APP', SERVER_URL);
       const me = await getMe()
-      if (!me) {
-        dispatch(logout());
-        return;
+      if(!me){
+        dispatch(logout())
+        return
       }
-      
-      // dispatch(login(me));         // sets status + user
-      console.log('--- App.jsx --- user logged in');
+      dispatch(login(me))
     }
-    getUser();
+    getUser()
   }, []);
 
 
