@@ -18,6 +18,7 @@ function App({children}) {
         return
       }
       const user = {username: me.username, status: 'authed'}
+      console.log('User in App.jsx', user);
       dispatch(login(user))
     }
     getUser()

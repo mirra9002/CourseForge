@@ -5,12 +5,14 @@ export default function Topcourses({courses}) {
 
     if(!courses) return <></>
 
+
     const [currentPage, setCurrentPage] = useState(1)
     const startIndex = (currentPage - 1) * 3; 
     const lastIndex = startIndex + 3;
 
     const sortedCoursesByRating = [...courses.results].sort((a, b) => b.rating - a.rating)
     const currentPageSortedCourses = sortedCoursesByRating.slice(startIndex, lastIndex)
+
 
     return(<>
     <div className="mt-20">

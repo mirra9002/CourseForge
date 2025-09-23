@@ -18,7 +18,7 @@ import SearchedCourses from './Pages/SearchedCourses.jsx';
 import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
-import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses } from './fetching-data.js';
+import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById} from './fetching-data.js';
 import { redirect } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
@@ -71,8 +71,14 @@ const router = createBrowserRouter([{
   path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId',
   element: <Lesson />,
   loader: async ({params}) => {
-    const data = await getLessonAndAllLessonsById(params.lessonId)
-    //const data = await getFirst_Module_Lesson_PageByCourseId(params.courseId)
+    console.log('in loader.........');
+    const lesson = await getLessonById(params.lessonId)
+    const page = await getPageById(params.pageId)
+    const data = {
+      lesson: lesson,
+      page: page
+    }
+    console.log('data in main.jsx', data);
     if (data.error) {
       throw new Response("Failed to load", { status: 500 });
     }

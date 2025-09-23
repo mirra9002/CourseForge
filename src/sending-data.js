@@ -24,11 +24,12 @@ export async function sendUserLogin(userInput) {
        body: JSON.stringify(userInput),
        credentials: "include"
     });
+    console.log('send user logi');
     return await response.json();
 }
 
 export async function enrollUserOnCourse(userId, courseId){
-  const response = await fetch(`${SERVER_URL}/api/courses/${courseId}`, {
+  const response = await fetch(`${SERVER_URL}/api/courses/${courseId}/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -24,7 +24,6 @@ export async function getCourseById(courseId) {
     headers: { "Content-Type": "application/json"},
   });
 
-  console.log(responseCourse);
 
   if(responseCourse.status != 200){
     return {error: true, message: responseCourse.statusText}
@@ -59,13 +58,6 @@ export async function getCourseById(courseId) {
 
   const firstPageId = resultLesson.pages[0]?.id;
 
-  console.log('FETCHING...', {
-    courseData: resultCourse,
-    firstModuleId,
-    firstLessonId,
-    firstPageId
-  });
-
   return {
     courseData: resultCourse,
     firstModuleId,
@@ -99,12 +91,31 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
   }
 }
 
+export async function getPageById(pageId) {
+    const responsePage = await fetch(`${SERVER_URL}/api/pages/${pageId}`, {
+      method: "GET",
+      credentials: 'include',
+      headers: { "Content-Type": "application/json"},
+    });
+    
+    const responseResult = await responsePage.json()
+    return responseResult
+}
+
+export async function getLessonById(lessonId){
+  const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
+      method: "GET",
+      credentials: 'include',
+      headers: { "Content-Type": "application/json"},
+    });
+    return await responseLesson.json()
+    
+}
 
 
 export async function getMe() {
   const res = await fetch(`${SERVER_URL}/api/users/me/`, { credentials: "include" });
   const data = res.ok ? await res.json() : null;
-  console.log("[fetching-data] data", data);
   return data
 }
 

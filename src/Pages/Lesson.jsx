@@ -1,32 +1,36 @@
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import PracticeCode from './PracticeCode';
-import { theoryPage } from '../mock-data';
 import CustomMarkdownReader from '../Components/CustomMarkdownReader';
 import { ImageSkeleton } from '../Components/Skeleton';
+import {getNextPageId, getPrevPageId, getCurrentPageIndex} from '../utils/getPageIdsAndIndexes.js'
 
 export default function Lesson() {
+
     const params = useParams()
     const navigate = useNavigate()
     const data = useLoaderData();
-    const lessonData = data.currentLesson;
-   
-    console.log('lesson data', lessonData);
-    const currentPageId = Number(params.pageId)
-    //const lessonPageData = data.currentLesson.pages.find(p => p.id === currentPageId);
-    const lessonPageData = theoryPage
-    const currentPageIndex = lessonData.pages.findIndex(p => p.id === currentPageId);
-    const nextPage = lessonData.pages[currentPageIndex + 1];
-    const nextPageId = nextPage ? nextPage.id : null;
 
-    const lessonPageContent = lessonPageData.data
+    const lesson = data.lesson 
+    const page = data.page
+    
+    
+    const currentPageId = Number(params.pageId)
+    const nextPageId = getNextPageId(lesson, currentPageId) // next page id or -1 (if this page is the last)
+    // const prevPageId = getPrevPageId(lesson, currentPageId) // prev page id or -1 (if this page is the first)
+    const currentPageIndex = getCurrentPageIndex(lesson, currentPageId)
 
 
 
     function handleClickNextPage(nextPageId) {
+        if(nextPageId === -1){
+            alert('This is the last page in the lesson!')
+            return
+        }
         const finalPageId = nextPageId === null ? currentPageId : nextPageId;
         navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${finalPageId}`)
     }
@@ -40,16 +44,16 @@ export default function Lesson() {
   return (
     <>  
         <Navbar></Navbar>
-        {lessonPageData ?
+        {page ?
          
          <>
-         {data.currentLesson.pages[currentPageIndex].type !== 'LESSON' ? 
+         {page.type !== 'theory' ? 
          <>
          <LeftDrawer 
             isLesson={false}
             currentPageIndex={currentPageIndex}
             handleClick = {handleClickLeftDrawer}
-            data = {lessonData}
+            data = {data}
             width={"w-80"}
             backgroundColor={'bg-[#1e1e1e]'} 
             textColor={"text-gray-100"} 
@@ -58,14 +62,14 @@ export default function Lesson() {
             moduleSelectedBackgroundColor={"bg-[#404040]"}
             moduleHeaderTextColor={"text-gray-100"}
          />
-         <PracticeCode data={lessonPageContent}/></>
+         <PracticeCode data={page.data}/></>
 
          : 
          <><LeftDrawer 
             isLesson={true}
             currentPageIndex={currentPageIndex}
             handleClick = {handleClickLeftDrawer}
-            data = {lessonData}
+            data = {lesson}
             width={"w-80"}
             backgroundColor={'bg-gray-100'} 
             textColor={"text-gray-700"} 
@@ -73,7 +77,7 @@ export default function Lesson() {
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
             moduleSelectedBackgroundColor={"bg-gray-300"}
          />
-         <MainArea title={lessonPageData.title} data={lessonPageContent} nextPageId={nextPageId} handleClick={handleClickNextPage}/></>
+         <MainArea title={data.title} data={page} nextPageId={currentPageId} handleClick={() => handleClickNextPage(nextPageId)}/></>
         }
         
         </> 
@@ -99,11 +103,6 @@ function CodeBlock(props){
 
 function SmallHeading(props){
     return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.data}</h2></>)
-}
-
-function Text(props){
-
-    return(<p class="mb-4 text-gray-500 dark:text-gray-400">{props.data}</p>)
 }
 
 
@@ -134,17 +133,20 @@ function Video({ data }) {
 
 
 function MainArea(props){
-    const title=props.title
-    const data = props.data
-    const nextPageId = props.nextPageId
-    const handleClick = props.handleClick
+    const { title, data, nextPageId, handleClick } = props;
+    const { allTasks, taskById } = useMemo(() => {
+        const list = Array.isArray(data.embedded_tasks) ? data.embedded_tasks : [];
+        const map = new Map(list.map((t, i) => [t.id, { task: t, index: i }]));
+        return { allTasks: list, taskById: map };
+    }, [data.embedded_tasks]);
+
 
     return(<>
     
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading title={title}></SmallHeading>
         
-        {/* {data.map((element, index) => { 
+        {/* {data.data.map((element, index) => { 
             if(element.type === 'HEADING'){
                 return <SmallHeading key={index} data={element.content}/>
             } else if(element.type === 'TEXT') {
@@ -152,16 +154,17 @@ function MainArea(props){
             } else if(element.type === 'CODE'){
                 return <CodeBlock key={index} data={element.content}/>
             }
-            })}
-        <Test/> */}
+            })} */}
+        {/* <Test/> */}
     
-        {data.map((element, index) => {
+        {data.data.map((element, index) => {
         return (
             <div key={index} className="mb-5"> 
                 {element.type === "MD" && (<CustomMarkdownReader data={element.content} />)}
                 {element.type === "IMAGE" && <Image data={element} />}
                 {element.type === "CODE" && <CodeBlock data={element.content} />}
                 {element.type === "VIDEO" && <Video data={element}/>}
+                {element.type === "TASK" && <Task tasks={taskById}/>}
             </div>
             );
         })}
@@ -181,36 +184,19 @@ function MainArea(props){
     
 }
 
-function Test({task}){
+function Task({tasks}){
     
-    const [answer, setAnswer] = useState({
-        userAnswered: false,
-        isCorrect: false
-    })
-    task = {
-            question: "What is JSX?",
-            type: "MULTISELECT / SINGLESELECT",
-            variants: [
-                {
-                    option: "This is just some radom letter",
-                    isCorrect: false
-                },
-                {
-                    option: "This is a React second-name",
-                    isCorrect: false
-                },
-                {
-                    option: "This is a special syntax extension to JavaScript",
-                    isCorrect: true
-                },
-            ]
-        }
-
+    const tasksArr = []
+    for(const task in tasks){
+        tasksArr.push(task)
+        console.log('-->', task);
+    }
     return (
+
         <div className="space-y-6 mt-8 ">
             <div  className="p-4 border border-gray-300 rounded-md shadow-sm">
-                    <h3 className="font-semibold text-gray-800 mb-3">{task.question}</h3>
-                    <ul className="space-y-2">
+                    <h3 className="font-semibold text-gray-800 mb-3">{'as'}</h3>
+                    {/* <ul className="space-y-2">
                         {task.variants.map((variant, i) => (
                             <li key={i} >
                                 <label className="inline-flex items-center space-x-2">
@@ -223,7 +209,7 @@ function Test({task}){
                                 </label>
                             </li>
                         ))}
-                    </ul>
+                    </ul> */}
                     <button type="button" class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Check answer
                 </button>
