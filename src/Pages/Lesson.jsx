@@ -5,9 +5,12 @@ import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import PracticeCode from './PracticeCode';
+import RadioButton from '../Components/RadioButton.jsx';
+import CheckBox from '../Components/CheckBox.jsx';
 import CustomMarkdownReader from '../Components/CustomMarkdownReader';
 import { ImageSkeleton } from '../Components/Skeleton';
 import {getNextPageId, getPrevPageId, getCurrentPageIndex} from '../utils/getPageIdsAndIndexes.js'
+import { areSetsEqual } from '../utils/areSetsEqual.js';
 
 export default function Lesson() {
 
@@ -18,6 +21,8 @@ export default function Lesson() {
     const lesson = data.lesson 
     const page = data.page
     
+    console.log('-- LESSON --', lesson);
+    console.log('-- PAGE --', page);
     
     const currentPageId = Number(params.pageId)
     const nextPageId = getNextPageId(lesson, currentPageId) // next page id or -1 (if this page is the last)
@@ -90,7 +95,6 @@ export default function Lesson() {
   );
 }
 
-
 function CodeBlock(props){
     return(<>
     
@@ -104,7 +108,6 @@ function CodeBlock(props){
 function SmallHeading(props){
     return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.data}</h2></>)
 }
-
 
 function Image({ data }) {
     const [isLoaded, setIsLoaded] = useState(false)
@@ -131,14 +134,9 @@ function Video({ data }) {
   );
 }
 
-
 function MainArea(props){
     const { title, data, nextPageId, handleClick } = props;
-    const { allTasks, taskById } = useMemo(() => {
-        const list = Array.isArray(data.embedded_tasks) ? data.embedded_tasks : [];
-        const map = new Map(list.map((t, i) => [t.id, { task: t, index: i }]));
-        return { allTasks: list, taskById: map };
-    }, [data.embedded_tasks]);
+
 
 
     return(<>
@@ -146,17 +144,6 @@ function MainArea(props){
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading title={title}></SmallHeading>
         
-        {/* {data.data.map((element, index) => { 
-            if(element.type === 'HEADING'){
-                return <SmallHeading key={index} data={element.content}/>
-            } else if(element.type === 'TEXT') {
-                return <Text key={index} data={element.content}/>
-            } else if(element.type === 'CODE'){
-                return <CodeBlock key={index} data={element.content}/>
-            }
-            })} */}
-        {/* <Test/> */}
-    
         {data.data.map((element, index) => {
         return (
             <div key={index} className="mb-5"> 
@@ -164,7 +151,7 @@ function MainArea(props){
                 {element.type === "IMAGE" && <Image data={element} />}
                 {element.type === "CODE" && <CodeBlock data={element.content} />}
                 {element.type === "VIDEO" && <Video data={element}/>}
-                {element.type === "TASK" && <Task tasks={taskById}/>}
+                {element.type === "TASK" && <Task task={element}/>}
             </div>
             );
         })}
@@ -184,36 +171,94 @@ function MainArea(props){
     
 }
 
-function Task({tasks}){
+function Task({task}){
     
-    const tasksArr = []
-    for(const task in tasks){
-        tasksArr.push(task)
-        console.log('-->', task);
+    const [selectedOptions, setSelectedOptions] = useState(new Set())
+    const [isCorrectAnswer, setIsCorrectAnswer] = useState(null)
+
+    const data = task.content
+    const taskType = data.type
+    let variants;
+    let correctAnswers = []
+    if(taskType === 'single' || taskType === 'multi'){
+        variants = data.spec.items[0].options
+        correctAnswers = data.spec.items[0].correct
     }
+
+    useEffect(() => {
+        console.log(selectedOptions, correctAnswers);
+    }, [selectedOptions])
+
+    function handleChangeRadio(e, id) {    
+        if(e.target.checked){
+            setSelectedOptions(new Set([id]))
+        } else {
+            setSelectedOptions(new Set())
+        }
+    }
+
+    function handleChangeCheck(e, id) {  
+        setSelectedOptions(prev => {
+            const newSet = new Set(prev)
+            if(e.target.checked){
+                newSet.add(id);
+            } else {
+                newSet.delete(id);
+            }
+            return newSet
+        })
+    }
+
+
+    function checkAnswers() {
+        var correctAnswersSet;
+        if(taskType === 'single'){
+            correctAnswersSet = new Set(correctAnswers)
+        } else if(taskType === 'multi'){
+            correctAnswersSet = new Set(correctAnswers)
+        }
+        areSetsEqual(correctAnswersSet, selectedOptions) ? setIsCorrectAnswer(true) : setIsCorrectAnswer(false)
+    }
+
     return (
 
         <div className="space-y-6 mt-8 ">
             <div  className="p-4 border border-gray-300 rounded-md shadow-sm">
-                    <h3 className="font-semibold text-gray-800 mb-3">{'as'}</h3>
-                    {/* <ul className="space-y-2">
-                        {task.variants.map((variant, i) => (
-                            <li key={i} >
-                                <label className="inline-flex items-center space-x-2">
-                                    <input
-                                        type="radio"
-                                        name={`question`}
-                                        className="form-radio text-blue-600 cursor-pointer"
-                                    />
-                                    <span>{variant.option}</span>
-                                </label>
-                            </li>
-                        ))}
-                    </ul> */}
-                    <button type="button" class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <h3 className="font-semibold text-gray-800 mb-3">{data.title}</h3>
+                    
+                    {taskType === 'single' ? variants.map(variant => {
+                        return <RadioButton 
+                            key={variant.id} 
+                            title={variant.text}
+                            id={variant.id}
+                            checked={selectedOptions.has(variant.id) } 
+                            onChange={(e) => handleChangeRadio(e, variant.id)}/>
+                    }) : null}
+
+                    {taskType === 'multi' ? variants.map(variant => {
+                        return <CheckBox 
+                            key={variant.id} 
+                            title={variant.text} 
+                            id={variant.id} 
+                            checked={selectedOptions.has(variant.id) } 
+                            onChange={(e) => handleChangeCheck(e, variant.id)}/>
+                    }) : null}
+
+                    {isCorrectAnswer === false ? <SubmitAlert isCorrect={false} boldText={'Incorrect!'} /> : null}
+                    {isCorrectAnswer === true ? <SubmitAlert isCorrect={true} boldText={'Correct!'}/> : null}
+
+                    <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Check answer
                 </button>
                 </div>
         </div>
     );
 }
+
+
+function SubmitAlert({isCorrect, boldText, normalText}) {
+    return <div class={`p-4 mb-4 text-sm ${isCorrect ? "text-green-800 bg-green-50 dark:text-green-400" : "text-red-800 bg-red-50 dark:text-red-400"} rounded-lg  dark:bg-gray-800 `} role="alert">
+        <span class="font-medium">{boldText || ''}</span> {normalText || ''}
+    </div>
+}
+
