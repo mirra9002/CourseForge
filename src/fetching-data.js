@@ -130,3 +130,14 @@ export async function getModuleById(moduleId) {
   const data = res.ok ? await res.json() : null;
   return data
 }
+
+export async function getFirstPageIdInLesson(lessonId) {
+   const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
+      method: "GET",
+      credentials: 'include',
+      headers: { "Content-Type": "application/json"},
+    });
+    const res = await responseLesson.json()
+    const firstPageId = res.pages[0].id
+    return firstPageId
+}

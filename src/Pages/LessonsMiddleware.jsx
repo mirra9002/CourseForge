@@ -1,8 +1,12 @@
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+import {getFirstPageIdInLesson} from '../fetching-data.js'
 import Navbar from '../Components/NavBar';
 export default function LessonsMiddleware() {
 
+  const params = useParams()
+    const navigate = useNavigate()
     const [lessonsCompletion, setLessonsCompletion] = useState({})
     const data = useLoaderData();
     console.log(data);
@@ -22,6 +26,11 @@ export default function LessonsMiddleware() {
         console.log('INSIDE', lessonId, e);
     }
 
+    async function handleGoToLessonClick(lessonId) {
+      const firstPageId = await getFirstPageIdInLesson(lessonId)
+      navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${lessonId}/page/${firstPageId}`)
+    }
+
   return (
     <>
     <Navbar/>
@@ -30,7 +39,7 @@ export default function LessonsMiddleware() {
         <h2 class="pb-5 text-4xl font-bold dark:text-white">{data.title}</h2>
         <h2 class="text-2xl font-normal dark:text-white">{data.description}</h2>
         <ModuleProgressBar progress={totalProgress}/>
-        <LessonsSection lessons={data.lessons} handleChangeLessonCompletion={handleChangeLessonCompletion}/>
+        <LessonsSection lessons={data.lessons} handleChangeLessonCompletion={handleChangeLessonCompletion} handleGoToLessonClick={handleGoToLessonClick}/>
     </div>
       
     </>
@@ -38,7 +47,7 @@ export default function LessonsMiddleware() {
 }
 
 
-function LessonsSection({lessons, handleChangeLessonCompletion}) {
+function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLessonClick}) {
     function handleChange(lessonId, e){
         handleChangeLessonCompletion(lessonId, e)
     }
@@ -48,7 +57,7 @@ function LessonsSection({lessons, handleChangeLessonCompletion}) {
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Уроки в цьому модулі</h5>
         <ol class=" ml-2 relative border-s border-gray-200 dark:border-gray-700 ">
             {lessons.map(lesson => {
-                return <LessonSection key={lesson.id} lesson={lesson} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
+                return <LessonSection handleGoToLessonClick={() => handleGoToLessonClick(lesson.id)} key={lesson.id} lesson={lesson} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
             })}
         </ol>
     </a>
@@ -57,12 +66,13 @@ function LessonsSection({lessons, handleChangeLessonCompletion}) {
 
 }
 
-function LessonSection({lesson, handleChangeLessonCompletion}){
+function LessonSection({lesson, handleChangeLessonCompletion, handleGoToLessonClick}){
     const isCompleted = lesson.progress.percentage >= 99 ? true : false
     function handleChange(lessonId, e) {
         handleChangeLessonCompletion(lessonId, e)
     }
     return(<>
+    <div onClick={() => handleGoToLessonClick(lesson.id)}>
     <li class="mb-10 ms-6  hover:bg-gray-100" >            
       <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
         <IconIsCompleted isCompleted={isCompleted} id={lesson.id} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
@@ -70,7 +80,8 @@ function LessonSection({lesson, handleChangeLessonCompletion}){
      
       <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{lesson.title} </h3>
       <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{lesson.description}</p>
-    </li></>)
+    </li>
+    </div></>)
 }
 
 function ModuleProgressBar({progress="0"}) {

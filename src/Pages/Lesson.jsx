@@ -39,17 +39,13 @@ export default function Lesson() {
     }
 
     function handleClickLeftDrawer(pageId) {
-        if(pageId != currentPageId){
-            const pageIdx = getCurrentPageIndex(lesson, pageId)
-            const nextPageId = getNextPageId(lesson, pageIdx)
-            if(nextPageId != -1){
-                navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
-            }
+        if(pageId === currentPageId) return
+        const pageIdx = getCurrentPageIndex(lesson, pageId)
+        // const nextPageId = getNextPageId(lesson, pageIdx)
+        if(pageId != -1){
+            console.log('inside level 3');
+            navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${pageId}`)
         }
-        //const nextPage = lesson.pages[index + 1];
-        //const nextPageId = nextPage ? nextPage.id : null;
-        console.log('INSIDE handle click left drawer', pageId);
-        //navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
     }
 
   return (

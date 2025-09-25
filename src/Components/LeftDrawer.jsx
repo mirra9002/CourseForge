@@ -99,8 +99,8 @@ export default function LeftDrawer({ isLesson, handleClick, data, moduleSelected
 }
 
 function lessonTypePrettyPrinter(type){
-  if(type === 'QUIZ') return 'Quiz'
-  if(type === 'LESSON') return 'Theory'
-  if(type === 'CODE') return 'Code Practice'
+  if(type === 'quiz') return 'Quiz'
+  if(type === 'theory') return 'Theoretical page'
+  if(type === 'code') return 'Code Practice'
   return ''
 }
