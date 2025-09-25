@@ -21,8 +21,6 @@ export default function Lesson() {
     const lesson = data.lesson 
     const page = data.page
     
-    console.log('-- LESSON --', lesson);
-    console.log('-- PAGE --', page);
     
     const currentPageId = Number(params.pageId)
     const nextPageId = getNextPageId(lesson, currentPageId) // next page id or -1 (if this page is the last)
@@ -33,17 +31,25 @@ export default function Lesson() {
 
     function handleClickNextPage(nextPageId) {
         if(nextPageId === -1){
-            alert('This is the last page in the lesson!')
+            navigate(`/course/${params.courseId}/module/${params.moduleId}/lessons-middleware`)
             return
         }
         const finalPageId = nextPageId === null ? currentPageId : nextPageId;
         navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${finalPageId}`)
     }
 
-    function handleClickLeftDrawer(index) {
-        const nextPage = lessonData.pages[index + 1];
-        const nextPageId = nextPage ? nextPage.id : null;
-        navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
+    function handleClickLeftDrawer(pageId) {
+        if(pageId != currentPageId){
+            const pageIdx = getCurrentPageIndex(lesson, pageId)
+            const nextPageId = getNextPageId(lesson, pageIdx)
+            if(nextPageId != -1){
+                navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
+            }
+        }
+        //const nextPage = lesson.pages[index + 1];
+        //const nextPageId = nextPage ? nextPage.id : null;
+        console.log('INSIDE handle click left drawer', pageId);
+        //navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${nextPageId}`)
     }
 
   return (
@@ -185,9 +191,9 @@ function Task({task}){
         correctAnswers = data.spec.items[0].correct
     }
 
-    useEffect(() => {
-        console.log(selectedOptions, correctAnswers);
-    }, [selectedOptions])
+    // useEffect(() => {
+    //     console.log(selectedOptions, correctAnswers);
+    // }, [selectedOptions])
 
     function handleChangeRadio(e, id) {    
         if(e.target.checked){

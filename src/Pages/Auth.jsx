@@ -12,6 +12,7 @@ import {login, logout} from '../State/authSlice.js'
 
 
 export default function Auth() {
+      
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isRegister = useLoaderData() 
@@ -28,7 +29,7 @@ export default function Auth() {
     function handleLogin(userData) {
         dispatch(login(userData))
         setTimeout(() => {
-            navigate('/')
+            navigate((-1))
         }, 300)
     }
 

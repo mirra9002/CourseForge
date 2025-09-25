@@ -18,7 +18,8 @@ import SearchedCourses from './Pages/SearchedCourses.jsx';
 import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
-import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById} from './fetching-data.js';
+import LessonsMiddleware from './Pages/LessonsMiddleware.jsx'
+import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById, getModuleById} from './fetching-data.js';
 import { redirect } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
@@ -89,6 +90,15 @@ const router = createBrowserRouter([{
 {
   path: '/code',
   element: <PracticeCode />,
+  errorElement: <Notfound/>
+},
+{
+  path: '/course/:courseId/module/:moduleId/lessons-middleware',
+  element: <LessonsMiddleware />,
+  loader: async({params}) => {
+    const data = getModuleById(params.moduleId)
+    return data
+  },
   errorElement: <Notfound/>
 },
 {

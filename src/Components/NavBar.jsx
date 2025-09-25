@@ -13,8 +13,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 export default function Navbar() {
     const { user, status } = useSelector(s => s.auth);
-    console.log("[NAVBAR] Redux state:", { user, status });
-
     const navigate = useNavigate();
     function havigateToPage(location){
         navigate(location)

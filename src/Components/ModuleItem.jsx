@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from "react";
 
-export function ModuleItem({ isLesson, title, content, isOpen, onClick, backgroundColor, hoverBackgroundColor, textHeaderColor, textColor }) {
+export function ModuleItem({ id, isLesson, title, content, isOpen, onClick, backgroundColor, hoverBackgroundColor, textHeaderColor, textColor }) {
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
+
 
   useEffect(() => {
     if (isOpen && contentRef.current) {
@@ -17,7 +18,10 @@ export function ModuleItem({ isLesson, title, content, isOpen, onClick, backgrou
     {isLesson ? 
   
     <div
-        onClick={onClick}
+        onClick={() => {
+          console.log('MODULEITEM', id);
+          onClick(id)
+        }}
         className={`rounded ${backgroundColor} ${hoverBackgroundColor} ${textHeaderColor} cursor-pointer transition-all px-4 py-2 overflow-hidden`}
       >
         <div className="flex justify-between items-center">

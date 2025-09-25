@@ -38,14 +38,16 @@ export default function LeftDrawer({ isLesson, handleClick, data, moduleSelected
       <div className="flex flex-col gap-2">
         {lessonSections.map((lesson, index) => (
           <ModuleItem
+            id={lesson.id}
             isLesson={true}
             key={index}
             title={lesson.title}
             content={lessonTypePrettyPrinter(lesson.type)}
             isOpen={openIndex === index}
-            onClick={() => {
+            onClick={(pageId) => {
               setOpenIndex(openIndex === index ? null : index)
-              handleClick(index-1)
+              console.log('LEFT DRAWER', pageId);
+              handleClick(pageId)
             }}
             backgroundColor={openIndex === index ? moduleSelectedBackgroundColor : moduleBackgoundColor}
             hoverBackgroundColor={moduleHoverBackgroundColor}

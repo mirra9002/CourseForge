@@ -124,3 +124,9 @@ export async function getMyCourses() {
   const data = res.ok ? await res.json() : null
   return data
 }
+
+export async function getModuleById(moduleId) {
+  const res = await fetch(`${SERVER_URL}/api/modules/${moduleId}/`, { credentials: "include" });
+  const data = res.ok ? await res.json() : null;
+  return data
+}
