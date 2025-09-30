@@ -10,7 +10,9 @@ export async function sendUserRegister(userInput) {
        body: JSON.stringify(userInput)
     });
     const data = await response.json();
-    console.log(data);
+    if(response.status === 400 || response.status === 401){
+      return {error: true, message: response.detail, data: data}
+    }
     return data
 }
 
@@ -24,8 +26,11 @@ export async function sendUserLogin(userInput) {
        body: JSON.stringify(userInput),
        credentials: "include"
     });
-    console.log('send user logi');
-    return await response.json();
+    const data = await response.json()
+    if(response.status === 400 || response.status === 401){
+      return {error: true, message: response.detail, data: data}
+    }
+    return data
 }
 
 export async function enrollUserOnCourse(userId, courseId){
@@ -38,4 +43,18 @@ export async function enrollUserOnCourse(userId, courseId){
        credentials: "include"
     });
     return await response.json();
+}
+
+export async function LogOut() {
+  const response = await fetch(`${SERVER_URL}/api/users/auth/logout/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        },
+       credentials: "include"
+    });
+    console.log(response);
+    const data = await response.json()
+    return data
+
 }

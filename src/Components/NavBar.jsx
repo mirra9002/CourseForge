@@ -9,7 +9,7 @@ import icon_messages_black100 from '../assets/icon_messages_black100.png'
 import icon_logout_black100 from '../assets/icon_logout_black100.png'
 
 import { useSelector, useDispatch } from "react-redux";
-// import { setLoading, setError, setUser,resetAuth } from "../State/authSlice";
+import {LogOut} from '../sending-data.js'
 
 export default function Navbar() {
     const { user, status } = useSelector(s => s.auth);
@@ -18,11 +18,11 @@ export default function Navbar() {
         navigate(location)
     }
 
-    function LogOut() {
-        // console.log('clicked logout');
-        // setLoading()
-
+    async function LogOutUser() {
+        // const res = await LogOut();
+        // console.log(res);
         // waiting for backend...
+
     }
 
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
@@ -71,7 +71,7 @@ export default function Navbar() {
                         </li>
                        </ul>
                     <div className="py-1">
-                        <a onClick={LogOut} 
+                        <a onClick={LogOutUser} 
                         className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Log out</a>
                     </div>
                 </div>

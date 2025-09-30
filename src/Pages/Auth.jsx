@@ -43,7 +43,7 @@ export default function Auth() {
     <Navbar/>
     <div className='-mt-20'>
         {isRegister === 1 ? 
-        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)}/> :
+        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} /> :
         <LogIn input={input} handleChange={handleChange} loginUser={(data) => handleLogin(data)}/>}
     </div>
     </>
@@ -55,31 +55,50 @@ function Register({input, handleChange, registerUser}) {
 
     const navigate = useNavigate()
 
-    const [error, setError] = useState(null)
+    const [error, setError] = useState({isError: null, message: null})
     const [success, setSuccess] = useState(null)
 
     async function sendData(data) {
-        setError(null)
+        setError({isError: null, message: null})
         setSuccess(null)
         
         const responseRegister = await sendUserRegister(data)
-        if(!responseRegister) {
-            setError(true)
-            return null
+        if(responseRegister.error) {
+            authErrorHandling(responseRegister.data)
+           return 
         }
 
         const responseLogin = await sendUserLogin({username: data.username, password: data.password})
-        if(!responseLogin) {
-            setError(true)
-            return null
+        if(responseLogin.error) {
+            authErrorHandling(responseRegister.data)
+            return 
         }
+
+        console.log('error status2:', error, success);
         
         const res = await fetch("/api/me", { credentials: "include" });
         const me = res.ok ? await res.json() : null;
 
         setError(false)
         registerUser(me)
+        handleLogin()
 
+    }
+
+    function authErrorHandling(data){
+        console.log(data);
+        if(data.username){
+            setError(prev => ({...prev, isError: true, message: data.username[0]}));
+        } else if (data.email) {
+            setError(prev => ({...prev, isError: true, message: data.email[0]}));
+        } else if (data.non_field_errors) {
+            setError(prev => ({...prev, isError: true, message: data.non_field_errors[0]}));
+        } else if (data.password){
+            setError(prev => ({...prev, isError: true, message: data.password[0]}));
+        }
+         else {
+            setError(prev => ({...prev, isError: true, message: "Invalid credentials"}));
+        }
     }
 
 
@@ -112,7 +131,7 @@ function Register({input, handleChange, registerUser}) {
             <div class="flex items-start">
                 <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Already have an account? <a href="#" onClick={(e)=> {e.preventDefault(); navigate('/auth/0')}} class="text-blue-600 hover:underline dark:text-blue-500">Log In</a></label>
             </div>
-            {error && <p className="text-red-500 text-sm">Invalid credentials!</p>}
+            {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
             {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
             <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register</button>
             </form>
@@ -140,6 +159,7 @@ function LogIn({input, handleChange, loginUser}) {
 
         setError(false)
         loginUser({username: data.username, password: data.password})
+        handleLogin()
     }
 
     
