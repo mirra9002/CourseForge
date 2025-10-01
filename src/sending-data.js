@@ -58,3 +58,16 @@ export async function LogOut() {
     return data
 
 }
+
+export async function markPageAsRead(pageId) {
+  const response = await fetch(`${SERVER_URL}/api/pages/${pageId}/read/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        },
+       credentials: "include"
+    });
+    console.log(response);
+    const data = await response.json()
+    return data
+}

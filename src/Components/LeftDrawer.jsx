@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
 
-export default function LeftDrawer({ isLesson, handleClick, data, moduleSelectedBackgroundColor, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
+export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, handleClick, data, moduleSelectedBackgroundColor, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
 
+  console.log('currentPageIndex', currentPageIndex);
+  console.log('currentPageId', currentPageId);
   useEffect(() => {
     const drawerEl = document.getElementById("drawer-left-lesson-modules");
     const drawer = new Drawer(drawerEl, {
@@ -15,12 +17,14 @@ export default function LeftDrawer({ isLesson, handleClick, data, moduleSelected
     drawer.show();
   }, []);
 
+  useEffect(() => {
+    setOpenIndex(currentPageIndex)
+  }, [currentPageIndex])
 
-  
+
 
   const lessonSections = data.pages;
-  
-  console.log('LEFT DRAWER: ', lessonSections);
+
 
   return (<>
     {isLesson ? 
@@ -45,7 +49,6 @@ export default function LeftDrawer({ isLesson, handleClick, data, moduleSelected
             content={lessonTypePrettyPrinter(lesson.type)}
             isOpen={openIndex === index}
             onClick={(pageId) => {
-              setOpenIndex(openIndex === index ? null : index)
               console.log('LEFT DRAWER', pageId);
               handleClick(pageId)
             }}
@@ -78,7 +81,6 @@ export default function LeftDrawer({ isLesson, handleClick, data, moduleSelected
               title={String(index + 1)}
               isOpen={openIndex === index}
               onClick={() => {
-                setOpenIndex(openIndex === index ? null : index)
                 handleClick(index-1)
               }}
               backgroundColor={openIndex === index ? moduleSelectedBackgroundColor : moduleBackgoundColor}

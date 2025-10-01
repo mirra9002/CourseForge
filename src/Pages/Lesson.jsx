@@ -11,6 +11,7 @@ import CustomMarkdownReader from '../Components/CustomMarkdownReader';
 import { ImageSkeleton } from '../Components/Skeleton';
 import {getNextPageId, getPrevPageId, getCurrentPageIndex} from '../utils/getPageIdsAndIndexes.js'
 import { areSetsEqual } from '../utils/areSetsEqual.js';
+import {markPageAsRead} from '../sending-data.js'
 
 export default function Lesson() {
 
@@ -27,14 +28,19 @@ export default function Lesson() {
     // const prevPageId = getPrevPageId(lesson, currentPageId) // prev page id or -1 (if this page is the first)
     const currentPageIndex = getCurrentPageIndex(lesson, currentPageId)
 
+    useEffect(() => {
+        window.scrollTo(0,0)  
+    }, [currentPageId])
 
-
-    function handleClickNextPage(nextPageId) {
+    async function handleClickNextPage(nextPageId) {
+        const res = await markPageAsRead(currentPageId);
+        console.log('marked as read:', res);
         if(nextPageId === -1){
             navigate(`/course/${params.courseId}/module/${params.moduleId}/lessons-middleware`)
             return
         }
         const finalPageId = nextPageId === null ? currentPageId : nextPageId;
+       
         navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${finalPageId}`)
     }
 
@@ -48,13 +54,18 @@ export default function Lesson() {
         }
     }
 
+    async function readPage(pageId) {
+        const res = await markPageAsRead(pageId)
+        console.log(res);        
+    }
+
   return (
     <>  
         <Navbar></Navbar>
         {page ?
          
          <>
-         {page.type !== 'theory' ? 
+         {page.type === 'codepractice' ? 
          <>
          <LeftDrawer 
             isLesson={false}
@@ -84,7 +95,11 @@ export default function Lesson() {
             moduleHoverBackgroundColor={"hover:bg-gray-300"} 
             moduleSelectedBackgroundColor={"bg-gray-300"}
          />
-         <MainArea title={data.title} data={page} nextPageId={currentPageId} handleClick={() => handleClickNextPage(nextPageId)}/></>
+         <MainArea 
+            title={data.title} 
+            data={page} 
+            nextPageId={currentPageId} 
+            handleClick={() => handleClickNextPage(nextPageId)}/></>
         }
         
         </> 
