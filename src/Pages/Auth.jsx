@@ -3,7 +3,8 @@ import { useLoaderData } from 'react-router-dom';
 import Navbar from "../Components/NavBar";
 import AuthInit from '../State/AuthInit';
 import {sendUserRegister, sendUserLogin} from '../sending-data.js'
-
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from 'jwt-decode'
 import { useNavigate } from 'react-router-dom';
 
 // import { setLoading, setUser, setError } from "../State/authSlice"; 
@@ -37,10 +38,20 @@ export default function Auth() {
         dispatch(login(userData))
     }
 
+    function handleGoogleLogin(userData){
+        console.log(userData);
+        const data = jwtDecode(userData.credential)
+        console.log(data);
+    }
+
 
     return (
     <>
     <Navbar/>
+    {/*<div className='mt-20 ml-20'>
+        <GoogleLogin onSuccess={(res)=>{handleGoogleLogin(res)}} onError={(res)=>{'err',console.log(res);}}/>
+    </div>*/}
+    
     <div className='-mt-20'>
         {isRegister === 1 ? 
         <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} /> :

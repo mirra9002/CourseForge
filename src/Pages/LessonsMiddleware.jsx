@@ -3,18 +3,18 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import {getFirstPageIdInLesson} from '../fetching-data.js'
 import Navbar from '../Components/NavBar';
+import {calculateCourseProgress} from '../utils/progressCalculator.js'
 export default function LessonsMiddleware() {
 
   const params = useParams()
     const navigate = useNavigate()
     const [lessonsCompletion, setLessonsCompletion] = useState({})
     const data = useLoaderData();
-    console.log(data);
+    const courseId = data.course_id;
 
     let totalProgress = 0;
-    for(let i = 0; i<data.lessons.length; i++){
-        totalProgress += data.lessons[i].progress.percentage;
-    }
+    totalProgress = Math.round(calculateCourseProgress(data.lessons)) // calculate MODULE progress
+
 
     const lessComp = {}
     for(let i = 0; i<data.lessons.length; i++){
@@ -35,7 +35,7 @@ export default function LessonsMiddleware() {
     <>
     <Navbar/>
     <div class='ml-20 mt-15 mr-35 mb-15'>
-      <BreadCrump latestStage={'module'}/>
+      <BreadCrump latestStage={'module'} courseId={courseId}/>
         <h2 class="pb-5 text-4xl font-bold dark:text-white">{data.title}</h2>
         <h2 class="text-2xl font-normal dark:text-white">{data.description}</h2>
         <ModuleProgressBar progress={totalProgress}/>
@@ -109,12 +109,13 @@ function IconIsCompleted({isCompleted, handleChangeLessonCompletion, id}){
     </>
 }
 
-function BreadCrump({latestStage}) {
+function BreadCrump({latestStage, courseId}) {
 
-  function Element({title}) {
+  function Element({title, link=''}) {
+    const navigate = useNavigate()
     return<>
       <li class="inline-flex items-center">
-      <a  class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+      <a onClick={()=>(navigate(link))} class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
         {title}
       </a>
       </li>
@@ -129,7 +130,9 @@ function BreadCrump({latestStage}) {
          </div></>
   }
 
-  return<nav class="flex" aria-label="Breadcrumb">
+  const linkToCourse = `/courseinfo/${courseId}`
+
+  return  <nav class="flex" aria-label="Breadcrumb">
   <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse mb-10 cursor-pointer">
     {latestStage === 'course' ? 
       <Element title={'Course'}/> 
@@ -138,7 +141,7 @@ function BreadCrump({latestStage}) {
 
     {latestStage === 'module' ?
       <>
-      <Element title={'Course'}/> 
+      <Element title={'Course'} link={linkToCourse}/> 
       <Arrow/>
       <Element title={'Module'}/> 
       </> : null
@@ -146,7 +149,7 @@ function BreadCrump({latestStage}) {
 
     {latestStage === 'lesson' ? 
     <>
-    <Element title={'Course'}/> 
+    <Element title={'Course'} link={linkToCourse}/> 
       <Arrow/>
       <Element title={'Module'}/> 
       <Element title={'Lesson'}/> 

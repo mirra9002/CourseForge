@@ -16,6 +16,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@monaco-editor/react": "^4.7.0",
+    "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.7",
@@ -32,6 +33,7 @@
     "flowbite-react": "^0.11.9",
     "flowbite-typography": "^1.0.5",
     "froala-editor": "^4.6.0",
+    "jwt-decode": "^4.0.0",
     "nprogress": "^0.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -40,6 +42,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.0",
     "react-simple-wysiwyg": "^3.4.0",
+    "react-syntax-highlighter": "^15.6.6",
     "redux-toolkit": "^1.1.2",
     "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.1.7"

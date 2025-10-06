@@ -54,11 +54,6 @@ export default function Lesson() {
         }
     }
 
-    async function readPage(pageId) {
-        const res = await markPageAsRead(pageId)
-        console.log(res);        
-    }
-
   return (
     <>  
         <Navbar></Navbar>
@@ -115,7 +110,7 @@ export default function Lesson() {
 function CodeBlock(props){
     return(<>
     
-    <div className="relative mt-2 mb-4 block max-w-full p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <div className="relative mt-2 mb-4 block max-w-full p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 ">
         <code className="text-sm whitespace-pre">{props.data}</code>
       </div>
 

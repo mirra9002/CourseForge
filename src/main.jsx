@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import 'nprogress/nprogress.css';
 import { Provider } from 'react-redux';
 import { store } from './State/store.js';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import './index.css'
 import App from './App.jsx'
@@ -149,12 +150,16 @@ const router = createBrowserRouter([{
   fallbackElement: <div>Loading page...</div>  
 })
 
+const CLIENT_ID = '963435779673-dctd1ha9ecqprc47gai8ccr4gu8ae89r.apps.googleusercontent.com'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <App>
-        <RouterProvider router={router} />
-      </App>  
+      <GoogleOAuthProvider clientId={CLIENT_ID}>
+        <App>
+          <RouterProvider router={router} />
+        </App>  
+      </GoogleOAuthProvider>
     </Provider>
   </StrictMode>,
 )

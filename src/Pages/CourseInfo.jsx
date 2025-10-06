@@ -7,6 +7,8 @@ import { useLoaderData } from 'react-router-dom';
 import AuthInit from "../State/AuthInit";
 import LoadingBar from '../Components/LoadingBar'
 import { useSelector } from 'react-redux'
+import {calculateCourseProgress } from '../utils/progressCalculator.js'
+import mascot_happy1 from '../../../images/mascot_happy1.png'
 
 import {enrollUserOnCourse} from '../sending-data'
 
@@ -25,12 +27,8 @@ export default function Courseinfo() {
     }
 
 
-    let totalProgress = 0.0;
-    for(let i = 0; i<courseData.modules.length; i++){
-      totalProgress += courseData.modules[i].progress.percentage
-    }
-
-
+    let totalProgress = 0.0
+    totalProgress = Math.round(calculateCourseProgress(courseData.modules))
 
     console.log('courseDATA', courseData);
     return(<>
@@ -48,7 +46,8 @@ export default function Courseinfo() {
           firstPageId = {firstPageId}
           courseId={params.courseId}
           title={courseData.title}
-          description={courseData.description} />
+          description={courseData.description}
+          courseProgress={totalProgress} />
         <CourseProgressBar 
           progress={totalProgress}
           courseId={params.courseId}
@@ -64,8 +63,7 @@ export default function Courseinfo() {
     </>)
 }
 
-function CourseInfoHeading({onEnrollClick, courseId, title, description="to be done...", firstModuleId,firstLessonId, firstPageId}) {
-
+function CourseInfoHeading({onEnrollClick, courseId, title, description, firstModuleId,firstLessonId, firstPageId, courseProgress}) {
     const navigate = useNavigate()
     function navigateToPage(location){
       console.log('in navigate');
@@ -74,8 +72,9 @@ function CourseInfoHeading({onEnrollClick, courseId, title, description="to be d
 
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
       <button type="button" onClick={() => {
-        //onEnrollClick(courseId)
-        navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">Почати</button>
+        navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">
+          {courseProgress > 0 ? "Продовжити" : "Почати"}
+          </button>
       <p class="text-lg mb-3 mt-10  text-gray-500 dark:text-gray-400">{description}</p>
     </>)
 }

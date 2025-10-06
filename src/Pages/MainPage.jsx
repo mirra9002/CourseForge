@@ -8,11 +8,13 @@ import Allcoursessection from '../Components/AllCoursesSection'
 import TopCategories from '../Components/TopCategories';
 import Footer from '../Components/Footer'
 import mascot_course_forge1 from '../assets/mascot_course_forge1.png'
+import { useEffect } from 'react';
 
 export default function Mainpage() {
-
-
   const courses = useLoaderData()
+  
+  useEffect(() => {window.scrollTo(0,0)},[])
+
     return <>
     {/* <AuthInit /> */}
     <div className='bg-gray-100 min-h-screen '>
