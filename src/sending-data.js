@@ -33,18 +33,19 @@ export async function sendUserLogin(userInput) {
     return data
 }
 
+
 export async function enrollUserOnCourse(userId, courseId){
-  const response = await fetch(`${SERVER_URL}/api/courses/${courseId}/`, {
+  const response = await fetch(`${SERVER_URL}/api/courses/${courseId}/enroll/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         },
-       body: JSON.stringify({"student_id": [userId]}),
-       credentials: "include"
+      credentials: "include"
     });
-    return await response.json();
+    const res = await response.json();
+    console.log('enrollUserOnCourse', res, userId, courseId);
+    return res
 }
-
 export async function LogOut() {
   const response = await fetch(`${SERVER_URL}/api/users/auth/logout/`, {
       method: "POST",

@@ -90,11 +90,15 @@ function TopCourseCardComponent({data}) {
     const courseInfo = data.description
     const navigate = useNavigate();
    
+    let description = courseInfo;
+    if(courseInfo.length > 150){
+        description = `${courseInfo.slice(0, 150)}...`
+    }
     return(
     <div
         onClick={() => navigate(`/courseinfo/${courseId}`)}
         className="cursor-pointer block max-w-2xl py-16 -mx-1 px-12 bg-white border border-gray-200 rounded-lg  hover:bg-gray-50 transition-colors duration-300">
-        <TopCourseCardHeading title={courseTitle} info={courseInfo}/>        
+        <TopCourseCardHeading title={courseTitle} info={description}/>        
         <br/>
         <CourseRatingStars rating={data.rating}/>
     

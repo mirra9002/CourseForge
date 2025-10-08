@@ -22,8 +22,11 @@ export default function Courseinfo() {
     const firstLessonId = data.firstLessonId;
     const firstPageId = data.firstPageId
     
+    console.log('USER', user);
+
     async function enrollStudentOnCourse(courseId) {
-      const res = await enrollUserOnCourse(user.id, courseId)
+      console.log(user);
+      const res = await enrollUserOnCourse(user.username, courseId)
     }
 
 
@@ -72,6 +75,7 @@ function CourseInfoHeading({onEnrollClick, courseId, title, description, firstMo
 
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
       <button type="button" onClick={() => {
+        onEnrollClick(courseId)
         navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">
           {courseProgress > 0 ? "Продовжити" : "Почати"}
           </button>

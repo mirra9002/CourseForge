@@ -11,6 +11,8 @@ export default function LessonsMiddleware() {
     const [lessonsCompletion, setLessonsCompletion] = useState({})
     const data = useLoaderData();
     const courseId = data.course_id;
+    console.log('DATA', data);
+    const moduleOrder = data.order+1
 
     let totalProgress = 0;
     totalProgress = Math.round(calculateCourseProgress(data.lessons)) // calculate MODULE progress
@@ -36,7 +38,8 @@ export default function LessonsMiddleware() {
     <Navbar/>
     <div class='ml-20 mt-15 mr-35 mb-15'>
       <BreadCrump latestStage={'module'} courseId={courseId}/>
-        <h2 class="pb-5 text-4xl font-bold dark:text-white">{data.title}</h2>
+      
+        <h2 class="pb-5 text-4xl font-bold dark:text-white"><span class="text-blue-600 font-medium">{`#${moduleOrder}`}</span> {data.title}</h2>
         <h2 class="text-2xl font-normal dark:text-white">{data.description}</h2>
         <ModuleProgressBar progress={totalProgress}/>
         <LessonsSection lessons={data.lessons} handleChangeLessonCompletion={handleChangeLessonCompletion} handleGoToLessonClick={handleGoToLessonClick}/>
