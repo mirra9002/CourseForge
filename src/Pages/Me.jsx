@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import {  useState, useEffect } from "react";
 import { useSelector } from "react-redux"; 
 import Navbar from "../Components/NavBar";
 import AuthInit from "../State/AuthInit";
@@ -8,7 +8,7 @@ export default function ProfileCard() {
   const { user, status } = useSelector(s => s.auth);
 
   if(status != 'authed') return
-
+  useEffect(() => {window.scrollTo(0,0)},[])
   console.log('USER', user);
   console.log(user);
   return (

@@ -7,6 +7,7 @@ import Navbar from "../Components/NavBar";
 import CourseFilters from "../Components/CourseFilters";
 
 export default function SearchedCourses() {
+    useEffect(() => {window.scrollTo(0,0)},[])
     const navigate = useNavigate()
     const [resultCourses, setResultCourses] = useState([])
 

@@ -19,9 +19,9 @@ export default function Navbar() {
     }
 
     async function LogOutUser() {
-        // const res = await LogOut();
-        // console.log(res);
-        // waiting for backend...
+        const res = await LogOut();
+        console.log(res);
+
 
     }
 
@@ -58,16 +58,16 @@ export default function Navbar() {
                     </div>
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
                         <li onClick={() => navigate('/me')}>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_user_black100} className="h-4" />Profile</a>
+                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_user_black100} className="h-4" />Профіль</a>
                         </li>
                         <li>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_settings_black100} className="h-4" />Settings</a>
+                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_settings_black100} className="h-4" />Налаштування</a>
                         </li>
                         <li onClick={() => navigate('/mycourses')}>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_mycourses_black100} className="h-4" />My courses</a>
+                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_mycourses_black100} className="h-4" />Мої курси</a>
                         </li>
                         <li>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_messages_black100} className="h-4" />Messages</a>
+                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_messages_black100} className="h-4" />Повідомлення</a>
                         </li>
                        </ul>
                     <div className="py-1">

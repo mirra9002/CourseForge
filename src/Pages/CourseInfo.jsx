@@ -13,9 +13,19 @@ import mascot_happy1 from '../../../images/mascot_happy1.png'
 import {enrollUserOnCourse} from '../sending-data'
 
 export default function Courseinfo() {
+    const navigate = useNavigate()
     const params = useParams()
     const data = useLoaderData();
+    useEffect(() => {window.scrollTo(0,0)},[])
     const { user, status } = useSelector(s => s.auth);
+    console.log('[courseinfo]', data);
+
+    if(data === null){
+      return <>
+      <div className='mt-20 text-2xl text-center'><p>Цей курс все ще в розробці...</p>
+       <span onClick={() => navigate('/')} className='cursor-pointer hover:text-gray-700 mt-15 text-xl underline text-gray-500'>На головну</span> </div>
+      </>
+    }
 
     const courseData = data.courseData
     const firstModuleId = data.firstModuleId;
@@ -23,6 +33,7 @@ export default function Courseinfo() {
     const firstPageId = data.firstPageId
     
     console.log('USER', user);
+   
 
     async function enrollStudentOnCourse(courseId) {
       console.log(user);

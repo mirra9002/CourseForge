@@ -1,6 +1,6 @@
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {getFirstPageIdInLesson} from '../fetching-data.js'
 import Navbar from '../Components/NavBar';
 import {calculateCourseProgress} from '../utils/progressCalculator.js'

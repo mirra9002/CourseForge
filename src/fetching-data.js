@@ -34,6 +34,10 @@ export async function getCourseById(courseId) {
   // 2. Get first module ID
   const firstModuleId = resultCourse.modules[0]?.id;
 
+  if(!firstModuleId){
+    return {error: true, message: 'no modules in this course'}
+  }
+
   // 3. Fetch module
   const responseModule = await fetch(`${SERVER_URL}/api/modules/${firstModuleId}`, {
     method: "GET",
@@ -46,6 +50,11 @@ export async function getCourseById(courseId) {
   const resultModule = await responseModule.json(); 
 
   const firstLessonId = resultModule.lessons[0]?.id;
+  
+  if(!firstLessonId){
+    return {error: true, message: 'no lessons in this course'}
+  }
+
 
   // 4. Fetch lesson
   const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${firstLessonId}`, {

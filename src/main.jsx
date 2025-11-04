@@ -20,6 +20,7 @@ import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import LessonsMiddleware from './Pages/LessonsMiddleware.jsx'
+import CoursesByCategory from './Pages/CoursesByCategory.jsx';
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById, getModuleById} from './fetching-data.js';
 import { redirect } from 'react-router-dom';
 
@@ -30,7 +31,6 @@ const router = createBrowserRouter([{
     element: <Mainpage />,
     loader: async () => {
       const data = await getAllCourses()
-
       if (data.error){
         throw new Response("Failed to load", { status: 500 });
       }
@@ -55,10 +55,13 @@ const router = createBrowserRouter([{
   path: '/courseinfo/:courseId',
   element: <Courseinfo />,
     loader: async ({ params }) => {
-      const data = await getCourseById(params.courseId);
-      console.log('courseinfo', data);
+      console.log('in asdasdd');
+      const data = await getCourseById(params.courseId) || {error: true, message: 'no modules'};
       if(data.error && data.message === 'Unauthorized'){
         return redirect('/auth/1');
+      }
+      if(data.error && data.message === 'no modules in this course'){
+        return null
       }
 
       if (data.error) {
@@ -140,6 +143,18 @@ const router = createBrowserRouter([{
   },
   errorElement: <Notfound/>
 }, 
+{
+  path: "/category/:categoryName",
+  element: <CoursesByCategory/>,
+  errorElement: <Notfound/>,
+  loader: async ({params}) => {
+    const categoryName = await params.categoryName
+    const data = await getAllCourses()
+    const coursesByCategory = data.results.filter(c => c.tags.includes(categoryName))
+    console.log(coursesByCategory, categoryName);
+    return coursesByCategory
+  }
+},
 {
   path: "/create/course/:courseId",
   element: <CreateCourseDetails/>,

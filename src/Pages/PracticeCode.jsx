@@ -1,23 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import { mockData } from "../mock-data";
 import CustomMarkdownReader from "../Components/CustomMarkdownReader";
-export default function PracticeCode({data}) {
+export default function PracticeCode({}) {
+  useEffect(() => {window.scrollTo(0,0)},[])
   const [userCode, setUserCode] = useState("");
   const [output, setOutput] = useState("")
   const [showSuccess, setShowSuccess] = useState(false);
-
+  const [data, setData] = useState(null);
 
   function clearConsole() {
     setOutput('')
   }
 
 
-  const taskDescription = mockData.data.task_description
-
   
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch('http://127.0.0.1:8000/api/tasks/d35c82f0-286e-4ee9-8320-60d056b7781c/');
+      const data = await res.json()
+      setData(data)
+      console.log(data);
+  }
+   fetchData()
+  }, [])
+
+ 
+   
   return (
   <>
 
@@ -28,7 +40,7 @@ export default function PracticeCode({data}) {
           <span className="inline-block">Task</span>
         </div>
         <div className="p-4 text-gray-200 text-sm" >
-          <CustomMarkdownReader data={taskDescription} className='markdown'/>
+          <CustomMarkdownReader data={'Write fizz-buzz'} className='markdown'/>
         </div>
     </div>
 

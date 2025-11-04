@@ -47,6 +47,7 @@ export async function enrollUserOnCourse(userId, courseId){
     return res
 }
 export async function LogOut() {
+  //const responseCSRF = await fetch(`${SERVER_URL}/api/users/auth/csrf/`)
   const response = await fetch(`${SERVER_URL}/api/users/auth/logout/`, {
       method: "POST",
       headers: {

@@ -14,7 +14,7 @@ import { areSetsEqual } from '../utils/areSetsEqual.js';
 import {markPageAsRead} from '../sending-data.js'
 
 export default function Lesson() {
-
+    useEffect(() => {window.scrollTo(0,0)},[])
     const params = useParams()
     const navigate = useNavigate()
     const data = useLoaderData();
