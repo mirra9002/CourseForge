@@ -1,14 +1,14 @@
 import {useState, useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
+import {sendUserRegister, sendUserLogin} from '../sending-data.js'
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+
 import Navbar from "../Components/NavBar";
 import AuthInit from '../State/AuthInit';
-import {sendUserRegister, sendUserLogin} from '../sending-data.js'
 
-import { useNavigate } from 'react-router-dom';
-
-// import { setLoading, setUser, setError } from "../State/authSlice"; 
-import { useSelector, useDispatch } from "react-redux";
 import {login, logout} from '../State/authSlice.js'
+import { SERVER_URL } from '../../dev_data.js';
 
 
 export default function Auth() {
@@ -27,15 +27,15 @@ export default function Auth() {
     }
 
     function handleLogin(userData) {
-        console.log('logging...', userData);
+        console.log('handleLogin');
         dispatch(login(userData))
-        setTimeout(() => {
-            navigate((-1))
-        }, 300)
+        navigate(('/'))
     }
 
     function handleRegister(userData) {
+        console.log('handleReg');
         dispatch(login(userData))
+        navigate(('/'))
     }
 
 
@@ -44,7 +44,7 @@ export default function Auth() {
     <Navbar/>
     <div className='-mt-20'>
         {isRegister === 1 ? 
-        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} /> :
+        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} handleLogin={(data) => handleLogin(data)} /> :
         <LogIn input={input} handleChange={handleChange} loginUser={(data) => handleLogin(data)}/>}
     </div>
     </>
@@ -52,7 +52,7 @@ export default function Auth() {
   );
 }
 
-function Register({input, handleChange, registerUser}) {
+function Register({input, handleChange, registerUser, handleLogin}) {
 
     const navigate = useNavigate()
 
@@ -66,23 +66,28 @@ function Register({input, handleChange, registerUser}) {
         const responseRegister = await sendUserRegister(data)
         if(responseRegister.error) {
             authErrorHandling(responseRegister.data)
+            console.log('error while registering...');
            return 
         }
-
-        const responseLogin = await sendUserLogin({username: data.username, password: data.password})
-        if(responseLogin.error) {
-            authErrorHandling(responseRegister.data)
-            return 
+        
+        const res = await sendUserLogin({username: data.username, password: data.password})
+        if(!res || res.error) {
+            setError({isError: true, message: res.data.detail})
+            return null
         }
 
-        console.log('error status2:', error, success);
-        
-        const res = await fetch("/api/me", { credentials: "include" });
-        const me = res.ok ? await res.json() : null;
+        const meRes = await fetch(`${SERVER_URL}/api/users/me/`, { credentials: "include" });
 
-        setError(false)
+        if(!meRes.ok){
+            setError({isError: true, message: "Cannot fetch user"})
+            return
+        }
+        let me;
+        if (meRes.ok) {
+            me = await meRes.json();
+        }
         registerUser(me)
-        handleLogin()
+
 
     }
 
@@ -144,23 +149,23 @@ function Register({input, handleChange, registerUser}) {
 function LogIn({input, handleChange, loginUser}) {
     
     const navigate = useNavigate()
-    const [error, setError] = useState(null)
+    const [error, setError] = useState({isError: false, message: ''})
     const [success, setSuccess] = useState(null)
 
 
     async function sendData(data){
         setError(null)
         setSuccess(null)
-        const me = await sendUserLogin({username: data.username, password: data.password})
+        const res = await sendUserLogin({username: data.username, password: data.password})
+        console.log(res);
         
-        if(!me) {
-            setError(true)
+        if(!res || res.error) {
+            setError({isError: true, message: res.data.detail})
             return null
         }
-
+        
         setError(false)
         loginUser({username: data.username, password: data.password})
-       // handleLogin()
     }
 
     
@@ -181,7 +186,7 @@ function LogIn({input, handleChange, loginUser}) {
         <div class="flex items-start">
             <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Don't have an account? <a onClick={(e)=> {e.preventDefault(); navigate('/auth/1')}} href="#" class="text-blue-600 hover:underline dark:text-blue-500">Register</a></label>
         </div>
-        {error && <p className="text-red-500 text-sm">Invalid credentials!</p>}
+        {error && <p className="text-red-500 text-sm">{error.message}</p>}
         {success && <p className="text-green-500 text-sm">Successfully logged in!</p>}
         <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Log In</button>
         </form>

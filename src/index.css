@@ -8,3 +8,4 @@
   background: #3b82f6 !important; /* Tailwind blue-500 */
   height: 2px;
 }
+@layer base { html { scrollbar-gutter: stable }} /* reserving space for scrollbar (neede for navbar, not to "jump" slightly to the right) */

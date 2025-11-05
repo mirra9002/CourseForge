@@ -17,8 +17,9 @@ export default function Mainpage() {
 
     return <>
     {/* <AuthInit /> */}
+    <Navbar/>
     <div className='bg-gray-100 min-h-screen '>
-      <Navbar/>
+      
         <Topsearcharea courses={courses}/>
         <div className="relative flex justify-center mt-35">
           <img
