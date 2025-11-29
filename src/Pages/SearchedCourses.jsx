@@ -2,47 +2,138 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {useLoaderData} from "react-router-dom"
 import { searchCourses } from "../utils/search-top-courses";
+import { getFilteredCourses } from "../fetching-data";
+import { useParams } from "react-router-dom";
 
 import Navbar from "../Components/NavBar";
 import CourseFilters from "../Components/CourseFilters";
 
 export default function SearchedCourses() {
+
+    const [filters, setFilters] = useState({
+        difficulty: {
+            easy: false,
+            mid: false,
+            hard: false
+        },
+        type: {
+            practice: false,
+            theory: false,
+            dev: false
+        },
+        time: {
+            all: false,
+            belowFive: false,
+            fiveTen: false,
+            aboveTen: false
+        },
+        field: {
+            all: false,
+            web: false,
+            mobile: false,
+            data: false,
+            cybersecurity: false,
+            uiux: false
+        }
+    })
+
+
     useEffect(() => {window.scrollTo(0,0)},[])
     const navigate = useNavigate()
     const [resultCourses, setResultCourses] = useState([])
+    const [searchString, setSearchString] = useState('') //     /?search=py
+    const data = useLoaderData();
+    const initialCourses = data.courses.results;
 
-    const data = useLoaderData()
-    const courses = data.courses;
+    useEffect(() => {
+        setResultCourses(initialCourses);
+    }, [initialCourses]);
 
+    useEffect(() => {
+        console.log(filters);
+        let res = ''
+        let filterQueryString = getFiltersQueryString()
+        console.log('SEARCHSTRING:', searchString);
+        console.log('filterQueryString:', filterQueryString);
+        if(searchString==="/?search=" || searchString==='' || !searchString){
+            res = `/?${filterQueryString}`
+        } else {
+            res = searchString.concat(filterQueryString)
+        }
+        console.log('res', res);
+        async function loadCourses() {
+            const resCourses = await getFilteredCourses(res)
+            console.log(resCourses.results);
+            setResultCourses(resCourses.results)
+            console.log('res courses', resCourses.results, resultCourses);
+        }
+        loadCourses()
+
+    }, [filters])
+
+    
     const location = useLocation()
     const searchQuery = new URLSearchParams(location.search).get('q') || ' ';
 
-    useEffect(() => {
-        const results = searchCourses(searchQuery, courses);
-        setResultCourses(results);
-        console.log(results);
-    }, [searchQuery, courses]);
 
-    function handleSearch(input) {
-        setResultCourses(searchCourses(input, courses))
-        navigate(`/search?q=${encodeURIComponent(input.trim())}`);
+    // FILTERS
+    console.log('searchQuesry', searchQuery);
+    console.log('searchString', searchString);
+    function getFiltersQueryString(){
+        let queryString = []
+        //queryString.push('?')
+
+        for(const prop in filters){
+        let p = filters[prop]
+        for(let el in p){
+            if(p[el]){
+                queryString.push(`&${prop}=${el}`)
+            }
+            } 
+        }
+        let resString = queryString.join('')
+        return resString
     }
-    
+
+
+    useEffect(() => {
+        console.log('------ loading courses ------');
+        async function loadCourses() {
+            const res = await getFilteredCourses(searchString)
+            console.log(res.results);
+            setResultCourses(res.results)
+            console.log('res courses', res.results, resultCourses);
+        }
+        loadCourses()
+    }, [searchString])
+
+    async function handleSearch(input) {
+        //setResultCourses(searchCourses(input, courses))
+        //navigate(`/search?q=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`);
+        console.log(`/search?q=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`);
+        setSearchString(`/?search=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`)
+
+        // let resString = `/search?q=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`
+        // const resCourses = await getFilteredCourses()
+        // setResultCourses()
+
+    }
+    //console.log('-->>>>>> FILTERS <<---', filters);
     return (
     <>
     <Navbar/>
     <div className="m-8">
-  <CoursesSearchArea query={searchQuery || ''} handleSubmit={handleSearch} />
+    <CoursesSearchArea query={searchQuery || ''} handleSubmit={handleSearch} />
 
-  <hr className="mt-12 border-t-1 border-gray-300 dark:border-gray-700 w-3/4 mx-auto" />
-  {resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Courses ({resultCourses.length})</h2> : null}
-    
-  {searchQuery.trim() !== '' && (
+    <hr className="mt-12 border-t-1 border-gray-300 dark:border-gray-700 w-3/4 mx-auto" />
+    {resultCourses && resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2> : null}
+        
     <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
         {/* Filters section */}
-        {resultCourses.length > 0 ? <div className="w-72">
-            <CourseFilters />
-        </div> : null}
+        {/* {resultCourses && resultCourses.length > 0 ? <div className="w-72">
+            <CourseFilters handleSetFilters={setFilters} filters={filters} />
+        </div> : null} */}
+        <CourseFilters handleSetFilters={setFilters} filters={filters} />
         
 
         {/* Results section */}
@@ -62,7 +153,6 @@ export default function SearchedCourses() {
             )}
         </div>
         </div>
-    )}
     </div>
 
     </>
@@ -90,7 +180,7 @@ function CoursesSearchArea({query, handleSubmit}) {
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                 </svg>
             </div>
-            <input value={input} onChange={(e) => handleChange(e)} type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Find your next course!" required />
+            <input value={input} onChange={(e) => handleChange(e)} type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Find your next course!"  />
             <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
         </div>
     </form>

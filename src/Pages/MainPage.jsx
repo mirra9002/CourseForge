@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 export default function Mainpage() {
   const courses = useLoaderData()
-  
+  console.log('courses in main', courses);
   useEffect(() => {window.scrollTo(0,0)},[])
 
     return <>

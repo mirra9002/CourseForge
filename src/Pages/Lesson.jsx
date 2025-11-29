@@ -147,9 +147,6 @@ function Video({ data }) {
 }
 
 function MainArea(props){
-    const { title, data, nextPageId, handleClick } = props;
-
-
 
     return(<>
     
@@ -164,6 +161,7 @@ function MainArea(props){
                 {element.type === "CODE" && <CodeBlock data={element.content} />}
                 {element.type === "VIDEO" && <Video data={element}/>}
                 {element.type === "TASK" && <Task task={element}/>}
+                
             </div>
             );
         })}
@@ -256,8 +254,8 @@ function Task({task}){
                             onChange={(e) => handleChangeCheck(e, variant.id)}/>
                     }) : null}
 
-                    {isCorrectAnswer === false ? <SubmitAlert isCorrect={false} boldText={'Incorrect!'} /> : null}
-                    {isCorrectAnswer === true ? <SubmitAlert isCorrect={true} boldText={'Correct!'}/> : null}
+                    {isCorrectAnswer === false ? <SubmitAlert isCorrect={false} boldText={'Неправильно!'} /> : null}
+                    {isCorrectAnswer === true ? <SubmitAlert isCorrect={true} boldText={'Правильно!'}/> : null}
 
                     <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Check answer

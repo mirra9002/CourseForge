@@ -49,7 +49,7 @@ export async function enrollUserOnCourse(userId, courseId){
 export async function LogOut() {
   //const responseCSRF = await fetch(`${SERVER_URL}/api/users/auth/csrf/`)
   const response = await fetch(`${SERVER_URL}/api/users/auth/logout/`, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         },

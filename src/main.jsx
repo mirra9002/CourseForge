@@ -21,7 +21,7 @@ import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import LessonsMiddleware from './Pages/LessonsMiddleware.jsx'
 import CoursesByCategory from './Pages/CoursesByCategory.jsx';
-import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById, getModuleById} from './fetching-data.js';
+import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById, getModuleById, getAllCoursesLogged} from './fetching-data.js';
 import { redirect } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
@@ -30,11 +30,19 @@ const router = createBrowserRouter([{
     path: '/',
     element: <Mainpage />,
     loader: async () => {
-      const data = await getAllCourses()
-      if (data.error){
+      const allCoursesDiscover = await getAllCourses()
+      if (allCoursesDiscover.error){
         throw new Response("Failed to load", { status: 500 });
       }
-      return data
+      const me = await getMe()
+      console.log('mememe', me);
+      if(!me) {
+        return allCoursesDiscover
+      } else {
+        const allCourses = await getAllCoursesLogged()
+        return allCourses
+      }
+      
     },
     errorElement: <Notfound />,
   },

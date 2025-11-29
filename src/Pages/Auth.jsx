@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
 import {sendUserRegister, sendUserLogin} from '../sending-data.js'
+import { getMe } from '../fetching-data.js';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 
@@ -71,20 +72,17 @@ function Register({input, handleChange, registerUser, handleLogin}) {
         }
         
         const res = await sendUserLogin({username: data.username, password: data.password})
+        console.log('res', res);
         if(!res || res.error) {
             setError({isError: true, message: res.data.detail})
             return null
         }
 
-        const meRes = await fetch(`${SERVER_URL}/api/users/me/`, { credentials: "include" });
-
-        if(!meRes.ok){
+        const me = await getMe()
+        console.log('meres', me);
+        if(!me){
             setError({isError: true, message: "Cannot fetch user"})
             return
-        }
-        let me;
-        if (meRes.ok) {
-            me = await meRes.json();
         }
         registerUser(me)
 
@@ -111,7 +109,7 @@ function Register({input, handleChange, registerUser, handleLogin}) {
     return  <>
         <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
         <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
-            <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Register</h2>
+            <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Зарєструватися</h2>
         
             <form class="space-y-6">
                 <div>
@@ -135,7 +133,7 @@ function Register({input, handleChange, registerUser, handleLogin}) {
                     type="password" id="re_password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Repeat password" required />
             </div>
             <div class="flex items-start">
-                <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Already have an account? <a href="#" onClick={(e)=> {e.preventDefault(); navigate('/auth/0')}} class="text-blue-600 hover:underline dark:text-blue-500">Log In</a></label>
+                <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Вже маєте акаунт? <a href="#" onClick={(e)=> {e.preventDefault(); navigate('/auth/0')}} class="text-blue-600 hover:underline dark:text-blue-500">Увійти</a></label>
             </div>
             {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
             {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
@@ -172,7 +170,7 @@ function LogIn({input, handleChange, loginUser}) {
     return  <>
     <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
     <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
-        <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Login</h2>
+        <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Увійти</h2>
     
         <form class="space-y-6">
         <div>

@@ -3,7 +3,23 @@ import {SERVER_URL} from '../dev_data.js'
 
 export async function getAllCourses() {
     try {
-      const response = await fetch(`${SERVER_URL}/api/courses/discover`, {
+      const response = await fetch(`${SERVER_URL}/api/courses/discover?include_enrolled=true`, {
+      method: "GET",
+      credentials: 'include',
+      headers: { "Content-Type": "application/json"},
+    });
+      const result = await response.json();
+      return result
+    } catch (error) {
+      console.error("Error:", error);
+      return {error: true, message: "error, couldn't fetch data"}
+    }
+}
+
+
+export async function getAllCoursesLogged() {
+    try {
+      const response = await fetch(`${SERVER_URL}/api/courses`, {
       method: "GET",
       credentials: 'include',
       headers: { "Content-Type": "application/json"},
@@ -123,7 +139,8 @@ export async function getLessonById(lessonId){
 
 
 export async function getMe() {
-  const res = await fetch(`${SERVER_URL}/api/users/me/`, { credentials: "include" });
+  const res = await fetch(`${SERVER_URL}/api/users/me/`, { method: 'GET',
+    credentials: 'include' });
   const data = res.ok ? await res.json() : null;
   return data
 }
@@ -150,3 +167,16 @@ export async function getFirstPageIdInLesson(lessonId) {
     const firstPageId = res.pages[0].id
     return firstPageId
 }
+
+export async function getFilteredCourses(queryString) {
+  console.log('qs', queryString);
+    const responseLesson = await fetch(`${SERVER_URL}/api/courses${queryString}`, {
+      method: "GET",
+      credentials: 'include',
+      headers: { "Content-Type": "application/json"},
+    });
+    const res = await responseLesson.json()
+    console.log('---> results qs ',queryString ,res);
+    return res
+}
+

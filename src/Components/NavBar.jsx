@@ -7,13 +7,15 @@ import icon_mycourses_black100 from '../assets/icon_mycourses_black100.png'
 import icon_settings_black100 from '../assets/icon_settings_black100.png'
 import icon_messages_black100 from '../assets/icon_messages_black100.png'
 import icon_logout_black100 from '../assets/icon_logout_black100.png'
-
+import {login, logout} from '../State/authSlice.js'
 import { useSelector, useDispatch } from "react-redux";
 import {LogOut} from '../sending-data.js'
 
 export default function Navbar() {
     const { user, status } = useSelector(s => s.auth);
+
     const navigate = useNavigate();
+    const dispatch = useDispatch()
     function havigateToPage(location){
         navigate(location)
     }
@@ -21,13 +23,14 @@ export default function Navbar() {
     async function LogOutUser() {
         const res = await LogOut();
         console.log(res);
-
+        dispatch(logout())
 
     }
 
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
 
     const userInitials = user?.username ? user.username.slice(0, 2).toUpperCase() : null;
+    console.log(user, status);
     return(<>
   
     <nav class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
@@ -36,7 +39,7 @@ export default function Navbar() {
             <img src={course_forge_test_logo} class="h-8" alt="CourseForge Logo"/>
             <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CourseForge</span>
         </div>
-        {status === 'authed' ? 
+        {(status === 'authed' && user) ? 
             <>
             <div className="ml-22  relative flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse group">
             {/* Clickable avatar */}
@@ -53,8 +56,8 @@ export default function Navbar() {
                     ${profileMenuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-2 invisible"}`}
                     >
                     <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                        <div>{user.username || null}</div>
-                        <div className="font-medium truncate">{user.email || null}</div>
+                        <div>{user?.username || null}</div>
+                        <div className="font-medium truncate">{user?.email || null}</div>
                     </div>
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
                         <li onClick={() => navigate('/me')}>
@@ -72,14 +75,14 @@ export default function Navbar() {
                        </ul>
                     <div className="py-1">
                         <a onClick={LogOutUser} 
-                        className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Log out</a>
+                        className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Вийти</a>
                     </div>
                 </div>
             </div>
             </>
              : 
             <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                <button onClick={() => havigateToPage('/auth/1')} type="button" class="cursor-pointer text-white bg-blue-700  hover:bg-blue-700  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 text-center dark:bg-[#1f7ef2] dark:hover:bg-[#1f7ef2] dark:focus:ring-blue-800">Sign up</button>
+                <button onClick={() => havigateToPage('/auth/1')} type="button" class="cursor-pointer text-white bg-blue-700  hover:bg-blue-700  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 text-center dark:bg-[#1f7ef2] dark:hover:bg-[#1f7ef2] dark:focus:ring-blue-800">Зарєструватися</button>
                 <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">

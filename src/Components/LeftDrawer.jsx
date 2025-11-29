@@ -110,7 +110,7 @@ export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, 
 
 function lessonTypePrettyPrinter(type){
   if(type === 'quiz') return 'Quiz'
-  if(type === 'theory') return 'Theoretical page'
+  if(type === 'theory') return 'Теорія'
   if(type === 'code') return 'Code Practice'
   return ''
 }
