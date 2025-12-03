@@ -18,10 +18,12 @@ export default function Lesson() {
     const params = useParams()
     const navigate = useNavigate()
     const data = useLoaderData();
+    
 
     const lesson = data.lesson 
     const page = data.page
     
+    console.log('data', data);
     
     const currentPageId = Number(params.pageId)
     const nextPageId = getNextPageId(lesson, currentPageId) // next page id or -1 (if this page is the last)
@@ -91,7 +93,7 @@ export default function Lesson() {
             moduleSelectedBackgroundColor={"bg-gray-300"}
          />
          <MainArea 
-            title={data.title} 
+            title={data.page.title} 
             data={page} 
             nextPageId={currentPageId} 
             handleClick={() => handleClickNextPage(nextPageId)}/></>
@@ -148,10 +150,12 @@ function Video({ data }) {
 
 function MainArea(props){
 
+    const { title, data, nextPageId, handleClick } = props;
+
     return(<>
     
     <div class='ml-95 mt-15 mr-35 mb-15'>
-        <SmallHeading title={title}></SmallHeading>
+        <SmallHeading data={title}></SmallHeading>
         
         {data.data.map((element, index) => {
         return (

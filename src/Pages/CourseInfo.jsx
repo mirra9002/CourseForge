@@ -11,6 +11,7 @@ import {calculateCourseProgress } from '../utils/progressCalculator.js'
 import mascot_happy1 from '../../../images/mascot_happy1.png'
 
 import {enrollUserOnCourse} from '../sending-data'
+import { getCertificate } from '../fetching-data.js'
 
 export default function Courseinfo() {
     const navigate = useNavigate()
@@ -40,6 +41,12 @@ export default function Courseinfo() {
       const res = await enrollUserOnCourse(user.username, courseId)
     }
 
+    async function getCertificate(courseId) {
+      const res = await getCertificate(courseId);
+      
+    }
+
+   
 
     let totalProgress = 0.0
     totalProgress = Math.round(calculateCourseProgress(courseData.modules))
@@ -84,12 +91,44 @@ function CourseInfoHeading({onEnrollClick, courseId, title, description, firstMo
       navigate(location)
     }
 
+     async function handleClick() {
+      if (courseProgress === 100) {
+        await getCertificate(courseId);
+      } else {
+        onEnrollClick(courseId);
+        navigate(`/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`);
+      }
+    }
+
+    let startButton = {
+      text: "Почати",
+      buttonColor: "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+    };
+    if(courseProgress <= 0){
+      startButton.text = 'Почати'
+      startButton.buttonColor = "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+    } else if(courseProgress > 0 && courseProgress < 100){
+      startButton.text = "Продовжити"
+      startButton.buttonColor = "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+    } else {
+      startButton.text = "Завантажити сертифікат"
+      startButton.buttonColor = "bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+    }
+
     return(<><h2 className="text-5xl mb-10 font-bold dark:text-white">{title}</h2>
-      <button type="button" onClick={() => {
+      {/* <button type="button" onClick={() => {
         onEnrollClick(courseId)
-        navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class="cursor-pointer text-white  mb-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  ">
-          {courseProgress > 0 ? "Продовжити" : "Почати"}
-          </button>
+        navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class={`cursor-pointer text-white  mb-10 ${startButton.buttonColor}  shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  `}>
+          {startButton.text}
+          
+          </button> */}
+        <button
+          type="button"
+          onClick={handleClick}
+          className={`cursor-pointer text-white mb-10 ${startButton.buttonColor} shadow-lg font-bold rounded-lg text-lg px-20 py-4`}
+        >
+          {startButton.text}
+        </button> 
       <p class="text-lg mb-3 mt-10  text-gray-500 dark:text-gray-400">{description}</p>
     </>)
 }
