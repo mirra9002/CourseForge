@@ -63,15 +63,15 @@ export default function Navbar() {
                         <li onClick={() => navigate('/me')}>
                             <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_user_black100} className="h-4" />Профіль</a>
                         </li>
-                        <li>
+                        {/* <li>
                             <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_settings_black100} className="h-4" />Налаштування</a>
-                        </li>
+                        </li> */}
                         <li onClick={() => navigate('/mycourses')}>
                             <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_mycourses_black100} className="h-4" />Мої курси</a>
                         </li>
-                        <li>
+                        {/* <li>
                             <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_messages_black100} className="h-4" />Повідомлення</a>
-                        </li>
+                        </li> */}
                        </ul>
                     <div className="py-1">
                         <a onClick={LogOutUser} 
@@ -101,12 +101,12 @@ export default function Navbar() {
             <li>
                 <div onClick={() => havigateToPage('/search')} class="cursor-pointer block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Курси</div>
             </li>
-            <li>
+            {/* <li>
                 <div class="cursor-pointer block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Про нас</div>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
                 <div class=" cursor-pointer block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Контакти</div>
-            </li>
+            </li> */}
             </ul>
         </div>
         </div>

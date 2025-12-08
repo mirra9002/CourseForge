@@ -126,8 +126,8 @@ export default function SearchedCourses() {
     <CoursesSearchArea query={searchQuery || ''} handleSubmit={handleSearch} />
 
     <hr className="mt-12 border-t-1 border-gray-300 dark:border-gray-700 w-3/4 mx-auto" />
-    {resultCourses && resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2> : null}
-        
+    {/* {resultCourses && resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2> : null} */}
+        <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2>
     <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
         {/* Filters section */}
         {/* {resultCourses && resultCourses.length > 0 ? <div className="w-72">
@@ -139,9 +139,13 @@ export default function SearchedCourses() {
         {/* Results section */}
         <div className="flex flex-col gap-8 overflow-y-auto max-h-[815px] ">
             {resultCourses.length === 0 ? (
+            <div className="w-248">
+
+            
             <p className="text-center text-gray-500 text-lg">
-                We couldn't find a match for <strong>"{searchQuery.trim() || ' '}"</strong>. Try another keyword.
+                Нічого не знайдено по запиту <strong>"{searchQuery.trim() || ' '}"</strong>. Спробуйте інші фільтри.
             </p>
+            </div>
             ) : (
             resultCourses.map((course, index) => (
                 <CourseDetailedCard
@@ -180,8 +184,8 @@ function CoursesSearchArea({query, handleSubmit}) {
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                 </svg>
             </div>
-            <input value={input} onChange={(e) => handleChange(e)} type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Find your next course!"  />
-            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+            <input value={input} onChange={(e) => handleChange(e)} type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Знайдіть свій курс!"  />
+            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Пошук</button>
         </div>
     </form>
 </>
