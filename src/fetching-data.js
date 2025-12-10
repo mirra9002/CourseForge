@@ -184,12 +184,16 @@ export async function getFilteredCourses(queryString) {
 export async function getCertificate(courseId) {
     const response = await fetch(`${SERVER_URL}/api/courses/${courseId}/cert/`, {
         method: "POST",
+         credentials: 'include',
         headers: {
-            "Accept": "application/pdf",
-        }
+            "Content-Type": "application/json"
+        },
+        body: "{}"
     });
 
-    if (!response.ok) throw new Error("Failed to download certificate");
+    if (!response.ok) {
+        throw new Error("Failed to download certificate");
+    }
 
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
@@ -197,7 +201,9 @@ export async function getCertificate(courseId) {
     const a = document.createElement("a");
     a.href = url;
     a.download = `certificate_${courseId}.pdf`;
+    document.body.appendChild(a);
     a.click();
+    a.remove();
 
     window.URL.revokeObjectURL(url);
 }
