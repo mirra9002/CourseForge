@@ -72,24 +72,29 @@ export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, 
 
     <div
         id="drawer-left-lesson-modules"
-        className={`fixed top-16 left-0 z-10 h-screen p-4 overflow-y-auto transition-transform ${backgroundColor} w-16`}
+        className={`fixed top-16 left-0 z-10 h-screen p-4 overflow-y-auto transition-transform ${backgroundColor} ${width || 'w-16'}`}
         tabIndex={-1}
         aria-labelledby="drawer-left-label"
       >
-        <h4 className={`inline-flex items-center mb-4 text-xl mt-4 font-semibold ${textColor}`}>
-          {/*  text here ?*/}
-        </h4>
+        {data?.title && (
+          <h4 className={`inline-flex items-center mb-6 ml-1 text-xl font-bold mt-4 ${textColor}`}>
+            <img onClick={handleGoModuleClick} src={arrow_back} width={'35hv'} height={'35hv'} className="pr-2 cursor-pointer" />
+            {data.title}
+          </h4>
+        )}
         
 
         <div className="flex flex-col gap-2">
-          {lessonSections.map((lesson, index) => (
+          {lessonSections.map((page, index) => (
             <ModuleItem
               isLesson={false}
-              key={index}
-              title={String(index + 1)}
+              key={page.id || index}
+              id={page.id}
+              title={page.title || String(index + 1)}
+              content={page.type === 'codepractice' ? 'Code' : page.type || ''}
               isOpen={openIndex === index}
               onClick={() => {
-                handleClick(index-1)
+                handleClick(page.id)
               }}
               backgroundColor={openIndex === index ? moduleSelectedBackgroundColor : moduleBackgoundColor}
               hoverBackgroundColor={moduleHoverBackgroundColor}

@@ -101,8 +101,22 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/code',
+  path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId/code',
   element: <PracticeCode />,
+  loader: async ({params}) => {
+    console.log('in PracticeCode loader.........');
+    const lesson = await getLessonById(params.lessonId)
+    const page = await getPageById(params.pageId)
+    const data = {
+      lesson: lesson,
+      page: page
+    }
+    console.log('data in PracticeCode loader', data);
+    if (data.error) {
+      throw new Response("Failed to load", { status: 500 });
+    }
+    return data;
+  },
   errorElement: <Notfound/>
 },
 {

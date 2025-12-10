@@ -44,10 +44,11 @@ export function ModuleItem({ id, isLesson, title, content, isOpen, onClick, back
     
       <div
       onClick={onClick}
-      className={`w-8 h-8 flex items-center justify-center rounded ${backgroundColor} ${hoverBackgroundColor} ${textHeaderColor} cursor-pointer transition-all`}
+      className={`min-w-8 h-8 flex items-center justify-center px-2 rounded ${backgroundColor} ${hoverBackgroundColor} ${textHeaderColor} cursor-pointer transition-all`}
       title={content} // optional tooltip on hover
     >
       <span className="text-sm font-medium">{title}</span>
+      {content && <span className="ml-2 text-xs opacity-70">{content}</span>}
     </div>
     }
     </>

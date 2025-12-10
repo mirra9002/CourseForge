@@ -1,6 +1,7 @@
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
@@ -13,6 +14,7 @@ import {getNextPageId, getPrevPageId, getCurrentPageIndex} from '../utils/getPag
 import { areSetsEqual } from '../utils/areSetsEqual.js';
 import {markPageAsRead} from '../sending-data.js'
 
+
 export default function Lesson() {
     useEffect(() => {window.scrollTo(0,0)},[])
     const params = useParams()
@@ -22,9 +24,12 @@ export default function Lesson() {
 
     const lesson = data.lesson 
     const page = data.page
-    
-    console.log('data', data);
-    
+
+    function buildCodePracticePath(params) {
+        const { courseId, moduleId, lessonId, pageId } = params;
+        return `/course/${courseId}/module/${moduleId}/lesson/${lessonId}/page/${pageId}/code`;
+    }
+
     const currentPageId = Number(params.pageId)
     const nextPageId = getNextPageId(lesson, currentPageId) // next page id or -1 (if this page is the last)
     // const prevPageId = getPrevPageId(lesson, currentPageId) // prev page id or -1 (if this page is the first)
@@ -34,6 +39,33 @@ export default function Lesson() {
         window.scrollTo(0,0)  
     }, [currentPageId])
 
+
+    useEffect(() => {
+        console.log('useEffect triggered', { page, pageType: page?.type, params });
+        if (page && page.type === 'codepractice') {
+            console.log('Redirecting to code practice page');
+            const nav = buildCodePracticePath(params)
+            console.log('Navigation path:', nav);
+            navigate(nav, { replace: true })
+        }
+    }, [page, params.courseId, params.moduleId, params.lessonId, params.pageId, navigate]) 
+
+    console.log('IS CODETASK', page?.type)
+    
+    console.log('data', data);
+    
+    // Return loading state while redirecting for codepractice pages
+    if (page?.type === 'codepractice') {
+        return (
+            <>
+                <Navbar></Navbar>
+                <div className="flex items-center justify-center h-screen">
+                    <p className="text-gray-500">Redirecting to code practice...</p>
+                </div>
+            </>
+        ); 
+    }
+
     async function handleClickNextPage(nextPageId) {
         const res = await markPageAsRead(currentPageId);
         console.log('marked as read:', res);
@@ -42,7 +74,7 @@ export default function Lesson() {
             return
         }
         const finalPageId = nextPageId === null ? currentPageId : nextPageId;
-       
+        
         navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${finalPageId}`)
     }
 
