@@ -25,6 +25,7 @@ import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyC
 import { redirect } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
+import CertValidation from './Pages/CertValidation.jsx';
 
 const router = createBrowserRouter([{
     path: '/',
@@ -164,10 +165,15 @@ const router = createBrowserRouter([{
   }
 },
 {
-  path: "/create/course/:courseId",
-  element: <CreateCourseDetails/>,
-  errorElement: <Notfound/>
+  path: "/certificate",
+  element: <CertValidation/>,
+  errorElement: <Notfound/>,
 }
+// {
+//   path: "/create/course/:courseId",
+//   element: <CreateCourseDetails/>,
+//   errorElement: <Notfound/>
+// }
 ],
 {
   fallbackElement: <div>Loading page...</div>  
