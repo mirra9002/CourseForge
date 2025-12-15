@@ -114,27 +114,26 @@ export default function PracticeCode() {
       const result = await response.json()
       setJobStatus(result)
       
+      // Backend may return either `status` or `state`
+      const status = result.status || result.state
+
       // If job is still processing, continue polling
-      if (result.state === 'EVAL' || result.state === 'PENDING') {
+      if (status === 'EVAL' || status === 'PENDING') {
         setTimeout(() => pollJobStatus(jobIdToPoll), 1000) // Poll every 1 second
-      } else if (result.state === 'SUCCESS') {
-        // Job completed successfully
-        setTestResults(result.result || result)
-        if (result.result?.passed === true || result.result?.all_tests_passed === true) {
-          setShowSuccess(true)
-          setOutput('All tests passed! ✅\n')
-        } else {
-          setOutput(`Tests completed. ${result.result?.message || 'Check results below.'}\n`)
-        }
+      } else if (status === 'SUCCESS') {
+        // Job completed successfully – all tests passed
+        setShowSuccess(true)
+        setOutput('✅ Correct\n')
         setIsSubmitting(false)
-      } else if (result.state === 'FAILURE') {
+      } else if (status === 'FAILURE' || status === 'ERROR') {
         // Job failed
-        setOutput(`Error: ${result.error || result.result?.error || 'Job execution failed'}\n`)
+        setShowSuccess(false)
+        setOutput('❌ Incorrect\n')
         setIsSubmitting(false)
       }
     } catch (error) {
       console.error('Error polling job status:', error)
-      setOutput(`Error polling job status: ${error.message}\n`)
+      setOutput(prev => (prev || '') + `Error polling job status: ${error.message}\n`)
       setIsSubmitting(false)
     }
   }
@@ -151,14 +150,15 @@ export default function PracticeCode() {
     }
 
     setIsRunning(true)
-    setOutput('Running code with public samples...\n')
+    setOutput('Running code...\n')
     setTestResults(null)
     setShowSuccess(false)
     setJobId(null)
     setJobStatus(null)
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/submit/`, {
+      // Use /run endpoint to execute code against public samples
+      const response = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/run/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -175,24 +175,17 @@ export default function PracticeCode() {
 
       const result = await response.json()
       
-      if (response.status === 201) {
-        // Synchronous response for non-code tasks or immediate result
-        setTestResults(result)
-        if (result.passed === true || result.all_tests_passed === true) {
-          setShowSuccess(true)
-          setOutput('All tests passed! ✅\n')
-        } else {
-          setOutput(`Tests completed. ${result.message || 'Some tests did not pass.'}\n`)
-        }
-      } else if (response.status === 202) {
-        // Asynchronous - got job_id
-        const jobId = result.job_id
-        setJobId(jobId)
-        setOutput(`Code submitted! Job ID: ${jobId}\nPolling status...\n`)
-        // Start polling
-        pollJobStatus(jobId)
+      // For Run, just show stdout/stderr from the first sample like a normal program execution
+      if (Array.isArray(result.results) && result.results.length > 0) {
+        const r = result.results[0]
+        const consoleText =
+          (r.stdout || '') +
+          (r.stderr ? `\n${r.stderr}` : '')
+        setOutput(consoleText || 'Run completed but no output was produced.\n')
+      } else if (result.stdout || result.stderr) {
+        setOutput(`${result.stdout || ''}${result.stderr ? `\n${result.stderr}` : ''}`)
       } else {
-        setOutput(`Error: ${result.detail || result.message || 'Failed to run code'}\n`)
+        setOutput('Run completed but no output was produced.\n')
       }
     } catch (error) {
       console.error('Error running code:', error)
@@ -221,7 +214,8 @@ export default function PracticeCode() {
     setJobStatus(null)
 
     try {
-      const response = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/submit/`, {
+      // 1) First run code on public samples and show stdout in console
+      const runResponse = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/run/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -232,36 +226,55 @@ export default function PracticeCode() {
             language: selectedLanguage,
             code: userCode
           },
-          use_public_samples: false
+          use_public_samples: true
+        })
+      })
+
+      const runResult = await runResponse.json()
+      
+      // Show only stdout/stderr from the first sample run before submission
+      if (Array.isArray(runResult.results) && runResult.results.length > 0) {
+        const r = runResult.results[0]
+        const consoleText =
+          (r.stdout || '') +
+          (r.stderr ? `\n${r.stderr}` : '')
+        setOutput(consoleText || 'Run completed but no output was produced.\n')
+      } else if (runResult.stdout || runResult.stderr) {
+        setOutput(`${runResult.stdout || ''}${runResult.stderr ? `\n${runResult.stderr}` : ''}`)
+      }
+
+      // 2) Then submit the solution for full evaluation
+      const response = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/submit/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          payload: {
+            language: selectedLanguage,
+            code: userCode
+          }
         })
       })
 
       const result = await response.json()
       
-      if (response.status === 201) {
-        // Synchronous response
-        setTestResults(result)
-        if (result.passed === true || result.all_tests_passed === true) {
-          setShowSuccess(true)
-          setOutput('All tests passed! ✅\n')
-        } else {
-          setOutput(`Tests completed. ${result.message || 'Some tests did not pass.'}\n`)
-        }
-        setIsSubmitting(false)
-      } else if (response.status === 202) {
+      if (response.ok && result.job_id) {
         // Asynchronous - got job_id
         const jobId = result.job_id
         setJobId(jobId)
-        setOutput(`Solution submitted! Job ID: ${jobId}\nPolling status...\n`)
+        // Keep console output from the last run; just note that evaluation started
+        setOutput(prev => (prev || '') + '\nEvaluating solution...\n')
         // Start polling
         pollJobStatus(jobId)
       } else {
-        setOutput(`Error: ${result.detail || result.message || 'Failed to submit code'}\n`)
+        setOutput(prev => (prev || '') + `Error: ${result.detail || result.message || 'Failed to submit code'}\n`)
         setIsSubmitting(false)
       }
     } catch (error) {
       console.error('Error submitting code:', error)
-      setOutput(`Error: ${error.message}\n`)
+      setOutput(prev => (prev || '') + `Error: ${error.message}\n`)
       setIsSubmitting(false)
     }
   }
@@ -476,44 +489,7 @@ export default function PracticeCode() {
               <>
                 <pre className="whitespace-pre-wrap">{output || 'Output will appear here...'}</pre>
                 
-                {/* Job Status */}
-                {jobStatus && (
-                  <div className="mt-4 p-3 bg-[#252526] rounded border border-gray-600">
-                    <div className="font-semibold mb-2 text-yellow-400">Job Status:</div>
-                    <div className="text-xs space-y-1">
-                      <div>State: <span className="font-semibold">{jobStatus.state}</span></div>
-                      {jobStatus.job_id && <div>Job ID: <span className="font-mono text-xs">{jobStatus.job_id}</span></div>}
-                      {jobStatus.state === 'EVAL' || jobStatus.state === 'PENDING' ? (
-                        <div className="text-yellow-400 animate-pulse">Processing...</div>
-                      ) : jobStatus.state === 'SUCCESS' ? (
-                        <div className="text-green-400">✅ Completed</div>
-                      ) : jobStatus.state === 'FAILURE' ? (
-                        <div className="text-red-400">❌ Failed</div>
-                      ) : null}
-                    </div>
-                  </div>
-                )}
-
-                {/* Test Results */}
-                {testResults && !showSuccess && (
-                  <div className="mt-4">
-                    <div className="font-semibold mb-2 text-yellow-400">Test Results:</div>
-                    {testResults.test_results && testResults.test_results.map((result, idx) => (
-                      <div key={idx} className="mb-2 text-xs p-2 bg-[#252526] rounded">
-                        <div className={result.passed ? 'text-green-400' : 'text-red-400'}>
-                          Test {idx + 1}: {result.passed ? '✅ Passed' : '❌ Failed'}
-                        </div>
-                        {result.error && <div className="text-red-300 ml-4 mt-1">{result.error}</div>}
-                        {result.output && <div className="text-gray-400 ml-4 mt-1">Output: {result.output}</div>}
-                      </div>
-                    ))}
-                    {testResults.score !== undefined && (
-                      <div className="mt-2 text-sm font-semibold text-blue-400">
-                        Score: {testResults.score} / {taskData?.max_score || 100}
-                      </div>
-                    )}
-                  </div>
-                )}
+                {/* No verbose Job Status / Test Results UI – console output only */}
               </>
             )}
           </div>
