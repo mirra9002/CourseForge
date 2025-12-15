@@ -49,32 +49,32 @@ export default function CourseFilters({filters, handleSetFilters}) {
                 <p class="mb-0 text-gray-500 dark:text-gray-400">Рівень</p>
                 <br/>
                 <div class="flex items-center mb-2">
-                    <input onChange={() => toggleDifficulty('easy')} id="default-checkbox" type="checkbox" value="" class=" cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label for="default-checkbox" class=" cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Початковий</label>
+                    <input onChange={() => toggleDifficulty('easy')} id="difficulty-easy" type="checkbox" value="" class=" cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    <label for="difficulty-easy" class=" cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Початковий</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input onChange={() => toggleDifficulty('mid')} id="default-checkbox" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label for="default-checkbox" class=" cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Середній</label>
+                    <input onChange={() => toggleDifficulty('mid')} id="difficulty-mid" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    <label for="difficulty-mid" class=" cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Середній</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input onChange={() => toggleDifficulty('hard')} id="default-checkbox" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label for="default-checkbox" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Складний</label>
+                    <input onChange={() => toggleDifficulty('hard')} id="difficulty-hard" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    <label for="difficulty-hard" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Складний</label>
                 </div>      
 
                 <br/>
                 <p class="mb-0 text-gray-500 dark:text-gray-400">Тип</p>
                 <br/>
                 <div class="flex items-center mb-2">
-                    <input onChange={() => toggleType('practice')} id="default-checkbox" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label for="default-checkbox" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Практичні</label>
+                    <input onChange={() => toggleType('practice')} id="type-practice" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    <label for="type-practice" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Практичні</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input onChange={() => toggleType('theory')} id="default-checkbox" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label for="default-checkbox" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Теоретичні</label>
+                    <input onChange={() => toggleType('theory')} id="type-theory" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    <label for="type-theory" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Теоретичні</label>
                 </div>
                 <div class="flex items-center mb-2">
-                    <input onChange={() => toggleType('dev')} id="default-checkbox" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label for="default-checkbox" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Розробка</label>
+                    <input onChange={() => toggleType('dev')} id="type-dev" type="checkbox" value="" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    <label for="type-dev" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Розробка</label>
                 </div>
 
                 {/* <br/>
