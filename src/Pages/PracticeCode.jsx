@@ -473,7 +473,7 @@ export default function PracticeCode() {
             <button
               onClick={clearConsole}
               type="button"
-              className="w-[100px] text-blue-400 bg-transparent hover:bg-[#303030] font-medium rounded-md text-sm px-4 py-2 border border-gray-600"
+              className="w-[100px] text-blue-400 bg-transparent hover:bg-[#303030] dark:hover:bg-gray-700 font-medium rounded-md text-sm px-4 py-2 border border-gray-600 dark:border-gray-600"
             >
               Clear
             </button>

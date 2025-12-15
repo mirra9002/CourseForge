@@ -118,11 +118,11 @@ export default function Lesson() {
             handleClick = {handleClickLeftDrawer}
             data = {lesson}
             width={"w-80"}
-            backgroundColor={'bg-gray-100'} 
-            textColor={"text-gray-700"} 
-            moduleBackgoundColor={"bg-gray-200"} 
-            moduleHoverBackgroundColor={"hover:bg-gray-300"} 
-            moduleSelectedBackgroundColor={"bg-gray-300"}
+            backgroundColor={'bg-gray-100 dark:bg-gray-800'} 
+            textColor={"text-gray-700 dark:text-gray-200"} 
+            moduleBackgoundColor={"bg-gray-200 dark:bg-gray-700"} 
+            moduleHoverBackgroundColor={"hover:bg-gray-300 dark:hover:bg-gray-600"} 
+            moduleSelectedBackgroundColor={"bg-gray-300 dark:bg-gray-600"}
          />
          <MainArea 
             title={data.page.title} 
@@ -144,8 +144,8 @@ export default function Lesson() {
 function CodeBlock(props){
     return(<>
     
-    <div className="relative mt-2 mb-4 block max-w-full p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 ">
-        <code className="text-sm whitespace-pre">{props.data}</code>
+    <div className="relative mt-2 mb-4 block max-w-full p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-sm shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700 ">
+        <code className="text-sm whitespace-pre dark:text-gray-200">{props.data}</code>
       </div>
 
     </>)
@@ -186,7 +186,7 @@ function MainArea(props){
 
     return(<>
     
-    <div class='ml-95 mt-15 mr-35 mb-15'>
+    <div class='ml-95 mt-15 mr-35 mb-15 dark:bg-gray-900 min-h-screen'>
         <SmallHeading data={title}></SmallHeading>
         
         {data.data.map((element, index) => {
@@ -269,8 +269,8 @@ function Task({task}){
     return (
 
         <div className="space-y-6 mt-8 ">
-            <div  className="p-4 border border-gray-300 rounded-md shadow-sm">
-                    <h3 className="font-semibold text-gray-800 mb-3">{data.title}</h3>
+            <div  className="p-4 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm dark:bg-gray-800">
+                    <h3 className="font-semibold text-gray-800 dark:text-white mb-3">{data.title}</h3>
                     
                     {taskType === 'single' ? variants.map(variant => {
                         return <RadioButton 
@@ -293,7 +293,7 @@ function Task({task}){
                     {isCorrectAnswer === false ? <SubmitAlert isCorrect={false} boldText={'Неправильно!'} /> : null}
                     {isCorrectAnswer === true ? <SubmitAlert isCorrect={true} boldText={'Правильно!'}/> : null}
 
-                    <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:text-white dark:border-blue-600">
                     Check answer
                 </button>
                 </div>

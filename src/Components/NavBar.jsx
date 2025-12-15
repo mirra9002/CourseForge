@@ -44,7 +44,7 @@ export default function Navbar() {
             <>
             <div className="ml-22  relative flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse group">
             {/* Clickable avatar */}
-            <div onClick={() => setProfileMenuOpen(prev=>!prev)} className="cursor-pointer relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 hover:bg-gray-200 rounded-full dark:bg-gray-600">
+            <div onClick={() => setProfileMenuOpen(prev=>!prev)} className="cursor-pointer relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 hover:bg-gray-200 rounded-full dark:bg-gray-600 dark:hover:bg-gray-700">
                 <span className="font-medium text-gray-600 dark:text-gray-300">
                 {userInitials || null}
                 </span>
@@ -76,7 +76,7 @@ export default function Navbar() {
                        </ul>
                     <div className="py-1">
                         <a onClick={LogOutUser} 
-                        className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Вийти</a>
+                        className="cursor-pointer flex text-sm text-gray-700 dark:text-gray-200 items-center gap-2 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><img src={icon_logout_black100} className="h-4" />Війти</a>
                     </div>
                 </div>
             </div>

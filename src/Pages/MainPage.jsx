@@ -18,7 +18,7 @@ export default function Mainpage() {
     return <>
     {/* <AuthInit /> */}
     <Navbar/>
-    <div className='bg-gray-100 min-h-screen '>
+    <div className='bg-gray-100 dark:bg-gray-900 min-h-screen '>
       
         <Topsearcharea courses={courses}/>
         <div className="relative flex justify-center mt-35">
@@ -29,7 +29,7 @@ export default function Mainpage() {
           />
         </div>
         <Topcourses courses={courses} />
-          <h2 class="text-4xl font-bold text-center mt-25 mb-15 text-[#0b1d3a] ">Популярні напрямки</h2>
+          <h2 class="text-4xl font-bold text-center mt-25 mb-15 text-[#0b1d3a] dark:text-white ">Популярні напрямки</h2>
           <div class="flex justify-center my-2">
             <TopCategories/>
           </div>

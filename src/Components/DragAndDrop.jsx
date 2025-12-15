@@ -117,7 +117,7 @@ export default function DragAndDrop({
             onDragStart={(e) => handleDragStart(e, item.id)}
             onDragEnd={handleDragEnd}
             onDoubleClick={() => setEditingId(item.id)}
-            className="cursor-drag flex items-center justify-between rounded-lg border border-slate-300 bg-white px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing"
+            className="cursor-drag flex items-center justify-between rounded-lg border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 shadow-sm cursor-grab active:cursor-grabbing"
           >
             {editingId === item.id ? (
               <input
@@ -128,11 +128,11 @@ export default function DragAndDrop({
                   if (e.key === "Enter") handleRename(item.id, e.target.value);
                   if (e.key === "Escape") setEditingId(null);
                 }}
-                className="w-full border border-slate-300 rounded px-2 py-1 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-300 dark:border-gray-600 rounded px-2 py-1 text-slate-800 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             ) : (
               <>
-                <span className="text-slate-800 select-none">{item.title}</span>
+                <span className="text-slate-800 dark:text-white select-none">{item.title}</span>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -147,7 +147,7 @@ export default function DragAndDrop({
                   >
                     <img src={iconDelete} />
                   </button>
-                  <span className="text-slate-400 select-none">⋮⋮</span>
+                  <span className="text-slate-400 dark:text-gray-500 select-none">⋮⋮</span>
                 </div>
               </>
             )}
@@ -158,7 +158,7 @@ export default function DragAndDrop({
       <button
         type="button"
         onClick={storedInstanced === "MODULES" ? handleAddModule : handleAddLesson}
-        className="mt-4 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        className="mt-4 inline-flex items-center rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 px-4 py-2 text-white"
       >
         Додати
       </button>

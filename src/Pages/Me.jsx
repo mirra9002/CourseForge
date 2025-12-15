@@ -35,7 +35,7 @@ export default function ProfileCard() {
               />
               <label
                 htmlFor="avatar"
-                className="absolute -right-1 -bottom-1 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white text-gray-700 shadow-md ring-1 ring-gray-200 transition hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:ring-gray-600"
+                className="absolute -right-1 -bottom-1 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white text-gray-700 shadow-md ring-1 ring-gray-200 transition hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:ring-gray-600 dark:hover:bg-gray-600"
                 title="Змінити фото"
               >
                 {/* simple camera icon via CSS */}
