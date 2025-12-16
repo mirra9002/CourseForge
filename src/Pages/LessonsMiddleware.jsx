@@ -36,7 +36,7 @@ export default function LessonsMiddleware() {
   return (
     <>
     <Navbar/>
-    <div class='ml-20 mt-15 mr-35 mb-15'>
+    <div class='ml-20 mt-15 mr-35 mb-15 dark:bg-gray-900 min-h-screen'>
       <BreadCrump latestStage={'module'} courseId={courseId}/>
       
         <h2 class="pb-5 text-4xl font-bold dark:text-white"><span class="text-blue-600 font-medium">{`#${moduleOrder}`}</span> {data.title}</h2>
@@ -76,7 +76,7 @@ function LessonSection({lesson, handleChangeLessonCompletion, handleGoToLessonCl
     }
     return(<>
     <div onClick={() => handleGoToLessonClick(lesson.id)}>
-    <li class="mb-10 ms-6  hover:bg-gray-100" >            
+    <li class="mb-10 ms-6 hover:bg-gray-100 dark:hover:bg-gray-800" >            
       <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
         <IconIsCompleted isCompleted={isCompleted} id={lesson.id} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
       </span>

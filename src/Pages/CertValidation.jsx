@@ -64,14 +64,14 @@ export default function CertValidation() {
     <>
       <Navbar />
 
-      <div className="mt-20 flex justify-center items-center">
-        <div className="w-full max-w-xl bg-white border border-gray-200 rounded-xl shadow-sm p-10">
+      <div className="mt-20 flex justify-center items-center dark:bg-gray-900 min-h-screen">
+        <div className="w-full max-w-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-10">
 
-          <h2 className="text-3xl font-bold text-center mb-4 text-gray-900">
+          <h2 className="text-3xl font-bold text-center mb-4 text-gray-900 dark:text-white">
             Перевірка сертифіката
           </h2>
 
-          <p className="text-center text-gray-500 mb-8">
+          <p className="text-center text-gray-500 dark:text-gray-400 mb-8">
             Завантажте PDF-файл сертифіката для перевірки
           </p>
 
@@ -80,10 +80,10 @@ export default function CertValidation() {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onClick={() => inputRef.current.click()}
-            className="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-xl p-10 bg-gray-50 hover:bg-gray-100 transition cursor-pointer"
+            className="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-10 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition cursor-pointer"
           >
             <svg
-              className="w-12 h-12 text-gray-400"
+              className="w-12 h-12 text-gray-400 dark:text-gray-500"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
@@ -96,7 +96,7 @@ export default function CertValidation() {
               />
             </svg>
 
-            <p className="text-gray-600 text-center">
+            <p className="text-gray-600 dark:text-gray-300 text-center">
               {file ? file.name : "Перетягніть файл сюди або натисніть для завантаження"}
             </p>
 
@@ -134,10 +134,10 @@ export default function CertValidation() {
             <div
               className={`mt-10 p-5 rounded-lg border text-center ${
                 status === "success"
-                  ? "bg-green-100 border-green-300 text-green-800"
+                  ? "bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 text-green-800 dark:text-green-300"
                   : status === "error"
-                  ? "bg-red-100 border-red-300 text-red-800"
-                  : "bg-gray-100 border-gray-200 text-gray-600"
+                  ? "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300"
+                  : "bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400"
               }`}
             >
               {message}

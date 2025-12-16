@@ -20,7 +20,7 @@ export default function CreateCourseDetails() { // main component
     <NavBar/>
     <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
       <CourseCreationSteps handleStepChange={(idx) => setCreationStep(idx)}/>
-      <div className="flex flex-col gap-4 overflow-y-auto max-h-[815px] bg-white p-6 rounded-lg">
+      <div className="flex flex-col gap-4 overflow-y-auto max-h-[815px] bg-white dark:bg-gray-800 p-6 rounded-lg">
         {stepMap[creationStep]}
       </div>
     </div>
@@ -56,7 +56,7 @@ function CourseDetails() { // (1)
     
     return<>
     <h2 class="text-4xl font-bold dark:text-white">Основна інформація про курс</h2>
-    <p className="text-3xs mb-6 text-gray-600 max-w-200">Вкажіть основні відомості про ваш курс: назву, короткий опис та категорію. Це допоможе студентам зрозуміти, про що цей курс і чого очікувати від навчання.</p>
+    <p className="text-3xs mb-6 text-gray-600 dark:text-gray-400 max-w-200">Вкажіть основні відомості про ваш курс: назву, короткий опис та категорію. Це допоможе студентам зрозуміти, про що цей курс і чого очікувати від навчання.</p>
     <form class="max-w-xl w-3xl mx-auto mr-72">
          <div class="mb-5">
             <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Назва курсу:</label>
@@ -89,7 +89,7 @@ function ModulesDetails() {
   return (
     <>
       <h2 className="text-4xl font-bold dark:text-white">Модулі курсу</h2>
-      <p class="text-3xs mb-6 text-gray-600 max-w-200">Модулі — це основні розділи вашого курсу. Вони допомагають структурувати навчання на великі теми чи блоки, всередині яких ви зможете створювати окремі уроки та сторінки. Додайте перші модулі, щоб окреслити головні теми курсу.</p>
+      <p class="text-3xs mb-6 text-gray-600 dark:text-gray-400 max-w-200">Модулі — це основні розділи вашого курсу. Вони допомагають структурувати навчання на великі теми чи блоки, всередині яких ви зможете створювати окремі уроки та сторінки. Додайте перші модулі, щоб окреслити головні теми курсу.</p>
 
       <div className="max-w-xl w-3xl mx-auto mr-72">
         <DragAndDrop
@@ -115,7 +115,7 @@ function LessonsDetails() { // (3)
 
     return<>
     <h2 className="text-4xl font-bold dark:text-white">Уроки курсу</h2>
-    <p class="text-3xs mb-6 text-gray-600 max-w-200">Уроки — це окремі частини всередині модулів. Вони деталізують навчальний матеріал та дозволяють крок за кроком пояснити кожну тему. У кожному уроці ви зможете додати текст, відео, завдання чи інші інтерактивні елементи. Додаючи уроки, ви формуєте логічну послідовність навчання для студентів</p>
+    <p class="text-3xs mb-6 text-gray-600 dark:text-gray-400 max-w-200">Уроки — це окремі частини всередині модулів. Вони деталізують навчальний матеріал та дозволяють крок за кроком пояснити кожну тему. У кожному уроці ви зможете додати текст, відео, завдання чи інші інтерактивні елементи. Додаючи уроки, ви формуєте логічну послідовність навчання для студентів</p>
     
     <h3 className="text-xl font-bold dark:text-white mb-4">Додайти уроки до кожного модуля</h3>
     <div className="max-w-xl w-5xl mx-auto mr-72">
@@ -137,13 +137,13 @@ function CourseCreationSteps({handleStepChange}) { // main left drawer for cours
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-64 -ml-35 border-r border-gray-200 bg-white p-4">
-        <h2 className="text-lg font-semibold mb-4">Сплануйте курс</h2>
+      <aside className="w-64 -ml-35 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+        <h2 className="text-lg font-semibold mb-4 dark:text-white">Сплануйте курс</h2>
         <ul className="space-y-2">
           {steps.map((step, index) => (
             <li key={index} onClick={() => {setActiveStep(index)
                handleStepChange(index)}} className={`cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition
-              ${activeStep === index ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}>
+              ${activeStep === index ? "bg-blue-600 text-white" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"}`}>
               {step}
             </li>
           ))}
@@ -204,10 +204,10 @@ function ModulesList({ modules }) {
             <li key={idx}>
               <a
                 onClick={() => setSelectedModule(idx)}
-                className={`transition max-w-100 w-60 cursor-pointer inline-block px-4 py-3 border-1 border-gray-400 ${
+                className={`transition max-w-100 w-60 cursor-pointer inline-block px-4 py-3 border-1 border-gray-400 dark:border-gray-600 ${
                   selectedModule === idx
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-white text-gray-500 hover:bg-gray-100"
+                    ? "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                    : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 } rounded-lg`}
               >
                 {module.length<=40 ? module : module.substring(0,40)+"..."}
@@ -217,7 +217,7 @@ function ModulesList({ modules }) {
         </ul>
 
         {/* Right: lessons for the selected module */}
-        <div className="p-4 -mr-45 max-w-150 bg-gray-50 text-medium text-gray-500 rounded-lg w-full">
+        <div className="p-4 -mr-45 max-w-150 bg-gray-50 dark:bg-gray-800 text-medium text-gray-500 dark:text-gray-300 rounded-lg w-full">
           <DragAndDrop
             storedInstanced={"LESSONS"}
             initialModules={currentLessons}

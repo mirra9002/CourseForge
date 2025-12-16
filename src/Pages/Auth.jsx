@@ -43,7 +43,7 @@ export default function Auth() {
     return (
     <>
     <Navbar/>
-    <div className='-mt-20'>
+    <div className='-mt-20 dark:bg-gray-900'>
         {isRegister === 1 ? 
         <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} handleLogin={(data) => handleLogin(data)} /> :
         <LogIn input={input} handleChange={handleChange} loginUser={(data) => handleLogin(data)}/>}
@@ -108,7 +108,7 @@ function Register({input, handleChange, registerUser, handleLogin}) {
 
     return  <>
         <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-        <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
+        <div class="w-full max-w-md p-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md">
             <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Зарєструватися</h2>
         
             <form class="space-y-6">
@@ -169,7 +169,7 @@ function LogIn({input, handleChange, loginUser}) {
     
     return  <>
     <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-    <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
+    <div class="w-full max-w-md p-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md">
         <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-6 text-center">Увійти</h2>
     
         <form class="space-y-6">

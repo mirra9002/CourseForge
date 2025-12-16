@@ -24,11 +24,11 @@ export default function MyCourses() {
   return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50 py-8">
+        <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
           <div className="container mx-auto px-4">
-            <h1 className="text-2xl font-bold mb-2">Мої курси</h1>
+            <h1 className="text-2xl font-bold mb-2 dark:text-white">Мої курси</h1>
               
-              <div className="border-b border-gray-300 mb-6"></div>
+              <div className="border-b border-gray-300 dark:border-gray-700 mb-6"></div>
                 
               <CoursesTabs selectedTab={selectedTab} setSelectedTab={(idx) => setTab(idx)}/>
 
@@ -46,10 +46,10 @@ export default function MyCourses() {
 function CoursesTabs({selectedTab, setSelectedTab}) {
   return(
     <div className="flex space-x-6 mb-8">
-      <button onClick={() => setSelectedTab(0)} className={`pb-2 border-b-2 ${selectedTab===0 ? "border-blue-600 text-blue-600 hover:text-blue-700" : "border-transparent text-gray-600 hover:text-gray-700"} font-medium cursor-pointer`}>
+      <button onClick={() => setSelectedTab(0)} className={`pb-2 border-b-2 ${selectedTab===0 ? "border-blue-600 text-blue-600 hover:text-blue-700 dark:hover:text-blue-500" : "border-transparent text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"} font-medium cursor-pointer`}>
           Навчаюся
       </button>
-      <button onClick={() => setSelectedTab(1)} className={` pb-2 border-b-2 ${selectedTab===1 ? "border-blue-600 text-blue-600 hover:text-blue-700" : "border-transparent text-gray-600 hover:text-gray-700"} font-medium cursor-pointer`}>
+      <button onClick={() => setSelectedTab(1)} className={` pb-2 border-b-2 ${selectedTab===1 ? "border-blue-600 text-blue-600 hover:text-blue-700 dark:hover:text-blue-500" : "border-transparent text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"} font-medium cursor-pointer`}>
           Завершені
       </button>
     </div>

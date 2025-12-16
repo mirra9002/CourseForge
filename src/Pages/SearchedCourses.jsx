@@ -122,12 +122,12 @@ export default function SearchedCourses() {
     return (
     <>
     <Navbar/>
-    <div className="m-8">
+    <div className="m-8 dark:bg-gray-900 min-h-screen">
     <CoursesSearchArea query={searchQuery || ''} handleSubmit={handleSearch} />
 
     <hr className="mt-12 border-t-1 border-gray-300 dark:border-gray-700 w-3/4 mx-auto" />
     {/* {resultCourses && resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2> : null} */}
-        <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2>
+        <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] dark:text-white ">Курси ({resultCourses.length})</h2>
     <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
         {/* Filters section */}
         {/* {resultCourses && resultCourses.length > 0 ? <div className="w-72">
@@ -142,7 +142,7 @@ export default function SearchedCourses() {
             <div className="w-248">
 
             
-            <p className="text-center text-gray-500 text-lg">
+            <p className="text-center text-gray-500 dark:text-gray-400 text-lg">
                 Нічого не знайдено по запиту <strong>"{searchQuery.trim() || ' '}"</strong>. Спробуйте інші фільтри.
             </p>
             </div>
@@ -197,11 +197,11 @@ export function CourseDetailedCard({course, handleClick}){
   return (
     <>
     <div onClick={() =>{handleClick(courseId)}} class="cursor-pointer w-248 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-        <div class="hover:bg-blue-700 flex flex-wrap text-sm font-medium text-center text-gray-100 border-b border-gray-200 rounded-t-lg bg-blue-600 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab">
+        <div class="hover:bg-blue-700 dark:hover:bg-blue-800 flex flex-wrap text-sm font-medium text-center text-gray-100 border-b border-gray-200 rounded-t-lg bg-blue-600 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab">
             <p class="inline-block p-2 pl-8">{course.category}</p>
         </div>
         <div id="defaultTabContent">
-            <div class=" p-4 bg-white rounded-lg md:p-8 hover:bg-gray-50 dark:bg-gray-800" id="about" role="tabpanel" aria-labelledby="about-tab">
+            <div class=" p-4 bg-white rounded-lg md:p-8 hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700" id="about" role="tabpanel" aria-labelledby="about-tab">
                 <h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">{course.title}</h2>
                 <p class="mb-3 text-gray-500 dark:text-gray-400">{course.description}</p>
                 <a href="#" class="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
