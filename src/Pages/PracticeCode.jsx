@@ -31,7 +31,8 @@ export default function PracticeCode() {
   const codeMeta = taskData?.code_meta || {}
   const availableLanguages = codeMeta.languages || ['python']
   const samples = taskData?.samples || []
-  const snippets = taskData?.snippets || []
+  // Prefer code_meta.snippets if present; otherwise fall back to taskData.snippets
+  const snippets = (codeMeta?.snippets?.length ? codeMeta.snippets : taskData?.snippets) || []
 
   // Debug: log snippets to see what we're getting
   useEffect(() => {
@@ -62,16 +63,17 @@ export default function PracticeCode() {
   const loadTemplate = (language, snippetsArray) => {
     if (snippetsArray && snippetsArray.length > 0) {
       // First try to find starter template for selected language
+      console.log('SNIPPETS AEE',snippetsArray );
       let snippet = snippetsArray.find(s => s.language === language && s.kind === 'starter')
-      
+      console.log(snippet);
       // If no starter found, try to find any snippet for selected language
       if (!snippet) {
         snippet = snippetsArray.find(s => s.language === language)
       }
       
-      if (snippet && snippet.content) {
+      if (snippet && snippet.code) {
         console.log('Loading template for language:', language, snippet)
-        return snippet.content
+        return snippet.code
       } else {
         console.log('No template found for language:', language, 'Available snippets:', snippetsArray)
         return ''
@@ -82,11 +84,12 @@ export default function PracticeCode() {
 
   // Load code template/snippet when language changes or snippets change
   useEffect(() => {
-    if (snippets && snippets.length > 0) {
-      const template = loadTemplate(selectedLanguage, snippets)
-      if (template) {
-        setUserCode(template)
-      }
+    if (!snippets || snippets.length === 0) return
+
+    const template = loadTemplate(selectedLanguage, snippets)
+    // Only set when we actually have non-empty code to avoid clearing user edits
+    if (template && template.trim()) {
+      setUserCode(template)
     }
   }, [selectedLanguage, snippets])
 
@@ -312,7 +315,7 @@ export default function PracticeCode() {
     }
   }
 
- 
+//console.log(taskData);
    
   return (
   <>
@@ -324,7 +327,7 @@ export default function PracticeCode() {
           currentPageIndex={currentPageIndex}
           handleClick={handleClickLeftDrawer}
           data={lesson}
-          width={"w-80"}
+          width={"w-48"}
           backgroundColor={'bg-[#1e1e1e]'} 
           textColor={"text-gray-100"} 
           moduleBackgoundColor={"bg-[#303030]"} 
@@ -332,7 +335,7 @@ export default function PracticeCode() {
           moduleSelectedBackgroundColor={"bg-[#404040]"}
           moduleHeaderTextColor={"text-gray-100"}
         />
-        <div className="flex bg-[#1e1e1e] w-full h-screen p-2 gap-2 pl-80">
+        <div className="flex bg-[#1e1e1e] w-full h-screen p-2 gap-2 pl-50">
 
       {/* Left: Task Description */}
       <div className="flex flex-col w-96 border-2 border-gray-600 bg-[#1e1e1e] overflow-auto">
@@ -403,6 +406,7 @@ export default function PracticeCode() {
               )}
               <button
                 onClick={() => {
+
                   const template = loadTemplate(selectedLanguage, snippets)
                   setUserCode(template)
                 }}

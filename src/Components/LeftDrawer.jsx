@@ -9,7 +9,7 @@ export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, 
   const [openIndex, setOpenIndex] = useState(null);
   const navigate = useNavigate()
   const params = useParams()
-  console.log('LEFT D', data);
+  console.log('LEFT D', currentPageIndex);
 
   useEffect(() => {
     const drawerEl = document.getElementById("drawer-left-lesson-modules");
@@ -53,6 +53,7 @@ export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, 
             id={lesson.id}
             isLesson={true}
             key={index}
+            pageNumber={index + 1}
             title={lesson.title}
             content={lessonTypePrettyPrinter(lesson.type)}
             isOpen={openIndex === index}
@@ -90,6 +91,7 @@ export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, 
               isLesson={false}
               key={page.id || index}
               id={page.id}
+              pageNumber={index + 1}
               title={page.title || String(index + 1)}
               content={page.type === 'codepractice' ? 'Code' : page.type || ''}
               isOpen={openIndex === index}

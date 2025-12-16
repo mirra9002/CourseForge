@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 
-export function ModuleItem({ id, isLesson, title, content, isOpen, onClick, backgroundColor, hoverBackgroundColor, textHeaderColor, textColor }) {
+export function ModuleItem({ id, isLesson, title, content, isOpen, onClick, backgroundColor, hoverBackgroundColor, textHeaderColor, textColor, pageNumber }) {
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
 
@@ -19,7 +19,6 @@ export function ModuleItem({ id, isLesson, title, content, isOpen, onClick, back
   
     <div
         onClick={() => {
-          console.log('MODULEITEM', id);
           onClick(id)
         }}
         className={`rounded ${backgroundColor} ${hoverBackgroundColor} ${textHeaderColor} cursor-pointer transition-all px-4 py-2 overflow-hidden`}
@@ -44,11 +43,11 @@ export function ModuleItem({ id, isLesson, title, content, isOpen, onClick, back
     
       <div
       onClick={onClick}
-      className={`min-w-8 h-8 flex items-center justify-center px-2 rounded ${backgroundColor} ${hoverBackgroundColor} ${textHeaderColor} cursor-pointer transition-all`}
+      className={`min-w-8 h-12 flex items-center justify-center px-2 rounded ${backgroundColor} ${hoverBackgroundColor} ${textHeaderColor} cursor-pointer transition-all`}
       title={content} // optional tooltip on hover
     >
-      <span className="text-sm font-medium">{title}</span>
-      {content && <span className="ml-2 text-xs opacity-70">{content}</span>}
+      <span className="text-sm font-medium">{`${pageNumber}`}</span>
+      {/* {content && <span className="ml-2 text-xs opacity-70">{content}</span>} */}
     </div>
     }
     </>
