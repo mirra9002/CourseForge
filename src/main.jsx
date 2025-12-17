@@ -21,6 +21,7 @@ import MyCourses from './Pages/MyCourses.jsx';
 import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import LessonsMiddleware from './Pages/LessonsMiddleware.jsx'
 import CoursesByCategory from './Pages/CoursesByCategory.jsx';
+import Documentation from './Pages/Documentation.jsx';
 import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById, getModuleById, getAllCoursesLogged} from './fetching-data.js';
 import { redirect } from 'react-router-dom';
 
@@ -179,6 +180,11 @@ const router = createBrowserRouter([{
   }
 },
 {
+  path: '/documentation',
+  element: <Documentation/>,
+  errorElement: <Notfound/>
+},
+{
   path: "/certificate",
   element: <CertValidation/>,
   errorElement: <Notfound/>,
@@ -193,16 +199,13 @@ const router = createBrowserRouter([{
   fallbackElement: <div>Loading page...</div>  
 })
 
-const CLIENT_ID = '963435779673-dctd1ha9ecqprc47gai8ccr4gu8ae89r.apps.googleusercontent.com'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <GoogleOAuthProvider clientId={CLIENT_ID}>
         <App>
           <RouterProvider router={router} />
         </App>  
-      </GoogleOAuthProvider>
     </Provider>
   </StrictMode>,
 )

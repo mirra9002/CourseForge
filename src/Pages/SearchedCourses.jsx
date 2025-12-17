@@ -194,18 +194,29 @@ function CoursesSearchArea({query, handleSubmit}) {
 export function CourseDetailedCard({course, handleClick}){
     const courseId = course.id
     console.log(courseId);
+    function courseCategoryPrettyWriter(category){
+        if(category === 'dev'){
+            return "Розробка"
+        } else if(category === 'theory'){
+            return "Теорія"
+        } else if(category === 'practice'){
+            return "Практика"
+        } else {
+            return " "
+        }
+    }
   return (
     <>
     <div onClick={() =>{handleClick(courseId)}} class="cursor-pointer w-248 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div class="hover:bg-blue-700 flex flex-wrap text-sm font-medium text-center text-gray-100 border-b border-gray-200 rounded-t-lg bg-blue-600 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800" id="defaultTab">
-            <p class="inline-block p-2 pl-8">{course.category}</p>
+            <p class="inline-block p-2 pl-8">{courseCategoryPrettyWriter(course.category)}</p>
         </div>
         <div id="defaultTabContent">
             <div class=" p-4 bg-white rounded-lg md:p-8 hover:bg-gray-50 dark:bg-gray-800" id="about" role="tabpanel" aria-labelledby="about-tab">
                 <h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">{course.title}</h2>
                 <p class="mb-3 text-gray-500 dark:text-gray-400">{course.description}</p>
-                <a href="#" class="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
-                    Enroll
+                <a onClick={() =>{handleClick(courseId)}} class="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
+                    Перейти
                     <svg class=" w-2.5 h-2.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>

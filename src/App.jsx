@@ -4,6 +4,13 @@ import {login, logout} from './State/authSlice.js'
 import { SERVER_URL } from "../dev_data"
 import { getMe } from "./fetching-data"
 import { status } from "nprogress"
+
+// Set default theme to light
+if (!localStorage.getItem('theme')) {
+  localStorage.setItem('theme', 'light')
+  document.documentElement.classList.remove('dark')
+  document.documentElement.classList.add('light')
+}
 function App({children}) {
   
   const dispatch = useDispatch()
@@ -18,7 +25,7 @@ function App({children}) {
         return
       }
       const user = {username: me.username, status: 'authed'}
-      console.log('IS AUTHED', me);
+      //console.log('IS AUTHED', me);
       dispatch(login(user))
     }
     getUser()

@@ -176,7 +176,7 @@ export async function getFilteredCourses(queryString) {
       headers: { "Content-Type": "application/json"},
     });
     const res = await responseLesson.json()
-    console.log('---> results qs ',queryString ,res);
+    //console.log('---> results qs ',queryString ,res);
     return res
 }
 
@@ -206,4 +206,37 @@ export async function getCertificate(courseId) {
     a.remove();
 
     window.URL.revokeObjectURL(url);
+}
+
+
+export async function updateMe({ first_name, last_name }) {
+  try {
+    const res = await fetch(`${SERVER_URL}/api/users/me/`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        first_name,
+        last_name,
+      }),
+    });
+
+    // try to parse JSON even on errors (many APIs return error JSON)
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      return {
+        error: true,
+        status: res.status,
+        message: data?.detail || data?.message || res.statusText || "Failed to update user",
+        data,
+      };
+    }
+
+    // return updated user object
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    return { error: true, message: "error, couldn't patch user" };
+  }
 }
