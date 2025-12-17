@@ -241,19 +241,27 @@ export default function PracticeCode() {
     setBottomTab("result");
     setTestResultText("Running...\n");
 
+    const body = {
+      payload: {
+        language: selectedLanguage,
+        code: userCode,
+      },
+      use_public_samples: false,
+      tests: [
+        {
+          // include id if you have it, otherwise omit
+          // id: active.id,
+          input: active.input ?? "",
+          expected: active.expected ?? "",   // ✅ backend will check this
+        }
+      ]
+    };
     try {
       const response = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/run/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          payload: {
-            language: selectedLanguage,
-            code: userCode,
-            input: stdin, // ✅ selected testcase input
-          },
-          use_public_samples: true,
-        }),
+        body: JSON.stringify(body),
       });
 
       const result = await response.json();
@@ -284,52 +292,131 @@ export default function PracticeCode() {
   // -----------------------------
   // Submit (full judge)
   // -----------------------------
-  async function handleSubmitCode() {
-    clearResult();
+  async function pollSubmission(submissionId) {
+  let attempt = 0;
 
-    if (!userCode.trim()) {
-      setBottomTab("result");
-      setTestResultText("Error: Please write some code first.");
-      return;
+  while (attempt < 60) { // ~ до 1-2 минут ожидания
+    const res = await fetch(`${SERVER_URL}/api/submissions/${submissionId}/`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    const status = data?.submission?.status || data?.status; // на случай разного формата
+    setJobStatus(data); // если хочешь отображать где-то в UI
+
+    if (status && status !== "EVAL") {
+      return data; // финальный результат
     }
 
-    if (!taskData?.id) {
-      setBottomTab("result");
-      setTestResultText("Error: Task data not available.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setBottomTab("result");
-    setTestResultText("Submitting...\nEvaluating solution...\n");
-
-    try {
-      const response = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/submit/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          payload: {
-            language: selectedLanguage,
-            code: userCode,
-          },
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.job_id) {
-        setJobId(result.job_id);
-        pollJobStatus(result.job_id);
-      } else {
-        setIsSubmitting(false);
-        setTestResultText(`Error: ${result.detail || result.message || "Failed to submit code"}`);
-      }
-    } catch (error) {
-      setIsSubmitting(false);
-      setTestResultText(`Error: ${error.message}`);
-    }
+    attempt++;
+    const delayMs = Math.min(1000 * (attempt <= 5 ? attempt : 5), 5000); // 1s..5s
+    await new Promise(r => setTimeout(r, delayMs));
   }
+
+  throw new Error("Timeout: judging took too long");
+}
+
+async function pollJudgeJob(jobIdToPoll) {
+  // fallback на твой старый вариант (если у тебя реально так работает)
+  while (true) {
+    const res = await fetch(`${SERVER_URL}/api/judgejobs/${jobIdToPoll}/`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    const data = await res.json();
+    const status = data.status || data.state;
+
+    if (status === "EVAL" || status === "PENDING") {
+      await new Promise(r => setTimeout(r, 1000));
+      continue;
+    }
+
+    return data;
+  }
+}
+
+async function handleSubmitCode() {
+  if (!userCode.trim()) {
+    setBottomTab("result");
+    setTestResultText("Error: Please write some code first.");
+    return;
+  }
+  if (!taskData?.id) {
+    setBottomTab("result");
+    setTestResultText("Error: Task data not available.");
+    return;
+  }
+
+  setIsSubmitting(true);
+  setBottomTab("result");
+  setTestResultText("Submitting...\nEvaluating...\n");
+  setTestPassed(null);
+
+  try {
+    const res = await fetch(`${SERVER_URL}/api/tasks/${taskData.id}/submit/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        payload: {
+          language: selectedLanguage,
+          code: userCode,
+        },
+      }),
+    });
+
+    const submitData = await res.json();
+
+    // ✅ Вариант из описания: вернулся сабмит (id) + job_id + status=EVAL
+    const submissionId = submitData?.id || submitData?.submission_id;
+    const jobId = submitData?.job_id;
+
+    let finalResult = null;
+
+    if (submissionId) {
+      finalResult = await pollSubmission(submissionId);
+    } else if (jobId) {
+      finalResult = await pollJudgeJob(jobId);
+    } else {
+      throw new Error("Submit response did not include submission id or job_id");
+    }
+
+    // ---- Разбор результата (под твой формат) ----
+    // Ожидаемый формат “другой нейронки”:
+    // finalResult.submission.status, finalResult.tests.summary, finalResult.tests.public
+    const verdict = finalResult?.submission?.status || finalResult?.status || "UNKNOWN";
+    const score = finalResult?.submission?.score ?? finalResult?.score;
+
+    const isAccepted = verdict === "AC" || verdict === "SUCCESS";
+    setTestPassed(isAccepted);
+
+    // Красивый вывод в консоль/панель
+    let details = `Verdict: ${verdict}\n`;
+    if (score != null) details += `Score: ${score}\n`;
+
+    const passed = finalResult?.tests?.summary?.passed;
+    const total = finalResult?.tests?.summary?.total;
+    if (passed != null && total != null) details += `Tests: ${passed}/${total}\n`;
+
+    // если бэкенд отдаёт public тесты со stdout/expected
+    const firstPublic = finalResult?.tests?.public?.[0];
+    if (firstPublic) {
+      details += `\nSample output:\n${firstPublic.stdout ?? ""}\nExpected:\n${firstPublic.expected ?? ""}\n`;
+    }
+
+    setTestResultText((isAccepted ? "✅ Accepted\n\n" : "❌ Not Accepted\n\n") + details);
+  } catch (e) {
+    setTestResultText(`Error: ${e.message}`);
+  } finally {
+    setIsSubmitting(false);
+  }
+}
+
 
   // -----------------------------
   // Navigation
