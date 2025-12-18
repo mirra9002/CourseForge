@@ -157,10 +157,10 @@ function SmallHeading(props){
 
 function Image({ data }) {
     const [isLoaded, setIsLoaded] = useState(false)
-
+    console.log('image componene:', data);
     return<>
     {!isLoaded ? <ImageSkeleton/> : <></>}
-    <img onLoad={() => setIsLoaded(true)} src={data.src} alt={data.alt || ""} className="rounded-md"/> 
+    <img onLoad={() => setIsLoaded(true)} src={data.content} alt={data.alt || ""} className="rounded-md max-w-5xl"/> 
     </>
     
 }
@@ -169,7 +169,7 @@ function Video({ data }) {
   return (
     <figure style={{ width: "100%", margin: 0 }}>
       <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: "0.5rem",}}>
-        <video src={data.url} poster={data.poster || ""} controls style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", borderRadius: "0.5rem", }}/>
+        <video src={data.content} poster={data.poster || ""} controls style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", borderRadius: "0.5rem", }}/>
       </div>
       {data.caption && (
         <figcaption style={{fontSize: "0.875rem", color: "#666", marginTop: "0.5rem" }}>

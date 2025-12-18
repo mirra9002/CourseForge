@@ -121,8 +121,17 @@ export default function PracticeCode() {
     if (!availableLanguages.includes(selectedLanguage)) {
       setSelectedLanguage(availableLanguages[0] || "python");
     }
+    
+    // Reset code state when available languages change
+    const template = loadTemplate(availableLanguages[0] || "python", snippets);
+    setUserCode(template || "");
+    setCodeByLang((prev) => ({
+      ...prev,
+      [availableLanguages[0] || "python"]: template || ""
+    }));
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [availableLanguages]);
+  }, [availableLanguages, currentPageId]);
 
   // Init cases from samples (sorted by ordinal)
   useEffect(() => {
@@ -149,20 +158,23 @@ export default function PracticeCode() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [samples]);
 
-  // Load code when language/snippets change:
+  // Load code when language/snippets change or when page changes:
   // - if user already typed something for this language, keep it
   // - else load starter template
   useEffect(() => {
+    // Reset code state when page changes
     const saved = codeByLang[selectedLanguage];
-    if (typeof saved === "string") {
-      setUserCode(saved);
-      return;
-    }
     const template = loadTemplate(selectedLanguage, snippets);
+    
+    // Always use the template when page changes, don't persist code between different pages
     setUserCode(template || "");
     setCodeByLang((prev) => ({ ...prev, [selectedLanguage]: template || "" }));
+    
+    // Clear any previous results
+    clearResult();
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLanguage, snippets]);
+  }, [selectedLanguage, snippets, currentPageId]); // Added currentPageId to dependency array
 
   // -----------------------------
   // Backend: poll submit job
