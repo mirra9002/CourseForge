@@ -3,6 +3,7 @@ import {SERVER_URL} from '../dev_data.js'
 
 export async function getAllCourses() {
     try {
+      console.log("in GetAllCourses")
       const response = await fetch(`${SERVER_URL}/api/courses/discover?include_enrolled=true`, {
       method: "GET",
       credentials: 'include',

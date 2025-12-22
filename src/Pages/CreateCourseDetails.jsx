@@ -55,18 +55,18 @@ function CourseDetails() { // (1)
     console.log(courseDetailsData)
     
     return<>
-    <h2 class="text-4xl font-bold dark:text-white">Основна інформація про курс</h2>
+    <h2 class="text-4xl font-bold">Основна інформація про курс</h2>
     <p className="text-3xs mb-6 text-gray-600 max-w-200">Вкажіть основні відомості про ваш курс: назву, короткий опис та категорію. Це допоможе студентам зрозуміти, про що цей курс і чого очікувати від навчання.</p>
     <form class="max-w-xl w-3xl mx-auto mr-72">
          <div class="mb-5">
-            <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Назва курсу:</label>
-            <input type="text" value={courseDetailsData.title} onChange={(e) => handleDetailsChange("title", e.target.value)} id="large-input" class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+            <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900">Назва курсу:</label>
+            <input type="text" value={courseDetailsData.title} onChange={(e) => handleDetailsChange("title", e.target.value)} id="large-input" class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500"/>
         </div>
         <div class="mb-5">
-            <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Опис курсу:</label>
-            <textarea id="message" value={courseDetailsData.description} onChange={(e) => handleDetailsChange("description", e.target.value)} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Цей курс навчить вас..."></textarea></div>
+            <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900">Опис курсу:</label>
+            <textarea id="message" value={courseDetailsData.description} onChange={(e) => handleDetailsChange("description", e.target.value)} rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Цей курс навчить вас..."></textarea></div>
         <div>
-            <label for="small-input" value={courseDetailsData.category} class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Категорія курсу:</label>
+            <label for="small-input" value={courseDetailsData.category} class="block mb-2 text-sm font-medium text-gray-900">Категорія курсу:</label>
             <DropDown selectedValue={courseDetailsData.category} onSelectedCategory={(value) => handleDetailsChange("category", value)}/>
             </div>
     </form>
@@ -88,7 +88,7 @@ function ModulesDetails() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold dark:text-white">Модулі курсу</h2>
+      <h2 className="text-4xl font-bold">Модулі курсу</h2>
       <p class="text-3xs mb-6 text-gray-600 max-w-200">Модулі — це основні розділи вашого курсу. Вони допомагають структурувати навчання на великі теми чи блоки, всередині яких ви зможете створювати окремі уроки та сторінки. Додайте перші модулі, щоб окреслити головні теми курсу.</p>
 
       <div className="max-w-xl w-3xl mx-auto mr-72">
@@ -114,10 +114,10 @@ function LessonsDetails() { // (3)
   }, []);
 
     return<>
-    <h2 className="text-4xl font-bold dark:text-white">Уроки курсу</h2>
+    <h2 className="text-4xl font-bold">Уроки курсу</h2>
     <p class="text-3xs mb-6 text-gray-600 max-w-200">Уроки — це окремі частини всередині модулів. Вони деталізують навчальний матеріал та дозволяють крок за кроком пояснити кожну тему. У кожному уроці ви зможете додати текст, відео, завдання чи інші інтерактивні елементи. Додаючи уроки, ви формуєте логічну послідовність навчання для студентів</p>
     
-    <h3 className="text-xl font-bold dark:text-white mb-4">Додайти уроки до кожного модуля</h3>
+    <h3 className="text-xl font-bold mb-4">Додайти уроки до кожного модуля</h3>
     <div className="max-w-xl w-5xl mx-auto mr-72">
       <ModulesList modules={modules}/>
     </div>
@@ -245,13 +245,13 @@ function PagesDetails() {
 
   return (
     <>
-      <h2 className="text-4xl font-bold dark:text-white">Сторінки курсу</h2>
+      <h2 className="text-4xl font-bold">Сторінки курсу</h2>
 
       {/* Дві колонки: зліва дерево/крихти, справа плейсхолдер */}
       <div className="mt-4 grid grid-cols-1 md:grid-cols-[1.1fr_1.4fr] gap-6 items-start">
 
         {/* LEFT: як інші компоненти — світла картка, без зайвих відступів вправо */}
-        <div className="rounded-lg border border-slate-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+        <div className="rounded-lg border border-slate-200 bg-gray-50 p-4">
           <CourseTree />
           <div className="mt-4">
             <BreadcrumbStepper module={"Module 1"} lesson={"Lesson 1"} page={"Page 1"} />
@@ -260,17 +260,17 @@ function PagesDetails() {
 
         {/* RIGHT: плейсхолдер редактора/контенту сторінки */}
         <div className="min-h-[420px] rounded-xl border-2 border-dashed border-slate-300 p-6
-                        bg-white/70 dark:bg-slate-900/40 dark:border-slate-600
+                        bg-white/70
                         flex flex-col items-center justify-center text-center">
           <svg
             aria-hidden="true"
-            className="w-8 h-8 mb-3 text-slate-400 dark:text-slate-500"
+            className="w-8 h-8 mb-3 text-slate-400"
             viewBox="0 0 24 24" fill="currentColor"
           >
             <path d="M4 6h16v2H4V6zm0 5h10v2H4v-2zm0 5h16v2H4v-2z" />
           </svg>
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Плейсхолдер сторінки</h3>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-[36ch]">
+          <h3 className="text-lg font-semibold text-slate-800">Плейсхолдер сторінки</h3>
+          <p className="mt-1 text-sm text-slate-600 max-w-[36ch]">
             Тут буде редактор сторінок або попередній перегляд. Оберіть урок зліва, щоб відкрити його вміст.
           </p>
 
@@ -291,9 +291,9 @@ function PagesDetails() {
 
 function BreadcrumbStepper({module, lesson, page}) {
   return<>
-  <ol class="flex items-center w-full space-x-2 text-sm font-medium text-center text-gray-500 rounded-lg dark:text-gray-400 sm:text-base dark:bg-gray-800 dark:border-gray-700 sm:p-4 sm:space-x-4 rtl:space-x-reverse">
-      <li class="flex items-center text-blue-600 dark:text-blue-500">
-          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-blue-600 rounded-full shrink-0 dark:border-blue-500">
+  <ol class="flex items-center w-full space-x-2 text-sm font-medium text-center text-gray-500 rounded-lg sm:text-base sm:p-4 sm:space-x-4 rtl:space-x-reverse">
+      <li class="flex items-center text-blue-600">
+          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-blue-600 rounded-full shrink-0">
               1
           </span>
           {module} 
@@ -302,7 +302,7 @@ function BreadcrumbStepper({module, lesson, page}) {
           </svg>
       </li>
       <li class="flex items-center">
-          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0">
               2
           </span>
           {lesson}
@@ -311,7 +311,7 @@ function BreadcrumbStepper({module, lesson, page}) {
           </svg>
       </li>
       <li class="flex items-center">
-          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+          <span class="flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0">
               3
           </span>
           {page}
@@ -337,10 +337,10 @@ const [selectedLesson, setSelectedLesson] = useState(null);
   }, []);
 
   return (
-    <ul className="pl-5 max-w-md space-y-1 text-gray-600 text-lg list-inside dark:text-gray-400 list-none">
+    <ul className="pl-5 max-w-md space-y-1 text-gray-600 text-lg list-inside list-none">
       {courseData.map((mod, i) => (
         <li key={i} className="mb-2">
-          <span className="font-semibold text-gray-900 dark:text-gray-100">
+          <span className="font-semibold text-gray-900">
             {mod.title}
           </span>
 
@@ -356,7 +356,7 @@ const [selectedLesson, setSelectedLesson] = useState(null);
                       ${
                         isActive
                           ? "bg-blue-600 text-white"
-                          : "hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800"
+                          : "hover:bg-blue-50 hover:text-blue-600"
                       }`}
                   >
                     {lesson}

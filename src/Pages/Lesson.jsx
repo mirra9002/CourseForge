@@ -152,7 +152,7 @@ function CodeBlock(props){
 }
 
 function SmallHeading(props){
-    return(<><h2 class="text-2xl font-bold dark:text-white mb-5">{props.data}</h2></>)
+    return(<><h2 class="text-2xl font-bold mb-5">{props.data}</h2></>)
 }
 
 function Image({ data }) {
@@ -205,7 +205,7 @@ function MainArea(props){
 
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
-            <button onClick={() => handleClick(nextPageId)} type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={() => handleClick(nextPageId)} type="button" class="text-white bg-blue-700 hover:bg-blue-800   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
             Далі
             <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
@@ -293,7 +293,7 @@ function Task({task}){
                     {isCorrectAnswer === false ? <SubmitAlert isCorrect={false} boldText={'Неправильно!'} /> : null}
                     {isCorrectAnswer === true ? <SubmitAlert isCorrect={true} boldText={'Правильно!'}/> : null}
 
-                    <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center">
                     Check answer
                 </button>
                 </div>
@@ -303,7 +303,7 @@ function Task({task}){
 
 
 function SubmitAlert({isCorrect, boldText, normalText}) {
-    return <div class={`p-4 mb-4 text-sm ${isCorrect ? "text-green-800 bg-green-50 dark:text-green-400" : "text-red-800 bg-red-50 dark:text-red-400"} rounded-lg  dark:bg-gray-800 `} role="alert">
+    return <div class={`p-4 mb-4 text-sm ${isCorrect ? "text-green-800 bg-green-50" : "text-red-800 bg-red-50"} rounded-lg `} role="alert">
         <span class="font-medium">{boldText || ''}</span> {normalText || ''}
     </div>
 }
