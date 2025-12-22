@@ -39,8 +39,8 @@ export default function LessonsMiddleware() {
     <div class='ml-20 mt-15 mr-35 mb-15'>
       <BreadCrump latestStage={'module'} courseId={courseId}/>
       
-        <h2 class="pb-5 text-4xl font-bold dark:text-white"><span class="text-blue-600 font-medium">{`#${moduleOrder}`}</span> {data.title}</h2>
-        <h2 class="text-2xl font-normal dark:text-white">{data.description}</h2>
+        <h2 class="pb-5 text-4xl font-bold"><span class="text-blue-600 font-medium">{`#${moduleOrder}`}</span> {data.title}</h2>
+        <h2 class="text-2xl font-normal">{data.description}</h2>
         <ModuleProgressBar progress={totalProgress}/>
         <LessonsSection lessons={data.lessons} handleChangeLessonCompletion={handleChangeLessonCompletion} handleGoToLessonClick={handleGoToLessonClick}/>
     </div>
@@ -56,9 +56,9 @@ function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLesson
     }
   return (
     <>
-    <a href="#" class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Уроки в цьому модулі</h5>
-        <ol class=" ml-2 relative border-s border-gray-200 dark:border-gray-700 ">
+    <a href="#" class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Уроки в цьому модулі</h5>
+        <ol class=" ml-2 relative border-s border-gray-200 ">
             {lessons.map(lesson => {
                 return <LessonSection handleGoToLessonClick={() => handleGoToLessonClick(lesson.id)} key={lesson.id} lesson={lesson} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
             })}
@@ -77,12 +77,12 @@ function LessonSection({lesson, handleChangeLessonCompletion, handleGoToLessonCl
     return(<>
     <div onClick={() => handleGoToLessonClick(lesson.id)}>
     <li class="mb-10 ms-6  hover:bg-gray-100" >            
-      <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+      <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 ring-white">
         <IconIsCompleted isCompleted={isCompleted} id={lesson.id} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
       </span>
      
-      <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{lesson.title} </h3>
-      <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">{lesson.description}</p>
+      <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900">{lesson.title} </h3>
+      <p class="mb-4 text-base font-normal text-gray-500">{lesson.description}</p>
     </li>
     </div></>)
 }
@@ -90,8 +90,8 @@ function LessonSection({lesson, handleChangeLessonCompletion, handleGoToLessonCl
 function ModuleProgressBar({progress="0"}) {
   return (
     <>
-      <h3 class="text-3xl font-bold dark:text-white mb-5 mt-20">Прогрес</h3>
-        <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+      <h3 class="text-3xl font-bold mb-5 mt-20">Прогрес</h3>
+        <div class="w-full bg-gray-200 rounded-full">
         <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"  style={{ width: `${progress}%` }}>{`${progress}%`}</div>
         </div>
     </>
@@ -118,7 +118,7 @@ function BreadCrump({latestStage, courseId}) {
     const navigate = useNavigate()
     return<>
       <li class="inline-flex items-center">
-      <a onClick={()=>(navigate(link))} class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+      <a onClick={()=>(navigate(link))} class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
         {title}
       </a>
       </li>
