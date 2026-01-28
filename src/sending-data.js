@@ -47,15 +47,12 @@ export async function enrollUserOnCourse(userId, courseId){
     return res
 }
 export async function LogOut() {
-  //const responseCSRF = await fetch(`${SERVER_URL}/api/users/auth/csrf/`)
+
   const response = await fetch(`${SERVER_URL}/api/users/auth/logout/`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        },
        credentials: "include"
     });
-    console.log(response);
+    console.log('LOGOUT', response);
     const data = await response.json()
     return data
 

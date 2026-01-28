@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import Navbar from "../Components/NavBar";
+import {SERVER_URL} from '../../dev_data.js'
 
 export default function CertValidation() {
   const [file, setFile] = useState(null);
@@ -33,7 +34,7 @@ export default function CertValidation() {
       formData.append("file", file);
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/courses/verifycert/",
+        `${SERVER_URL}/api/courses/verifycert/`,
         {
           method: "POST",
           credentials: "include",

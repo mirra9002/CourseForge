@@ -25,7 +25,7 @@ export default function PracticeCode() {
   const lesson = data?.lesson;
   const page = data?.page;
 
-  // ✅ IMPORTANT: derive taskData/codeMeta/samples/snippets BEFORE hooks use them
+  //  derive taskData/codeMeta/samples/snippets BEFORE hooks use them
   const taskData = useMemo(() => {
     return page?.data?.find((item) => item.type === "TASK")?.content || null;
   }, [page]);
@@ -264,7 +264,7 @@ export default function PracticeCode() {
           // include id if you have it, otherwise omit
           // id: active.id,
           input: active.input ?? "",
-          expected: active.expected ?? "",   // ✅ backend will check this
+          expected: active.expected ?? "",   // backend will check this
         }
       ]
     };
@@ -332,7 +332,7 @@ export default function PracticeCode() {
 }
 
 async function pollJudgeJob(jobIdToPoll) {
-  // fallback на твой старый вариант (если у тебя реально так работает)
+
   while (true) {
     const res = await fetch(`${SERVER_URL}/api/judgejobs/${jobIdToPoll}/`, {
       method: "GET",
@@ -384,7 +384,6 @@ async function handleSubmitCode() {
 
     const submitData = await res.json();
 
-    // ✅ Вариант из описания: вернулся сабмит (id) + job_id + status=EVAL
     const submissionId = submitData?.id || submitData?.submission_id;
     const jobId = submitData?.job_id;
 
@@ -398,16 +397,14 @@ async function handleSubmitCode() {
       throw new Error("Submit response did not include submission id or job_id");
     }
 
-    // ---- Разбор результата (под твой формат) ----
-    // Ожидаемый формат “другой нейронки”:
-    // finalResult.submission.status, finalResult.tests.summary, finalResult.tests.public
+
     const verdict = finalResult?.submission?.status || finalResult?.status || "UNKNOWN";
     const score = finalResult?.submission?.score ?? finalResult?.score;
 
     const isAccepted = verdict === "AC" || verdict === "SUCCESS";
     setTestPassed(isAccepted);
 
-    // Красивый вывод в консоль/панель
+
     let details = `Verdict: ${verdict}\n`;
     if (score != null) details += `Score: ${score}\n`;
 
@@ -415,7 +412,7 @@ async function handleSubmitCode() {
     const total = finalResult?.tests?.summary?.total;
     if (passed != null && total != null) details += `Tests: ${passed}/${total}\n`;
 
-    // если бэкенд отдаёт public тесты со stdout/expected
+
     const firstPublic = finalResult?.tests?.public?.[0];
     if (firstPublic) {
       details += `\nSample output:\n${firstPublic.stdout ?? ""}\nExpected:\n${firstPublic.expected ?? ""}\n`;

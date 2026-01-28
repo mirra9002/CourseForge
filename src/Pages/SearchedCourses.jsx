@@ -42,8 +42,8 @@ export default function SearchedCourses() {
     const navigate = useNavigate()
     const [resultCourses, setResultCourses] = useState([])
     const [searchString, setSearchString] = useState('') //     /?search=py
-    const data = useLoaderData();
-    const initialCourses = data.courses.results;
+    const data = useLoaderData() || {};
+    const initialCourses = data.courses?.results || [];
 
     useEffect(() => {
         setResultCourses(initialCourses);
@@ -53,8 +53,7 @@ export default function SearchedCourses() {
         console.log(filters);
         let res = ''
         let filterQueryString = getFiltersQueryString()
-        console.log('SEARCHSTRING:', searchString);
-        console.log('filterQueryString:', filterQueryString);
+
         if(searchString==="/?search=" || searchString==='' || !searchString){
             res = `/?${filterQueryString}`
         } else {
@@ -63,9 +62,14 @@ export default function SearchedCourses() {
         console.log('res', res);
         async function loadCourses() {
             const resCourses = await getFilteredCourses(res)
-            console.log(resCourses.results);
-            setResultCourses(resCourses.results)
-            console.log('res courses', resCourses.results, resultCourses);
+            if (resCourses?.error && resCourses.message === 'Unauthorized') {
+                navigate('/auth/1', { replace: true })
+                return
+            }
+            const safeResults = resCourses?.results || []
+            console.log(safeResults);
+            setResultCourses(safeResults)
+            console.log('res courses', safeResults, resultCourses);
         }
         loadCourses()
 
@@ -100,9 +104,14 @@ export default function SearchedCourses() {
         console.log('------ loading courses ------');
         async function loadCourses() {
             const res = await getFilteredCourses(searchString)
-            console.log(res.results);
-            setResultCourses(res.results)
-            console.log('res courses', res.results, resultCourses);
+            if (res?.error && res.message === 'Unauthorized') {
+                navigate('/auth/1', { replace: true })
+                return
+            }
+            const safeResults = res?.results || []
+            console.log(safeResults);
+            setResultCourses(safeResults)
+            console.log('res courses', safeResults, resultCourses);
         }
         loadCourses()
     }, [searchString])

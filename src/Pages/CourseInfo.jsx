@@ -8,7 +8,7 @@ import AuthInit from "../State/AuthInit";
 import LoadingBar from '../Components/LoadingBar'
 import { useSelector } from 'react-redux'
 import {calculateCourseProgress } from '../utils/progressCalculator.js'
-import mascot_happy1 from '../../../images/mascot_happy1.png'
+import mascot_happy1 from '../../images/mascot_happy1.png'
 
 import {enrollUserOnCourse} from '../sending-data'
 import { getCertificate } from '../fetching-data.js'
@@ -51,7 +51,6 @@ export default function Courseinfo() {
     let totalProgress = 0.0
     totalProgress = Math.round(calculateCourseProgress(courseData.modules))
 
-    console.log('courseDATA', courseData);
     return(<>
     {/* <AuthInit/> */}
     <div className='bg-gray-50 min-h-screen'>

@@ -3,8 +3,8 @@ import { Drawer } from "flowbite";
 import { ModuleItem } from "./ModuleItem";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import arrow_back from '../../../images/arrow_back_gray-900.svg'
-import arrow_back_orange from '../../../images/arrow_back_orange.svg'
+import arrow_back from '../../images/arrow_back_gray-900.svg'
+import arrow_back_orange from '../../images/arrow_back_orange.svg'
 export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, handleClick, data, moduleSelectedBackgroundColor, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
   const navigate = useNavigate()

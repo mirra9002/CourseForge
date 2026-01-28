@@ -274,7 +274,7 @@ function PagesDetails() {
             Тут буде редактор сторінок або попередній перегляд. Оберіть урок зліва, щоб відкрити його вміст.
           </p>
 
-          {/* Кнопка-заглушка (необов’язково) */}
+          {/* Кнопка-заглушка  */}
           <button
             type="button"
             className="mt-4 inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium

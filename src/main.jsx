@@ -37,7 +37,6 @@ const router = createBrowserRouter([{
         throw new Response("Failed to load", { status: 500 });
       }
       const me = await getMe()
-      console.log('mememe', me);
       if(!me) {
         return allCoursesDiscover
       } else {
@@ -64,8 +63,7 @@ const router = createBrowserRouter([{
 {
   path: '/courseinfo/:courseId',
   element: <Courseinfo />,
-    loader: async ({ params }) => {
-      console.log('in asdasdd');
+  loader: async ({ params }) => {
       const data = await getCourseById(params.courseId) || {error: true, message: 'no modules'};
       if(data.error && data.message === 'Unauthorized'){
         return redirect('/auth/1');
@@ -145,6 +143,10 @@ const router = createBrowserRouter([{
       const url = new URL(request.url);
       const query = url.searchParams.get('q') || '';
       const data = await getAllCourses()
+      console.log('-->', data);
+      if(data.error && data.message === 'Unauthorized'){
+        return redirect('/auth/1');
+      }
       if (data.error){
         throw new Response("Failed to load", { status: 500 });
       }
