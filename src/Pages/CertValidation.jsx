@@ -1,10 +1,7 @@
 import { useState, useRef } from "react";
 import Navbar from "../Components/NavBar";
-<<<<<<< HEAD
-import {SERVER_URL} from '../../dev_data.js'
-=======
+
 import { SERVER_URL } from "../../dev_data.js";
->>>>>>> d33eac8a4688b6e5bff3024125c8be3d635aeaf3
 
 export default function CertValidation() {
   const [file, setFile] = useState(null);
