@@ -8,6 +8,7 @@ import PracticeCode from './PracticeCode';
 import RadioButton from '../Components/RadioButton.jsx';
 import CheckBox from '../Components/CheckBox.jsx';
 import CustomMarkdownReader from '../Components/CustomMarkdownReader';
+import LatexBlock from '../Components/LatexBlock.jsx';
 import { ImageSkeleton } from '../Components/Skeleton';
 import {getNextPageId, getPrevPageId, getCurrentPageIndex} from '../utils/getPageIdsAndIndexes.js'
 import { areSetsEqual } from '../utils/areSetsEqual.js';
@@ -192,6 +193,7 @@ function MainArea(props){
         return (
             <div key={index} className="mb-5"> 
                 {element.type === "MD" && (<CustomMarkdownReader data={element.content} />)}
+                {element.type === "LATEX" && <LatexBlock data={element.content} />}
                 {element.type === "IMAGE" && <Image data={element} />}
                 {element.type === "CODE" && <CodeBlock data={element.content} />}
                 {element.type === "VIDEO" && <Video data={element}/>}
