@@ -23,8 +23,8 @@ export default function Courseinfo() {
 
     if(data === null){
       return <>
-      <div className='mx-auto mt-20 max-w-3xl px-4 text-center text-xl sm:text-2xl'><p>Цей курс все ще в розробці...</p>
-       <span onClick={() => navigate('/')} className='mt-10 inline-block cursor-pointer text-lg text-gray-500 underline hover:text-gray-700 sm:mt-15 sm:text-xl'>На головну</span> </div>
+      <div className='mt-20 text-2xl text-center'><p>Цей курс все ще в розробці...</p>
+       <span onClick={() => navigate('/')} className='cursor-pointer hover:text-gray-700 mt-15 text-xl underline text-gray-500'>На головну</span> </div>
       </>
     }
 
@@ -53,12 +53,12 @@ export default function Courseinfo() {
 
     return(<>
     {/* <AuthInit/> */}
-    <div className='min-h-screen bg-gray-50'>
+    <div className='bg-gray-50 min-h-screen'>
     <Navbar/>
     
     <LoadingBar/>
     {courseData ? 
-    <main className='mx-auto mt-10 w-full max-w-7xl px-4 sm:mt-16 sm:px-6 lg:mt-20 lg:px-10'>   
+    <div className='mt-20 ml-25 mr-25'>   
         <CourseInfoHeading
           onEnrollClick={(courseId) => enrollStudentOnCourse(courseId)}
           firstModuleId={firstModuleId} 
@@ -76,7 +76,7 @@ export default function Courseinfo() {
         modulesInfo={courseData.modules}
           />
         <Footer/>
-      </main>
+      </div>
       
        : <TextSkeleton/>}
     </div>
@@ -114,7 +114,7 @@ function CourseInfoHeading({onEnrollClick, courseId, title, description, firstMo
       startButton.buttonColor = "bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300"
     }
 
-    return(<section className="rounded-lg bg-white p-5 shadow-sm sm:p-8 lg:p-10"><h2 className="mb-6 text-3xl font-bold leading-tight text-gray-900 sm:mb-8 sm:text-4xl lg:text-5xl">{title}</h2>
+    return(<><h2 className="text-5xl mb-10 font-bold">{title}</h2>
       {/* <button type="button" onClick={() => {
         onEnrollClick(courseId)
         navigateToPage( `/course/${courseId}/module/${firstModuleId}/lesson/${firstLessonId}/page/${firstPageId}`)}} class={`cursor-pointer text-white  mb-10 ${startButton.buttonColor}  shadow-lg shadow-blue-500/50 font-bold rounded-lg text-lg px-20 py-4 text-center me-2  `}>
@@ -124,23 +124,21 @@ function CourseInfoHeading({onEnrollClick, courseId, title, description, firstMo
         <button
           type="button"
           onClick={handleClick}
-          className={`mb-8 w-full cursor-pointer text-white ${startButton.buttonColor} shadow-lg font-bold rounded-lg text-base px-5 py-4 sm:mb-10 sm:w-auto sm:text-lg sm:px-12 lg:px-20`}
+          className={`cursor-pointer text-white mb-10 ${startButton.buttonColor} shadow-lg font-bold rounded-lg text-lg px-20 py-4`}
         >
           {startButton.text}
         </button> 
-      <p className="mt-2 mb-3 text-base leading-7 text-gray-500 sm:mt-6 sm:text-lg">{description}</p>
-    </section>)
+      <p class="text-lg mb-3 mt-10  text-gray-500">{description}</p>
+    </>)
 }
 
 function CourseProgressBar({progress="45"}) {
   return (
     <>
-      <section className="mt-10 sm:mt-16 lg:mt-20">
-      <h3 className="mb-5 text-2xl font-bold text-gray-900 sm:text-3xl">Прогрес</h3>
-        <div className="w-full overflow-hidden rounded-full bg-gray-200">
-        <div className="min-w-9 rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none text-blue-100"  style={{ width: `${progress}%` }}> {progress}%</div>
+      <h3 class="text-3xl font-bold mb-5 mt-25">Прогрес</h3>
+        <div class="w-full bg-gray-200 rounded-full">
+        <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"  style={{ width: `${progress}%` }}> {progress}%</div>
         </div>
-      </section>
     </>
   );
 }
@@ -153,14 +151,14 @@ function CourseSection({title, description, moduleId, courseId}){
     }
     return<>
     <div onClick={handleClick}>
-      <li className="mb-8 ms-6 cursor-pointer rounded-lg p-3 transition-colors hover:bg-gray-100 sm:mb-10 sm:p-4">            
-        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 ring-8 ring-white">
-          <svg className="h-2.5 w-2.5 text-blue-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <li class="mb-10 ms-6  hover:bg-gray-100 cursor-pointer">            
+        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white">
+          <svg class="w-2.5 h-2.5 text-blue-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
           </svg>
         </span>
-        <h3 className="mb-2 flex items-center text-base font-semibold text-gray-900 sm:text-lg">{title} </h3>
-        <p className="mb-1 text-sm font-normal leading-6 text-gray-500 sm:text-base">{description}</p>
+        <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900">{title} </h3>
+        <p class="mb-4 text-base font-normal text-gray-500">{description}</p>
       </li>
     </div></>
 }
@@ -169,13 +167,13 @@ function CourseSections({modulesInfo, courseId}) {
   // modulesInfo = [{title: "title abdasbd", content: "aboboabob"}]
   return (
     <>
-    <section className="mt-10 block w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:mt-15 sm:p-6">
-      <h5 className="mb-8 text-2xl font-bold tracking-tight text-gray-900 sm:mb-10">Розділи курсу</h5>
-        <ol className="relative ms-2 border-s border-gray-200 sm:ms-3">                  
+    <a class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Розділи курсу</h5>
+        <ol class=" ml-2 relative border-s border-gray-200 ">                  
             
             {modulesInfo.map((module, index) => <CourseSection key={index} courseId={courseId} moduleId={module.id} title={module.title} description={module.description}/>) }
         </ol>
-    </section>
+    </a>
     </>
   );
 }
