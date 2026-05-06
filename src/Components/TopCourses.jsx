@@ -15,18 +15,18 @@ export default function Topcourses({courses}) {
 
 
     return(<>
-    <div className="mt-20">
-        <h2 class="text-4xl font-bold text-center mt-5 mb-5 text-[#0b1d3a]">Найкращі курси</h2>
-        <div className="relative mt-10 flex items-center justify-center">
-            <ScrollArrowButton direction="right" isActive={lastIndex < sortedCoursesByRating.length} onClick={() => setCurrentPage((p) => p + 1)}/>
+    <div className="mt-12 sm:mt-20">
+        <h2 className="px-4 text-3xl font-bold text-center mt-5 mb-5 text-[#0b1d3a] sm:text-4xl">Найкращі курси</h2>
+        <div className="relative mt-8 flex flex-col items-center justify-center gap-5 px-4 lg:mt-10 lg:flex-row lg:px-0">
+            <ScrollArrowButton direction="left" isActive={currentPage !== 1} onClick={() => setCurrentPage((p) => p - 1)}/>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[1fr] items-stretch w-full max-w-7xl px-2">
+            <div className="grid w-full max-w-7xl grid-cols-1 items-stretch gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:px-2">
                 {currentPageSortedCourses.map((c) => (
                 <TopCourseCardComponent data={c} key={c.id} />
                 ))}
             </div>
 
-            <ScrollArrowButton direction="left" isActive={currentPage !== 1} onClick={() => setCurrentPage((p) => p - 1)}/>
+            <ScrollArrowButton direction="right" isActive={lastIndex < sortedCoursesByRating.length} onClick={() => setCurrentPage((p) => p + 1)}/>
         </div>
     </div>
     </>)
@@ -39,7 +39,7 @@ function ScrollArrowButton(props) {
   const handleClick = props.onClick
 
   return (
-    <button onClick={handleClick} type="button" disabled={!isActive} className={`mr-25 ml-25 absolute ${isLeft ? 'left-0' : 'right-0'} z-10 ${isActive ? "bg-blue-700 hover:bg-blue-800 cursor-pointer" : "bg-gray-300 "} text-white font-medium rounded-full p-3 -md focus:outline-none focus:ring-2`}>
+    <button onClick={handleClick} type="button" disabled={!isActive} className={`${isLeft ? 'order-2 lg:order-none lg:left-0' : 'order-3 lg:order-none lg:right-0'} z-10 ${isActive ? "bg-blue-700 hover:bg-blue-800 cursor-pointer" : "bg-gray-300 "} text-white font-medium rounded-full p-3 focus:outline-none focus:ring-2 lg:absolute lg:mx-6 xl:mx-25`}>
       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         {isLeft ? (<path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />) : (
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />)}
@@ -75,8 +75,8 @@ function TopCourseCardHeading(props) {
     const title = props.title
     const info = props.info
     return(<>
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-[#0b1d3a]">{title}</h5>
-            <p class="font-normal text-[#0b1d3a]">{info}</p>
+        <h5 className="mb-2 text-xl font-bold tracking-tight text-[#0b1d3a] sm:text-2xl">{title}</h5>
+            <p className="font-normal text-[#0b1d3a]">{info}</p>
     </>)
 }
 
@@ -96,7 +96,7 @@ export function TopCourseCardComponent({data}) {
     return(
     <div
         onClick={() => navigate(`/courseinfo/${courseId}`)}
-        className="cursor-pointer block max-w-2xl py-16 -mx-1 px-12 bg-white border border-gray-200 rounded-lg  hover:bg-gray-50 transition-colors duration-300">
+        className="block w-full cursor-pointer rounded-lg border border-gray-200 bg-white px-5 py-8 transition-colors duration-300 hover:bg-gray-50 sm:max-w-2xl sm:px-8 sm:py-12 lg:px-12 lg:py-16">
         <TopCourseCardHeading title={courseTitle} info={description}/>        
         <br/>
         <CourseRatingStars rating={data.rating}/>

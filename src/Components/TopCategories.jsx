@@ -134,24 +134,26 @@ export default function TopCategories() {
 
 
     return (
-    <div className="flex justify-center ">
-        <div className="grid grid-cols-2 gap-4 p-6 w-max max-w-7xl">
+    <div className="flex w-full justify-center px-4">
+        <div className="grid w-full max-w-7xl grid-cols-1 gap-4 py-4 sm:p-6 lg:grid-cols-2">
             {categories.map((category, index) => (
-            <div key={index} className="p-6 bg-white rounded-lg "> 
-                {category.tags.includes('practical') ? <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full ">Практика</span> : null}
-                {category.tags.includes('theoretical') ? <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full ">Теорія</span> : null}
-                {category.tags.includes('easy') ? <span class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full  ">Простий</span> : null}
-                {category.tags.includes('medium') ? <span class="bg-yellow-100 text-yellow-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full  ">Середній</span> : null}
-                {category.tags.includes('hard') ? <span class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full ">Складний</span> : null}
+            <div key={index} className="rounded-lg bg-white p-5 sm:p-6"> 
+                <div className="flex flex-wrap gap-2">
+                {category.tags.includes('practical') ? <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ">Практика</span> : null}
+                {category.tags.includes('theoretical') ? <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ">Теорія</span> : null}
+                {category.tags.includes('easy') ? <span className="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full  ">Простий</span> : null}
+                {category.tags.includes('medium') ? <span className="bg-yellow-100 text-yellow-800 text-sm font-medium px-2.5 py-0.5 rounded-full  ">Середній</span> : null}
+                {category.tags.includes('hard') ? <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded-full ">Складний</span> : null}
+                </div>
                 
                 
-                <h5 class="mb-4 mt-4 text-4xl font-bold tracking-tight text-gray-900">{category.title}</h5>
+                <h5 className="mb-4 mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">{category.title}</h5>
                 
                 <div id='div-info' className="mb-4">
-                    <p class="mb-3 text-gray-500 font-normal  ">{category.description}</p>
+                    <p className="mb-3 text-gray-500 font-normal">{category.description}</p>
                  </div>
                 
-                <button onClick={() => navigate(`/category/${category.shortname}`)} type="button" class="w-full py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Details</button>
+                <button onClick={() => navigate(`/category/${category.shortname}`)} type="button" className="w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Details</button>
                 </div>
             ))}
         </div>

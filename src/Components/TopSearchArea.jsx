@@ -22,23 +22,23 @@ export default function Topsearcharea({courses}){
 
 
     return(<>
-    <section class="bg-[#0b1d3a] text-white py-24 px-4 text-center">
+    <section className="bg-[#0b1d3a] text-white px-4 py-16 text-center sm:py-20 lg:py-24">
 
-        <h1 class="text-6xl font-extrabold mb-4">Почніть навчання вже зараз!</h1>
-        <p class="text-2xl mb-8">Знайдіть щось для себе</p>
+        <h1 className="mx-auto mb-4 max-w-4xl text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">Почніть навчання вже зараз!</h1>
+        <p className="mb-8 text-lg sm:text-2xl">Знайдіть щось для себе</p>
 
-        <form class="max-w-md mx-auto pb-32" onSubmit={handleSubmit}>
-            <div class="relative">
+        <form className="mx-auto max-w-xl pb-8 sm:pb-24 lg:pb-32" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-3 rounded-3xl bg-white p-2 shadow-sm sm:relative sm:block sm:rounded-full sm:p-0 sm:shadow-none">
             <input
                 onChange={(e) => handleChange(e)} value={input || ''} name="input"
                 type="search"
                 placeholder="Хочу стати програмістом..."
-                class="w-full p-4 pe-16 text-sm text-[#0b1d3a]  rounded-full"
+                className="w-full rounded-full p-4 text-sm text-[#0b1d3a] outline-none sm:pe-28"
                 required
             />
             <button
                 type="submit"
-                class="cursor-pointer absolute end-2.5 bottom-2.5 text-white bg-blue-700 hover:bg-blue-700 font-medium rounded-full text-sm px-4 py-2"
+                className="cursor-pointer rounded-full bg-blue-700 px-4 py-3 text-sm font-medium text-white hover:bg-blue-800 sm:absolute sm:bottom-2 sm:end-2 sm:py-2"
             >
                 Пошук
             </button>
