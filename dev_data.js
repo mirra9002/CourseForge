@@ -1,16 +1,20 @@
-// Dynamically determine the server URL based on the current environment
+const stripTrailingSlash = (url) => url.replace(/\/+$/, '');
+
+const stripApiSuffix = (url) => url.replace(/\/api\/?$/, '');
+
+// Requests in the app already append "/api", so SERVER_URL should be the backend origin.
 const getServerURL = () => {
-  // In production, the API is served from the same origin
-  // In development, we need to specify the backend URL
-  if (import.meta.env.PROD) {
-    // Production: use the same origin (window.location.origin)
-    return window.location.origin;
+  const configuredUrl =
+    import.meta.env.VITE_API_BASE_URL ||
+    import.meta.env.VITE_API_URL;
+
+  if (configuredUrl) {
+    return stripApiSuffix(stripTrailingSlash(configuredUrl));
   }
-  
-  // Development: check for environment variable, otherwise default to localhost
-  const url = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
-  console.log('Using API URL:', url);
-  return url;
+
+  return import.meta.env.PROD
+    ? window.location.origin
+    : 'http://127.0.0.1:8000';
 };
 
 export const SERVER_URL = getServerURL();
