@@ -70,3 +70,27 @@ export async function markPageAsRead(pageId) {
     const data = await response.json()
     return data
 }
+
+export async function sendGoogleLogin(credential) {
+  const response = await fetch(`${SERVER_URL}/api/users/auth/google/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ credential }),
+    credentials: "include"
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if(!response.ok){
+    return {
+      error: true,
+      status: response.status,
+      message: data?.detail || data?.message || "Google sign-in failed",
+      data
+    }
+  }
+
+  return data
+}

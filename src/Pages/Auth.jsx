@@ -1,15 +1,15 @@
 import {useState, useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
-import {sendUserRegister, sendUserLogin} from '../sending-data.js'
+import { GoogleLogin } from '@react-oauth/google';
+import {sendUserRegister, sendUserLogin, sendGoogleLogin} from '../sending-data.js'
 import { getMe } from '../fetching-data.js';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import Navbar from "../Components/NavBar";
-import AuthInit from '../State/AuthInit';
 
-import {login, logout} from '../State/authSlice.js'
-import { SERVER_URL } from '../../dev_data.js';
+import {login} from '../State/authSlice.js'
+import { GOOGLE_OAUTH_CLIENT_ID } from '../../dev_data.js';
 
 
 export default function Auth() {
@@ -45,7 +45,7 @@ export default function Auth() {
     <Navbar/>
     <div className='-mt-20'>
         {isRegister === 1 ? 
-        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} handleLogin={(data) => handleLogin(data)} /> :
+        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} /> :
         <LogIn input={input} handleChange={handleChange} loginUser={(data) => handleLogin(data)}/>}
     </div>
     </>
@@ -53,7 +53,7 @@ export default function Auth() {
   );
 }
 
-function Register({input, handleChange, registerUser, handleLogin}) {
+function Register({input, handleChange, registerUser}) {
 
     const navigate = useNavigate()
 
@@ -87,6 +87,30 @@ function Register({input, handleChange, registerUser, handleLogin}) {
         registerUser(me)
 
 
+    }
+
+    async function handleGoogleSuccess(credentialResponse) {
+        setError({isError: null, message: null})
+        setSuccess(null)
+
+        if(!credentialResponse?.credential){
+            setError({isError: true, message: "Google did not return a credential"})
+            return
+        }
+
+        const res = await sendGoogleLogin(credentialResponse.credential)
+        if(!res || res.error) {
+            setError({isError: true, message: res?.message || "Google sign-in failed"})
+            return
+        }
+
+        const me = await getMe()
+        if(!me){
+            setError({isError: true, message: "Cannot fetch user"})
+            return
+        }
+
+        registerUser(me)
     }
 
     function authErrorHandling(data){
@@ -138,6 +162,7 @@ function Register({input, handleChange, registerUser, handleLogin}) {
             {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
             {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
             <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center">Register</button>
+            <GoogleAuthOption onSuccess={handleGoogleSuccess} onError={() => setError({isError: true, message: "Google sign-in was cancelled or failed"})} />
             </form>
         </div>
         </div>
@@ -166,6 +191,30 @@ function LogIn({input, handleChange, loginUser}) {
         loginUser({username: data.username, password: data.password})
     }
 
+    async function handleGoogleSuccess(credentialResponse) {
+        setError(null)
+        setSuccess(null)
+
+        if(!credentialResponse?.credential){
+            setError({isError: true, message: "Google did not return a credential"})
+            return
+        }
+
+        const res = await sendGoogleLogin(credentialResponse.credential)
+        if(!res || res.error) {
+            setError({isError: true, message: res?.message || "Google sign-in failed"})
+            return
+        }
+
+        const me = await getMe()
+        if(!me){
+            setError({isError: true, message: "Cannot fetch user"})
+            return
+        }
+
+        loginUser(me)
+    }
+
     
     return  <>
     <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -187,8 +236,35 @@ function LogIn({input, handleChange, loginUser}) {
         {error && <p className="text-red-500 text-sm">{error.message}</p>}
         {success && <p className="text-green-500 text-sm">Successfully logged in!</p>}
         <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center">Log In</button>
+        <GoogleAuthOption onSuccess={handleGoogleSuccess} onError={() => setError({isError: true, message: "Google sign-in was cancelled or failed"})} />
         </form>
     </div>
     </div>
     </>
+}
+
+function GoogleAuthOption({onSuccess, onError}) {
+    if(!GOOGLE_OAUTH_CLIENT_ID){
+        return null
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-gray-200" />
+                <span className="text-xs font-medium uppercase tracking-wide text-gray-500">or</span>
+                <div className="h-px flex-1 bg-gray-200" />
+            </div>
+            <div className="flex justify-center">
+                <GoogleLogin
+                    onSuccess={onSuccess}
+                    onError={onError}
+                    useOneTap={false}
+                    theme="outline"
+                    size="large"
+                    width="320"
+                />
+            </div>
+        </div>
+    )
 }

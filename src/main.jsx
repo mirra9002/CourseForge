@@ -5,6 +5,7 @@ import 'nprogress/nprogress.css';
 import { Provider } from 'react-redux';
 import { store } from './State/store.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GOOGLE_OAUTH_CLIENT_ID } from '../dev_data.js';
 
 import './index.css'
 import App from './App.jsx'
@@ -22,10 +23,9 @@ import CreateCourseDetails from './Pages/CreateCourseDetails.jsx';
 import LessonsMiddleware from './Pages/LessonsMiddleware.jsx'
 import CoursesByCategory from './Pages/CoursesByCategory.jsx';
 import Documentation from './Pages/Documentation.jsx';
-import { getAllCourses, getCourseById, getLessonAndAllLessonsById, getMe, getMyCourses, getPageById , getLessonById, getModuleById, getAllCoursesLogged} from './fetching-data.js';
+import { getAllCourses, getCourseById, getMe, getMyCourses, getPageById , getLessonById, getModuleById, getAllCoursesLogged} from './fetching-data.js';
 import { redirect } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
 import CertValidation from './Pages/CertValidation.jsx';
 
 const router = createBrowserRouter([{
@@ -202,12 +202,20 @@ const router = createBrowserRouter([{
 })
 
 
-createRoot(document.getElementById('root')).render(
+const app = (
   <StrictMode>
     <Provider store={store}>
         <App>
           <RouterProvider router={router} />
         </App>  
     </Provider>
-  </StrictMode>,
+  </StrictMode>
+)
+
+createRoot(document.getElementById('root')).render(
+  GOOGLE_OAUTH_CLIENT_ID ? (
+    <GoogleOAuthProvider clientId={GOOGLE_OAUTH_CLIENT_ID}>
+      {app}
+    </GoogleOAuthProvider>
+  ) : app,
 )
