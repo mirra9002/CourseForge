@@ -2,9 +2,25 @@ import { useMemo } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 
+function normalizeLatex(data) {
+  const latex = String(data || "").trim();
+  const wrappers = [
+    ["$$", "$$"],
+    ["\\[", "\\]"],
+    ["\\(", "\\)"],
+    ["$", "$"],
+  ];
+
+  const wrapper = wrappers.find(([start, end]) => latex.startsWith(start) && latex.endsWith(end));
+  if (!wrapper) return latex;
+
+  const [start, end] = wrapper;
+  return latex.slice(start.length, latex.length - end.length).trim();
+}
+
 export default function LatexBlock({ data }) {
   const html = useMemo(() => {
-    return katex.renderToString(data || "", {
+    return katex.renderToString(normalizeLatex(data), {
       displayMode: true,
       throwOnError: false,
       strict: false,

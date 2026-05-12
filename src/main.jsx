@@ -64,9 +64,14 @@ const router = createBrowserRouter([{
   path: '/courseinfo/:courseId',
   element: <Courseinfo />,
   loader: async ({ params }) => {
+      const me = await getMe()
+      if (!me) {
+        return redirect('/auth/0');
+      }
+
       const data = await getCourseById(params.courseId) || {error: true, message: 'no modules'};
       if(data.error && data.message === 'Unauthorized'){
-        return redirect('/auth/1');
+        return redirect('/auth/0');
       }
       if(data.error && data.message === 'no modules in this course'){
         return null
