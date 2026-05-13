@@ -1,9 +1,12 @@
+import { sortByOrder } from './sortByOrder.js'
+
 export function getNextPageId(lesson, currentPageId) {
+    const pages = sortByOrder(lesson.pages)
     const pageIndexesById = {} // {id: idx} object for next/prev page navigation
     const pageIdsByIndexes = {}
-    for(let i = 0; i<lesson.pages.length; i++){
-        pageIndexesById[lesson.pages[i].id] = i // id -> index
-        pageIdsByIndexes[i] = lesson.pages[i].id // index -> id
+    for(let i = 0; i<pages.length; i++){
+        pageIndexesById[pages[i].id] = i // id -> index
+        pageIdsByIndexes[i] = pages[i].id // index -> id
     }
 
     const currentPageIndex = pageIndexesById[currentPageId]
@@ -17,11 +20,12 @@ export function getNextPageId(lesson, currentPageId) {
 }
 
 export function getPrevPageId(lesson, currentPageId) {
+    const pages = sortByOrder(lesson.pages)
     const pageIndexesById = {} // {id: idx} object for next/prev page navigation
     const pageIdsByIndexes = {}
-    for(let i = 0; i<lesson.pages.length; i++){
-        pageIndexesById[lesson.pages[i].id] = i // id -> index
-        pageIdsByIndexes[i] = lesson.pages[i].id // index -> id
+    for(let i = 0; i<pages.length; i++){
+        pageIndexesById[pages[i].id] = i // id -> index
+        pageIdsByIndexes[i] = pages[i].id // index -> id
     }
 
     const currentPageIndex = pageIndexesById[currentPageId]
@@ -35,11 +39,12 @@ export function getPrevPageId(lesson, currentPageId) {
 }
 
 export function getCurrentPageIndex(lesson, currentPageId) {
+    const pages = sortByOrder(lesson.pages)
     const pageIndexesById = {} // {id: idx} object for next/prev page navigation
     const pageIdsByIndexes = {}
-    for(let i = 0; i<lesson.pages.length; i++){
-        pageIndexesById[lesson.pages[i].id] = i // id -> index
-        pageIdsByIndexes[i] = lesson.pages[i].id // index -> id
+    for(let i = 0; i<pages.length; i++){
+        pageIndexesById[pages[i].id] = i // id -> index
+        pageIdsByIndexes[i] = pages[i].id // index -> id
     }
 
     const currentPageIndex = pageIndexesById[currentPageId]

@@ -1,5 +1,6 @@
 const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1NzY2MTc1LCJpYXQiOjE3NTM5NTE3NzUsImp0aSI6ImI0NzE3MTE3MWI2NDRlZThhNTA1NGEwOTFlYmNkYzFlIiwidXNlcl9pZCI6Ijk2YTI2Nzg0LTYyNGItNDU1NC04ODQzLTAxOTI2YzJmNjM1MCJ9.YKq6kah9uAtLcNkM4e2IV_NrGmAVl2wsmJpsUzyv8ic'
 import {SERVER_URL} from '../dev_data.js'
+import { normalizeCourseOrder, normalizeLessonOrder, normalizeModuleOrder } from './utils/sortByOrder.js'
 
 export async function getAllCourses() {
     try {
@@ -46,7 +47,7 @@ export async function getCourseById(courseId) {
     return {error: true, message: responseCourse.statusText}
   }
 
-  const resultCourse = await responseCourse.json(); 
+  const resultCourse = normalizeCourseOrder(await responseCourse.json()); 
 
   // 2. Get first module ID
   const firstModuleId = resultCourse.modules[0]?.id;
@@ -64,7 +65,7 @@ export async function getCourseById(courseId) {
 
   
 
-  const resultModule = await responseModule.json(); 
+  const resultModule = normalizeModuleOrder(await responseModule.json()); 
 
   const firstLessonId = resultModule.lessons[0]?.id;
   
@@ -80,7 +81,7 @@ export async function getCourseById(courseId) {
     headers: { "Content-Type": "application/json"},
   });
 
-  const resultLesson = await responseLesson.json(); 
+  const resultLesson = normalizeLessonOrder(await responseLesson.json()); 
 
   const firstPageId = resultLesson.pages[0]?.id;
 
@@ -101,7 +102,7 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
       headers: { "Content-Type": "application/json"},
     });
 
-  const lessonResult = await response.json()
+  const lessonResult = normalizeLessonOrder(await response.json())
   const moduleId = lessonResult.module
 
   const responseLessons = await fetch(`${SERVER_URL}/api/modules/${moduleId}`, {
@@ -109,7 +110,7 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
       credentials: 'include',
       headers: { "Content-Type": "application/json"},
     });
-  const lessonsResult = await responseLessons.json()
+  const lessonsResult = normalizeModuleOrder(await responseLessons.json())
 
   return {
     currentLesson: lessonResult,
@@ -134,7 +135,7 @@ export async function getLessonById(lessonId){
       credentials: 'include',
       headers: { "Content-Type": "application/json"},
     });
-    return await responseLesson.json()
+    return normalizeLessonOrder(await responseLesson.json())
     
 }
 
@@ -164,7 +165,7 @@ export async function getFirstPageIdInLesson(lessonId) {
       credentials: 'include',
       headers: { "Content-Type": "application/json"},
     });
-    const res = await responseLesson.json()
+    const res = normalizeLessonOrder(await responseLesson.json())
     const firstPageId = res.pages[0].id
     return firstPageId
 }

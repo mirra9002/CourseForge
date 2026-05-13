@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import arrow_back from '../../images/arrow_back_gray-900.svg'
 import arrow_back_orange from '../../images/arrow_back_orange.svg'
+import { sortByOrder } from "../utils/sortByOrder";
 export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, handleClick, data, moduleSelectedBackgroundColor, width, backgroundColor, textColor, moduleBackgoundColor, moduleHoverBackgroundColor, moduleHeaderTextColor, moduleTextColor }) {
   const [openIndex, setOpenIndex] = useState(null);
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ export default function LeftDrawer({ isLesson, currentPageIndex, currentPageId, 
     navigate(`/course/${params.courseId}/module/${params.moduleId}/lessons-middleware`)
   }
 
-  const lessonSections = data.pages;
+  const lessonSections = sortByOrder(data.pages);
 
 
   return (<>
