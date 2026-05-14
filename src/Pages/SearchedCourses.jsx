@@ -44,10 +44,15 @@ export default function SearchedCourses() {
     const [searchString, setSearchString] = useState('') //     /?search=py
     const data = useLoaderData() || {};
     const initialCourses = data.courses?.results || [];
+    const [authRequired, setAuthRequired] = useState(Boolean(data.authRequired));
 
     useEffect(() => {
         setResultCourses(initialCourses);
     }, [initialCourses]);
+
+    useEffect(() => {
+        setAuthRequired(Boolean(data.authRequired));
+    }, [data.authRequired]);
 
     useEffect(() => {
         console.log(filters);
@@ -61,9 +66,12 @@ export default function SearchedCourses() {
         }
         console.log('res', res);
         async function loadCourses() {
+            if (!searchString && !filterQueryString) return
+            if (authRequired) return
             const resCourses = await getFilteredCourses(res)
             if (resCourses?.error && resCourses.message === 'Unauthorized') {
-                navigate('/auth/1', { replace: true })
+                setAuthRequired(true)
+                setResultCourses([])
                 return
             }
             const safeResults = resCourses?.results || []
@@ -73,7 +81,7 @@ export default function SearchedCourses() {
         }
         loadCourses()
 
-    }, [filters])
+    }, [filters, authRequired])
 
     
     const location = useLocation()
@@ -103,9 +111,12 @@ export default function SearchedCourses() {
     useEffect(() => {
         console.log('------ loading courses ------');
         async function loadCourses() {
+            if (!searchString) return
+            if (authRequired) return
             const res = await getFilteredCourses(searchString)
             if (res?.error && res.message === 'Unauthorized') {
-                navigate('/auth/1', { replace: true })
+                setAuthRequired(true)
+                setResultCourses([])
                 return
             }
             const safeResults = res?.results || []
@@ -114,12 +125,16 @@ export default function SearchedCourses() {
             console.log('res courses', safeResults, resultCourses);
         }
         loadCourses()
-    }, [searchString])
+    }, [searchString, authRequired])
 
     async function handleSearch(input) {
         //setResultCourses(searchCourses(input, courses))
         //navigate(`/search?q=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`);
         console.log(`/search?q=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`);
+        if (authRequired) {
+            setResultCourses([])
+            return
+        }
         setSearchString(`/?search=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`)
 
         // let resString = `/search?q=${encodeURIComponent(input.trim())}${getFiltersQueryString()}`
@@ -136,18 +151,24 @@ export default function SearchedCourses() {
 
     <hr className="mt-12 border-t-1 border-gray-300 w-3/4 mx-auto" />
     {/* {resultCourses && resultCourses.length > 0 ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2> : null} */}
-        <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2>
+        {!authRequired ? <h2 class="text-3xl ml-48 font-bold text-left mt-10 mb-10 text-[#0b1d3a] ">Курси ({resultCourses.length})</h2> : null}
     <div className="flex flex-row mt-8 gap-8 justify-center items-start ">
         {/* Filters section */}
         {/* {resultCourses && resultCourses.length > 0 ? <div className="w-72">
             <CourseFilters handleSetFilters={setFilters} filters={filters} />
         </div> : null} */}
-        <CourseFilters handleSetFilters={setFilters} filters={filters} />
+        {!authRequired ? <CourseFilters handleSetFilters={setFilters} filters={filters} /> : null}
         
 
         {/* Results section */}
         <div className="flex flex-col gap-8 overflow-y-auto max-h-[815px] ">
-            {resultCourses.length === 0 ? (
+            {authRequired ? (
+            <div className="w-248">
+                <p className="text-center text-gray-500 text-lg">
+                    Спочатку треба увійти/зареєструватися
+                </p>
+            </div>
+            ) : resultCourses.length === 0 ? (
             <div className="w-248">
 
             

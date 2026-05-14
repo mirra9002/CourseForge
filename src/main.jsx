@@ -160,10 +160,22 @@ const router = createBrowserRouter([{
   loader: async ({request }) => {
       const url = new URL(request.url);
       const query = url.searchParams.get('q') || '';
+      const me = await getMe()
+      if (!me && query.trim()) {
+        return {
+          authRequired: true,
+          courses: { results: [] },
+          request: query,
+        }
+      }
       const data = await getAllCourses()
       console.log('-->', data);
       if(data.error && data.message === 'Unauthorized'){
-        return redirect('/auth/1');
+        return {
+          authRequired: true,
+          courses: { results: [] },
+          request: query,
+        }
       }
       if (data.error){
         throw new Response("Failed to load", { status: 500 });
