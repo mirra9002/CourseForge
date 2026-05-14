@@ -12,6 +12,7 @@ import mascot_happy1 from '../../images/mascot_happy1.png'
 
 import {enrollUserOnCourse} from '../sending-data'
 import { getCertificate } from '../fetching-data.js'
+import { sortByOrder } from '../utils/sortByOrder.js'
 
 export default function Courseinfo() {
     const navigate = useNavigate()
@@ -164,6 +165,7 @@ function CourseSection({title, description, moduleId, courseId}){
 }
 function CourseSections({modulesInfo, courseId}) {
   console.log('modules info comp', modulesInfo);
+  const sortedModules = sortByOrder(modulesInfo)
   // modulesInfo = [{title: "title abdasbd", content: "aboboabob"}]
   return (
     <>
@@ -171,7 +173,7 @@ function CourseSections({modulesInfo, courseId}) {
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Розділи курсу</h5>
         <ol class=" ml-2 relative border-s border-gray-200 ">                  
             
-            {modulesInfo.map((module, index) => <CourseSection key={index} courseId={courseId} moduleId={module.id} title={module.title} description={module.description}/>) }
+            {sortedModules.map((module) => <CourseSection key={module.id} courseId={courseId} moduleId={module.id} title={module.title} description={module.description}/>) }
         </ol>
     </a>
     </>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {getFirstPageIdInLesson} from '../fetching-data.js'
 import Navbar from '../Components/NavBar';
 import {calculateCourseProgress} from '../utils/progressCalculator.js'
+import { sortByOrder } from '../utils/sortByOrder.js';
 export default function LessonsMiddleware() {
 
   const params = useParams()
@@ -51,6 +52,7 @@ export default function LessonsMiddleware() {
 
 
 function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLessonClick}) {
+    const sortedLessons = sortByOrder(lessons)
     function handleChange(lessonId, e){
         handleChangeLessonCompletion(lessonId, e)
     }
@@ -59,7 +61,7 @@ function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLesson
     <a href="#" class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Уроки в цьому модулі</h5>
         <ol class=" ml-2 relative border-s border-gray-200 ">
-            {lessons.map(lesson => {
+            {sortedLessons.map(lesson => {
                 return <LessonSection handleGoToLessonClick={() => handleGoToLessonClick(lesson.id)} key={lesson.id} lesson={lesson} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
             })}
         </ol>
