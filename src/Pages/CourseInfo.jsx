@@ -169,13 +169,13 @@ function CourseSections({modulesInfo, courseId}) {
   // modulesInfo = [{title: "title abdasbd", content: "aboboabob"}]
   return (
     <>
-    <a class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+    <section class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Розділи курсу</h5>
         <ol class=" ml-2 relative border-s border-gray-200 ">                  
             
             {sortedModules.map((module) => <CourseSection key={module.id} courseId={courseId} moduleId={module.id} title={module.title} description={module.description}/>) }
         </ol>
-    </a>
+    </section>
     </>
   );
 }

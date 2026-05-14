@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import 'nprogress/nprogress.css';
 import { Provider } from 'react-redux';
 import { store } from './State/store.js';
@@ -27,9 +27,22 @@ import { getAllCourses, getCourseById, getMe, getMyCourses, getPageById , getLes
 import { redirect } from 'react-router-dom';
 
 import CertValidation from './Pages/CertValidation.jsx';
+import LoadingBar from './Components/LoadingBar.jsx';
+
+function RootLayout() {
+  return (
+    <>
+      <LoadingBar />
+      <Outlet />
+    </>
+  );
+}
 
 const router = createBrowserRouter([{
     path: '/',
+    element: <RootLayout />,
+    children: [{
+    index: true,
     element: <Mainpage />,
     loader: async () => {
       const allCoursesDiscover = await getAllCourses()
@@ -48,7 +61,7 @@ const router = createBrowserRouter([{
     errorElement: <Notfound />,
   },
   {
-    path: '/me',
+    path: 'me',
     element: <Me />,
     loader: async () => {
       const data = await getAllCourses()
@@ -61,7 +74,7 @@ const router = createBrowserRouter([{
     errorElement: <Notfound />,
   },
 {
-  path: '/courseinfo/:courseId',
+  path: 'courseinfo/:courseId',
   element: <Courseinfo />,
   loader: async ({ params }) => {
       const me = await getMe()
@@ -86,7 +99,7 @@ const router = createBrowserRouter([{
 },
 
 {
-  path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId',
+  path: 'course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId',
   element: <Lesson />,
   loader: async ({params}) => {
     console.log('in loader.........');
@@ -105,7 +118,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId/code',
+  path: 'course/:courseId/module/:moduleId/lesson/:lessonId/page/:pageId/code',
   element: <PracticeCode />,
   loader: async ({params}) => {
     console.log('in PracticeCode loader.........');
@@ -124,7 +137,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/course/:courseId/module/:moduleId/lessons-middleware',
+  path: 'course/:courseId/module/:moduleId/lessons-middleware',
   element: <LessonsMiddleware />,
   loader: async({params}) => {
     const data = getModuleById(params.moduleId)
@@ -133,7 +146,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/auth/:isRegister',
+  path: 'auth/:isRegister',
   loader: async ({params}) => {
     const data = await params.isRegister
     return Number(data)
@@ -142,7 +155,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: '/search/',
+  path: 'search',
   element: <SearchedCourses />,
   loader: async ({request }) => {
       const url = new URL(request.url);
@@ -163,7 +176,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 },
 {
-  path: "/mycourses",
+  path: "mycourses",
   element: <MyCourses/>,
   loader: async () => {
     const data = await getMyCourses()
@@ -175,7 +188,7 @@ const router = createBrowserRouter([{
   errorElement: <Notfound/>
 }, 
 {
-  path: "/category/:categoryName",
+  path: "category/:categoryName",
   element: <CoursesByCategory/>,
   errorElement: <Notfound/>,
   loader: async ({params}) => {
@@ -187,12 +200,12 @@ const router = createBrowserRouter([{
   }
 },
 {
-  path: '/documentation',
+  path: 'documentation',
   element: <Documentation/>,
   errorElement: <Notfound/>
 },
 {
-  path: "/certificate",
+  path: "certificate",
   element: <CertValidation/>,
   errorElement: <Notfound/>,
 }
@@ -201,7 +214,7 @@ const router = createBrowserRouter([{
 //   element: <CreateCourseDetails/>,
 //   errorElement: <Notfound/>
 // }
-],
+]}],
 {
   fallbackElement: <div>Loading page...</div>  
 })

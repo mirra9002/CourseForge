@@ -157,7 +157,7 @@ function Register({input, handleChange, registerUser}) {
                     type="password" id="re_password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Repeat password" required />
             </div>
             <div class="flex items-start">
-                <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Вже маєте акаунт? <a href="#" onClick={(e)=> {e.preventDefault(); navigate('/auth/0')}} class="text-blue-600 hover:underline">Увійти</a></label>
+                <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Вже маєте акаунт? <button type="button" onClick={()=> navigate('/auth/0')} class="cursor-pointer bg-transparent p-0 text-blue-600 hover:underline">Увійти</button></label>
             </div>
             {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
             {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
@@ -231,7 +231,7 @@ function LogIn({input, handleChange, loginUser}) {
             type="password" id="password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Password" required />
         </div>
         <div class="flex items-start">
-            <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Don't have an account? <a onClick={(e)=> {e.preventDefault(); navigate('/auth/1')}} href="#" class="text-blue-600 hover:underline">Register</a></label>
+            <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Don't have an account? <button type="button" onClick={()=> navigate('/auth/1')} class="cursor-pointer bg-transparent p-0 text-blue-600 hover:underline">Register</button></label>
         </div>
         {error && <p className="text-red-500 text-sm">{error.message}</p>}
         {success && <p className="text-green-500 text-sm">Successfully logged in!</p>}

@@ -5,6 +5,7 @@ import {getFirstPageIdInLesson} from '../fetching-data.js'
 import Navbar from '../Components/NavBar';
 import {calculateCourseProgress} from '../utils/progressCalculator.js'
 import { sortByOrder } from '../utils/sortByOrder.js';
+import NProgress from 'nprogress';
 export default function LessonsMiddleware() {
 
   const params = useParams()
@@ -30,8 +31,14 @@ export default function LessonsMiddleware() {
     }
 
     async function handleGoToLessonClick(lessonId) {
-      const firstPageId = await getFirstPageIdInLesson(lessonId)
-      navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${lessonId}/page/${firstPageId}`)
+      NProgress.start();
+      try {
+        const firstPageId = await getFirstPageIdInLesson(lessonId)
+        navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${lessonId}/page/${firstPageId}`)
+      } catch (error) {
+        NProgress.done();
+        throw error;
+      }
     }
 
   return (
@@ -58,14 +65,14 @@ function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLesson
     }
   return (
     <>
-    <a href="#" class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+    <section class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Уроки в цьому модулі</h5>
         <ol class=" ml-2 relative border-s border-gray-200 ">
             {sortedLessons.map(lesson => {
                 return <LessonSection handleGoToLessonClick={() => handleGoToLessonClick(lesson.id)} key={lesson.id} lesson={lesson} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
             })}
         </ol>
-    </a>
+    </section>
     </>
   );
 
