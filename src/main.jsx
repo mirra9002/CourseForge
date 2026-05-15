@@ -24,7 +24,6 @@ import LessonsMiddleware from './Pages/LessonsMiddleware.jsx'
 import CoursesByCategory from './Pages/CoursesByCategory.jsx';
 import Documentation from './Pages/Documentation.jsx';
 import { getAllCourses, getCourseById, getMe, getMyCourses, getPageById , getLessonById, getModuleById, getAllCoursesLogged} from './fetching-data.js';
-import { redirect } from 'react-router-dom';
 
 import CertValidation from './Pages/CertValidation.jsx';
 import LoadingBar from './Components/LoadingBar.jsx';
@@ -77,15 +76,7 @@ const router = createBrowserRouter([{
   path: 'courseinfo/:courseId',
   element: <Courseinfo />,
   loader: async ({ params }) => {
-      const me = await getMe()
-      if (!me) {
-        return redirect('/auth/0');
-      }
-
       const data = await getCourseById(params.courseId) || {error: true, message: 'no modules'};
-      if(data.error && data.message === 'Unauthorized'){
-        return redirect('/auth/0');
-      }
       if(data.error && data.message === 'no modules in this course'){
         return null
       }

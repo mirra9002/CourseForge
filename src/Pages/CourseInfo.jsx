@@ -2,13 +2,11 @@ import Navbar from '../Components/NavBar'
 import Footer from '../Components/Footer'
 import {TextSkeleton} from '../Components/Skeleton'
 import { useParams, useNavigate} from 'react-router-dom'
-import {useEffect, useState} from 'react'
+import {useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
-import AuthInit from "../State/AuthInit";
 import LoadingBar from '../Components/LoadingBar'
 import { useSelector } from 'react-redux'
 import {calculateCourseProgress } from '../utils/progressCalculator.js'
-import mascot_happy1 from '../../images/mascot_happy1.png'
 
 import {enrollUserOnCourse} from '../sending-data'
 import { getCertificate } from '../fetching-data.js'
@@ -19,7 +17,7 @@ export default function Courseinfo() {
     const params = useParams()
     const data = useLoaderData();
     useEffect(() => {window.scrollTo(0,0)},[])
-    const { user, status } = useSelector(s => s.auth);
+    const { user } = useSelector(s => s.auth);
     console.log('[courseinfo]', data);
 
     if(data === null){
@@ -38,13 +36,12 @@ export default function Courseinfo() {
    
 
     async function enrollStudentOnCourse(courseId) {
-      console.log(user);
-      const res = await enrollUserOnCourse(user.username, courseId)
-    }
+      if (!user?.username) {
+        return
+      }
 
-    async function getCertificate(courseId) {
-      const res = await getCertificate(courseId);
-      
+      console.log(user);
+      await enrollUserOnCourse(user.username, courseId)
     }
 
    
@@ -86,10 +83,6 @@ export default function Courseinfo() {
 
 function CourseInfoHeading({onEnrollClick, courseId, title, description, firstModuleId,firstLessonId, firstPageId, courseProgress}) {
     const navigate = useNavigate()
-    function navigateToPage(location){
-      console.log('in navigate');
-      navigate(location)
-    }
 
      async function handleClick() {
       if (courseProgress === 100) {
