@@ -24,46 +24,79 @@ function isMobileDevice() {
   return mobileUserAgent || smallViewport || touchTablet
 }
 
-function MobileOnlyNotice() {
+function isSafariBrowser() {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  const userAgent = window.navigator.userAgent
+  const vendor = window.navigator.vendor
+  const isAppleBrowser = /Apple/i.test(vendor)
+  const isSafari = /Safari/i.test(userAgent)
+  const isOtherBrowser = /Chrome|Chromium|CriOS|FxiOS|Edg|OPR|Android/i.test(userAgent)
+
+  return isAppleBrowser && isSafari && !isOtherBrowser
+}
+
+function DeviceNotice({ title, description, titleId }) {
   return (
     <main className="mobile-device-notice">
-      <section className="mobile-device-notice__panel" aria-labelledby="mobile-device-title">
+      <section className="mobile-device-notice__panel" aria-labelledby={titleId}>
         <img
           className="mobile-device-notice__logo"
           src="/course-forge-test-logo.png"
           alt="CourseForge"
         />
         <p className="mobile-device-notice__eyebrow">CourseForge</p>
-        <h1 id="mobile-device-title">Відкрийте платформу з ноутбука чи комп'ютера</h1>
-        <p>
-          Наразі мобільна версія тимчасово недоступна. Щоб авторизація та уроки працювали стабільно, 
-          зайдіть, будь ласка, із desktop-пристрою.
-        </p>
+        <h1 id={titleId}>{title}</h1>
+        <p>{description}</p>
       </section>
     </main>
   )
 }
 
+function MobileOnlyNotice() {
+  return (
+    <DeviceNotice
+      titleId="mobile-device-title"
+      title="Відкрийте платформу з ноутбука чи комп'ютера"
+      description="Наразі мобільна версія тимчасово недоступна. Щоб авторизація та уроки працювали стабільно, зайдіть, будь ласка, із desktop-пристрою."
+    />
+  )
+}
+
+function SafariOnlyNotice() {
+  return (
+    <DeviceNotice
+      titleId="safari-browser-title"
+      title="Відкрийте платформу в Chrome"
+      description="Наразі сайт тимчасово доступний тільки через Chrome через можливі складнощі з реєстрацією в Safari. Будь ласка, відкрийте CourseForge у Chrome."
+    />
+  )
+}
+
 function App({children}) {
   const [isMobile, setIsMobile] = useState(isMobileDevice)
+  const [isSafari, setIsSafari] = useState(isSafariBrowser)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    function updateDeviceState() {
+    function updateEnvironmentState() {
       setIsMobile(isMobileDevice())
+      setIsSafari(isSafariBrowser())
     }
 
-    window.addEventListener('resize', updateDeviceState)
-    window.addEventListener('orientationchange', updateDeviceState)
+    window.addEventListener('resize', updateEnvironmentState)
+    window.addEventListener('orientationchange', updateEnvironmentState)
 
     return () => {
-      window.removeEventListener('resize', updateDeviceState)
-      window.removeEventListener('orientationchange', updateDeviceState)
+      window.removeEventListener('resize', updateEnvironmentState)
+      window.removeEventListener('orientationchange', updateEnvironmentState)
     }
   }, [])
 
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile || isSafari) {
       return
     }
 
@@ -78,10 +111,14 @@ function App({children}) {
       dispatch(login(user))
     }
     getUser()
-  }, [dispatch, isMobile]);
+  }, [dispatch, isMobile, isSafari]);
 
   if (isMobile) {
     return <MobileOnlyNotice />
+  }
+
+  if (isSafari) {
+    return <SafariOnlyNotice />
   }
 
   return children
