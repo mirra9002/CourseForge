@@ -53,6 +53,19 @@ export default function Auth() {
   );
 }
 
+function SafariCookieWarning({isEmphasized = false}) {
+    const styles = isEmphasized
+        ? "mb-5 rounded-md border-2 border-red-400 bg-red-50 px-4 py-3 text-sm font-medium text-red-900 shadow-sm"
+        : "mb-5 rounded-md border-2 border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950"
+
+    return (
+        <div className={styles} role="alert">
+            <p className="mb-1 font-semibold">Важливо для користувачів Safari</p>
+            Через проблеми з cookie авторизація через Safari може працювати некоректно. Будь ласка, відкрийте CourseForge у Chrome.
+        </div>
+    )
+}
+
 function Register({input, handleChange, registerUser}) {
 
     const navigate = useNavigate()
@@ -134,6 +147,7 @@ function Register({input, handleChange, registerUser}) {
         <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
             <h2 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Зарєструватися</h2>
+            <SafariCookieWarning isEmphasized={error.isError} />
         
             <form class="space-y-6">
                 <div>
@@ -220,6 +234,7 @@ function LogIn({input, handleChange, loginUser}) {
     <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
         <h2 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Увійти</h2>
+        <SafariCookieWarning isEmphasized={Boolean(error?.isError)} />
     
         <form class="space-y-6">
         <div>
