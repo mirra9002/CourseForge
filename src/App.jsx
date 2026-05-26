@@ -24,20 +24,6 @@ function isMobileDevice() {
   return mobileUserAgent || smallViewport || touchTablet
 }
 
-function isSafariBrowser() {
-  if (typeof window === 'undefined') {
-    return false
-  }
-
-  const userAgent = window.navigator.userAgent
-  const vendor = window.navigator.vendor
-  const isAppleBrowser = /Apple/i.test(vendor)
-  const isSafari = /Safari/i.test(userAgent)
-  const isOtherBrowser = /Chrome|Chromium|CriOS|FxiOS|Edg|OPR|Android/i.test(userAgent)
-
-  return isAppleBrowser && isSafari && !isOtherBrowser
-}
-
 function DeviceNotice({ title, description, titleId }) {
   return (
     <main className="mobile-device-notice">
@@ -65,25 +51,13 @@ function MobileOnlyNotice() {
   )
 }
 
-function SafariOnlyNotice() {
-  return (
-    <DeviceNotice
-      titleId="safari-browser-title"
-      title="Відкрийте платформу в Chrome"
-      description="Наразі сайт тимчасово доступний тільки через Chrome через можливі складнощі з реєстрацією в Safari. Будь ласка, відкрийте CourseForge у Chrome."
-    />
-  )
-}
-
 function App({children}) {
   const [isMobile, setIsMobile] = useState(isMobileDevice)
-  const [isSafari, setIsSafari] = useState(isSafariBrowser)
   const dispatch = useDispatch()
 
   useEffect(() => {
     function updateEnvironmentState() {
       setIsMobile(isMobileDevice())
-      setIsSafari(isSafariBrowser())
     }
 
     window.addEventListener('resize', updateEnvironmentState)
@@ -96,7 +70,7 @@ function App({children}) {
   }, [])
 
   useEffect(() => {
-    if (isMobile || isSafari) {
+    if (isMobile) {
       return
     }
 
@@ -111,14 +85,10 @@ function App({children}) {
       dispatch(login(user))
     }
     getUser()
-  }, [dispatch, isMobile, isSafari]);
+  }, [dispatch, isMobile]);
 
   if (isMobile) {
     return <MobileOnlyNotice />
-  }
-
-  if (isSafari) {
-    return <SafariOnlyNotice />
   }
 
   return children
