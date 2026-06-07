@@ -94,8 +94,10 @@ const router = createBrowserRouter([{
   element: <Lesson />,
   loader: async ({params}) => {
     console.log('in loader.........');
-    const lesson = await getLessonById(params.lessonId)
-    const page = await getPageById(params.pageId)
+    const [lesson, page] = await Promise.all([
+      getLessonById(params.lessonId),
+      getPageById(params.pageId)
+    ])
     const data = {
       lesson: lesson,
       page: page

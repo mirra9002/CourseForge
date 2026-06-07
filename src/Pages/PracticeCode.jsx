@@ -183,7 +183,6 @@ export default function PracticeCode() {
     try {
       const response = await fetch(`${SERVER_URL}/api/judgejobs/${jobIdToPoll}/`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
 
@@ -310,7 +309,6 @@ export default function PracticeCode() {
   while (attempt < 60) { // ~ до 1-2 минут ожидания
     const res = await fetch(`${SERVER_URL}/api/submissions/${submissionId}/`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
 
@@ -336,7 +334,6 @@ async function pollJudgeJob(jobIdToPoll) {
   while (true) {
     const res = await fetch(`${SERVER_URL}/api/judgejobs/${jobIdToPoll}/`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
 

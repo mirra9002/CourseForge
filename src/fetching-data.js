@@ -8,7 +8,6 @@ export async function getAllCourses() {
       const response = await fetch(`${SERVER_URL}/api/courses/discover?include_enrolled=true`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
       const result = await response.json();
       return result
@@ -24,7 +23,6 @@ export async function getAllCoursesLogged() {
       const response = await fetch(`${SERVER_URL}/api/courses`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
       const result = await response.json();
       return result
@@ -39,7 +37,6 @@ export async function getCourseById(courseId) {
   const responseCourse = await fetch(`${SERVER_URL}/api/courses/${courseId}`, {
     method: "GET",
     credentials: 'include',
-    headers: { "Content-Type": "application/json"},
   });
 
 
@@ -60,7 +57,6 @@ export async function getCourseById(courseId) {
   const responseModule = await fetch(`${SERVER_URL}/api/modules/${firstModuleId}`, {
     method: "GET",
     credentials: 'include',
-    headers: { "Content-Type": "application/json"},
   });
 
   
@@ -78,7 +74,6 @@ export async function getCourseById(courseId) {
   const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${firstLessonId}`, {
     method: "GET",
     credentials: 'include',
-    headers: { "Content-Type": "application/json"},
   });
 
   const resultLesson = normalizeLessonOrder(await responseLesson.json()); 
@@ -99,7 +94,6 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
   const response = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
 
   const lessonResult = normalizeLessonOrder(await response.json())
@@ -108,7 +102,6 @@ export async function getLessonAndAllLessonsById(lessonId, courseId) { // is it 
   const responseLessons = await fetch(`${SERVER_URL}/api/modules/${moduleId}`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
   const lessonsResult = normalizeModuleOrder(await responseLessons.json())
 
@@ -122,7 +115,6 @@ export async function getPageById(pageId) {
     const responsePage = await fetch(`${SERVER_URL}/api/pages/${pageId}`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
     
     const responseResult = await responsePage.json()
@@ -133,7 +125,6 @@ export async function getLessonById(lessonId){
   const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
     return normalizeLessonOrder(await responseLesson.json())
     
@@ -163,7 +154,6 @@ export async function getFirstPageIdInLesson(lessonId) {
    const responseLesson = await fetch(`${SERVER_URL}/api/lessons/${lessonId}`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
     const res = normalizeLessonOrder(await responseLesson.json())
     const firstPageId = res.pages[0].id
@@ -175,7 +165,6 @@ export async function getFilteredCourses(queryString) {
     const responseLesson = await fetch(`${SERVER_URL}/api/courses${queryString}`, {
       method: "GET",
       credentials: 'include',
-      headers: { "Content-Type": "application/json"},
     });
     const res = await responseLesson.json()
     //console.log('---> results qs ',queryString ,res);
