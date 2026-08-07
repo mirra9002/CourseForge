@@ -1,0 +1,11 @@
+:{$PORT:80} {
+    handle /api/* {
+        reverse_proxy http://courseforgebackend.railway.internal:8000
+    }
+
+    handle {
+        root * {$STATIC_PATH:/app/dist}
+        try_files {path} /index.html
+        file_server
+    }
+}
