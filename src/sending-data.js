@@ -9,9 +9,14 @@ export async function sendUserRegister(userInput) {
         },
        body: JSON.stringify(userInput)
     });
-    const data = await response.json();
-    if(response.status === 400 || response.status === 401){
-      return {error: true, message: response.detail, data: data}
+    const data = await response.json().catch(() => null);
+    if(!response.ok){
+      return {
+        error: true,
+        status: response.status,
+        message: data?.detail || data?.email?.[0] || data?.username?.[0] || data?.password?.[0] || "Could not register user",
+        data: data || {}
+      }
     }
     return data
 }
