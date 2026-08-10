@@ -53,18 +53,6 @@ export default function Auth() {
   );
 }
 
-function SafariCookieWarning({isEmphasized = false}) {
-    const styles = isEmphasized
-        ? "mb-5 rounded-md border-2 border-red-400 bg-red-50 px-4 py-3 text-sm font-medium text-red-900 shadow-sm"
-        : "mb-5 rounded-md border-2 border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950"
-
-    return (
-        <div className={styles} role="alert">
-            <p className="mb-1 font-semibold">Важливо для користувачів Safari</p>
-            Через проблеми з cookie авторизація через Safari може працювати некоректно. Будь ласка, відкрийте CourseForge у Chrome.
-        </div>
-    )
-}
 
 function Register({input, handleChange, registerUser}) {
 
@@ -72,10 +60,12 @@ function Register({input, handleChange, registerUser}) {
 
     const [error, setError] = useState({isError: null, message: null})
     const [success, setSuccess] = useState(null)
+    const [verificationEmail, setVerificationEmail] = useState('')
 
     async function sendData(data) {
         setError({isError: null, message: null})
         setSuccess(null)
+        setVerificationEmail('')
         
         const responseRegister = await sendUserRegister(data)
         if(responseRegister.error) {
@@ -83,23 +73,9 @@ function Register({input, handleChange, registerUser}) {
             console.log('error while registering...');
            return 
         }
-        
-        const res = await sendUserLogin({username: data.username, password: data.password})
-        console.log('res', res);
-        if(!res || res.error) {
-            setError({isError: true, message: res.data.detail})
-            return null
-        }
 
-        const me = await getMe()
-        console.log('meres', me);
-        if(!me){
-            setError({isError: true, message: "Cannot fetch user"})
-            return
-        }
-        registerUser(me)
-
-
+        setSuccess(true)
+        setVerificationEmail(data.email)
     }
 
     async function handleGoogleSuccess(credentialResponse) {
@@ -147,7 +123,6 @@ function Register({input, handleChange, registerUser}) {
         <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
             <h2 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Зарєструватися</h2>
-            <SafariCookieWarning isEmphasized={error.isError} />
         
             <form class="space-y-6">
                 <div>
@@ -174,7 +149,11 @@ function Register({input, handleChange, registerUser}) {
                 <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Вже маєте акаунт? <button type="button" onClick={()=> navigate('/auth/0')} class="cursor-pointer bg-transparent p-0 text-blue-600 hover:underline">Увійти</button></label>
             </div>
             {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
-            {success && <p className="text-green-500 text-sm">Successfully registered!</p>}
+            {success && (
+                <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700">
+                    We sent a verification link to {verificationEmail || 'your email address'}. Open that link to activate your account and continue.
+                </div>
+            )}
             <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center">Register</button>
             <GoogleAuthOption onSuccess={handleGoogleSuccess} onError={() => setError({isError: true, message: "Google sign-in was cancelled or failed"})} />
             </form>
@@ -234,7 +213,6 @@ function LogIn({input, handleChange, loginUser}) {
     <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
         <h2 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Увійти</h2>
-        <SafariCookieWarning isEmphasized={Boolean(error?.isError)} />
     
         <form class="space-y-6">
         <div>

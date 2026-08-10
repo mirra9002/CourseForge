@@ -16,6 +16,30 @@ export async function sendUserRegister(userInput) {
     return data
 }
 
+export async function sendUserActivation(uid, token) {
+  const response = await fetch(`${SERVER_URL}/api/users/activation/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ uid, token }),
+    credentials: "include"
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if(!response.ok){
+    return {
+      error: true,
+      status: response.status,
+      message: data?.detail || data?.uid?.[0] || data?.token?.[0] || "Activation link is invalid or expired",
+      data
+    }
+  }
+
+  return data || { ok: true }
+}
+
 export async function sendUserLogin(userInput) {
 
     const response = await fetch(`${SERVER_URL}/api/users/auth/login/`, {

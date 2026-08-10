@@ -16,6 +16,7 @@ import Notfound from './Pages/NotFound.jsx';
 import Lesson from './Pages/Lesson.jsx'
 import PracticeCode from './Pages/PracticeCode.jsx';
 import Auth from './Pages/Auth.jsx';
+import ActivateAccount from './Pages/ActivateAccount.jsx';
 import SearchedCourses from './Pages/SearchedCourses.jsx';
 import Me from './Pages/Me.jsx';
 import MyCourses from './Pages/MyCourses.jsx';
@@ -145,6 +146,11 @@ const router = createBrowserRouter([{
     return Number(data)
   },
   element: <Auth />,
+  errorElement: <Notfound/>
+},
+{
+  path: 'activate/:uid/:token',
+  element: <ActivateAccount />,
   errorElement: <Notfound/>
 },
 {
