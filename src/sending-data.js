@@ -40,6 +40,29 @@ export async function sendUserActivation(uid, token) {
   return data || { ok: true }
 }
 
+export async function sendActivationResend(email) {
+  const response = await fetch(`${SERVER_URL}/api/users/resend_activation/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email })
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if(!response.ok){
+    return {
+      error: true,
+      status: response.status,
+      message: data?.email?.[0] || data?.detail || "Could not resend verification email",
+      data
+    }
+  }
+
+  return data || { ok: true }
+}
+
 export async function sendUserLogin(userInput) {
 
     const response = await fetch(`${SERVER_URL}/api/users/auth/login/`, {

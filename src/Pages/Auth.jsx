@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import { useLoaderData } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import {sendUserRegister, sendUserLogin, sendGoogleLogin} from '../sending-data.js'
+import {sendUserRegister, sendUserLogin, sendGoogleLogin, sendActivationResend} from '../sending-data.js'
 import { getMe } from '../fetching-data.js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
@@ -61,11 +61,13 @@ function Register({input, handleChange, registerUser}) {
     const [error, setError] = useState({isError: null, message: null})
     const [success, setSuccess] = useState(null)
     const [verificationEmail, setVerificationEmail] = useState('')
+    const [canResendVerification, setCanResendVerification] = useState(false)
 
     async function sendData(data) {
         setError({isError: null, message: null})
         setSuccess(null)
         setVerificationEmail('')
+        setCanResendVerification(false)
         
         const responseRegister = await sendUserRegister(data)
         if(responseRegister.error) {
@@ -76,6 +78,27 @@ function Register({input, handleChange, registerUser}) {
 
         setSuccess(true)
         setVerificationEmail(data.email)
+    }
+
+    async function resendVerificationEmail() {
+        setError({isError: null, message: null})
+        setSuccess(null)
+
+        const email = input.email
+        if(!email){
+            setError({isError: true, message: "Enter your email first"})
+            return
+        }
+
+        const response = await sendActivationResend(email)
+        if(response.error){
+            setError({isError: true, message: response.message})
+            return
+        }
+
+        setSuccess(true)
+        setVerificationEmail(email)
+        setCanResendVerification(false)
     }
 
     async function handleGoogleSuccess(credentialResponse) {
@@ -107,7 +130,9 @@ function Register({input, handleChange, registerUser}) {
         if(data.username){
             setError(prev => ({...prev, isError: true, message: data.username[0]}));
         } else if (data.email) {
-            setError(prev => ({...prev, isError: true, message: data.email[0]}));
+            const message = data.email[0]
+            setError(prev => ({...prev, isError: true, message: message}));
+            setCanResendVerification(message.toLowerCase().includes("already exists"))
         } else if (data.non_field_errors) {
             setError(prev => ({...prev, isError: true, message: data.non_field_errors[0]}));
         } else if (data.password){
@@ -149,6 +174,15 @@ function Register({input, handleChange, registerUser}) {
                 <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Вже маєте акаунт? <button type="button" onClick={()=> navigate('/auth/0')} class="cursor-pointer bg-transparent p-0 text-blue-600 hover:underline">Увійти</button></label>
             </div>
             {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
+            {canResendVerification && (
+                <button
+                    type="button"
+                    onClick={resendVerificationEmail}
+                    class="w-full border border-blue-600 text-blue-700 hover:bg-blue-50 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center"
+                >
+                    Resend verification email
+                </button>
+            )}
             {success && (
                 <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700">
                     We sent a verification link to {verificationEmail || 'your email address'}. Open that link to activate your account and continue.
