@@ -56,7 +56,7 @@ export default function Courseinfo() {
     
     <LoadingBar/>
     {courseData ? 
-    <div className='mt-20 ml-25 mr-25'>   
+    <div className='mt-16 px-4 sm:px-6 lg:mt-20 lg:mx-25 lg:px-0'>   
         <CourseInfoHeading
           onEnrollClick={(courseId) => enrollStudentOnCourse(courseId)}
           firstModuleId={firstModuleId} 
@@ -136,23 +136,39 @@ function CourseProgressBar({progress="45"}) {
     </>
   );
 }
-function CourseSection({title, description, moduleId, courseId}){
+function CourseSection({title, description, moduleId, courseId, progress=0}){
 
     const navigate = useNavigate()
+    const isCompleted = progress >= 99
     function handleClick() {
       console.log(' -- CLICK -- -- -- ', courseId, moduleId);
       navigate(`/course/${courseId}/module/${moduleId}/lessons-middleware`)
     }
     return<>
-    <div onClick={handleClick}>
-      <li class="mb-10 ms-6  hover:bg-gray-100 cursor-pointer">            
-        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white">
-          <svg class="w-2.5 h-2.5 text-blue-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-          </svg>
+    <div onClick={handleClick} className="group">
+      <li class={`relative mb-5 ms-8 cursor-pointer rounded-lg py-4 pe-4 ps-2 transition-colors sm:pe-5 ${isCompleted ? 'bg-blue-50/80 hover:bg-blue-100/80' : 'hover:bg-gray-100'}`}>            
+        <span class={`absolute -start-11 top-4 flex h-7 w-7 items-center justify-center rounded-full ring-8 ring-white transition-colors ${isCompleted ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200'}`}>
+          {isCompleted ? (
+            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="m5 12 4 4L19 6"/>
+            </svg>
+          ) : (
+            <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 12h14m-6-6 6 6-6 6"/>
+            </svg>
+          )}
         </span>
-        <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900">{title} </h3>
-        <p class="mb-4 text-base font-normal text-gray-500">{description}</p>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h3 class={`mb-1 text-lg font-semibold ${isCompleted ? 'text-blue-950' : 'text-gray-900'}`}>{title}</h3>
+            <p class={`text-base font-normal ${isCompleted ? 'text-blue-800/75' : 'text-gray-500'}`}>{description}</p>
+          </div>
+          {isCompleted ? (
+            <span className="w-fit rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200">
+              100%
+            </span>
+          ) : null}
+        </div>
       </li>
     </div></>
 }
@@ -162,11 +178,11 @@ function CourseSections({modulesInfo, courseId}) {
   // modulesInfo = [{title: "title abdasbd", content: "aboboabob"}]
   return (
     <>
-    <section class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+    <section class=" mt-15 block w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6">
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Розділи курсу</h5>
-        <ol class=" ml-2 relative border-s border-gray-200 ">                  
+        <ol class=" relative border-s border-gray-200 pl-1 sm:ml-6 sm:pl-0 ">                  
             
-            {sortedModules.map((module) => <CourseSection key={module.id} courseId={courseId} moduleId={module.id} title={module.title} description={module.description}/>) }
+            {sortedModules.map((module) => <CourseSection key={module.id} courseId={courseId} moduleId={module.id} title={module.title} description={module.description} progress={module.progress?.percentage}/>) }
         </ol>
     </section>
     </>

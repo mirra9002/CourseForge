@@ -8,7 +8,7 @@ import { sortByOrder } from '../utils/sortByOrder.js';
 import NProgress from 'nprogress';
 export default function LessonsMiddleware() {
 
-  const params = useParams()
+    const params = useParams()
     const navigate = useNavigate()
     const [lessonsCompletion, setLessonsCompletion] = useState({})
     const data = useLoaderData();
@@ -18,7 +18,6 @@ export default function LessonsMiddleware() {
 
     let totalProgress = 0;
     totalProgress = Math.round(calculateCourseProgress(data.lessons)) // calculate MODULE progress
-
 
     const lessComp = {}
     for(let i = 0; i<data.lessons.length; i++){

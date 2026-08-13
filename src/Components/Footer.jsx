@@ -5,10 +5,10 @@ export default function Footer(){
     return(<>
      <footer class="bg-white rounded-lg shadow-sm mt-4 ml-4 mr-4 mb-2">
         <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-        <span onClick={() => navigate('/documentation')} class="cursor-pointer text-sm text-gray-500 sm:text-center">{new Date().getFullYear()} | <span class="hover:underline">Розробка інтерактивної платформи для навчання інформаційним технологіям CourseForge</span>
+        <span onClick={() => navigate('/documentation')} class="cursor-pointer text-sm text-gray-500 sm:text-center">{new Date().getFullYear()} <span class="hover:underline">CourseForge </span>
         </span>
         <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 sm:mt-0">
-            <li>
+            {/* <li>
                 <span class="text-sm text-gray-500 sm:text-center me-4 md:me-6">Чвалюк Мірра</span>
             </li>
             <li>
@@ -16,6 +16,12 @@ export default function Footer(){
             </li>
             <li>
                 <p onClick={() => navigate('/documentation')} class="cursor-pointer hover:underline me-4 md:me-6">Документація</p>
+            </li> */}
+            <li>
+                <span class="text-sm text-gray-500 sm:text-center me-4 md:me-6">About</span>
+            </li>
+            <li>
+                <span class="text-sm text-gray-500 sm:text-center me-4 md:me-6"><a href="mailto:chvaliukmirra@gmail.com">Contact</a></span>
             </li>
         </ul>
         </div>

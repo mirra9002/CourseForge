@@ -25,7 +25,7 @@ export default function Navbar() {
         const res = await LogOut();
         console.log(res);
         dispatch(logout())
-
+        navigate('/')
     }
 
     const [profileMenuOpen, setProfileMenuOpen] = useState(false)
