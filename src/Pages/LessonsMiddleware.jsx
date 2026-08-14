@@ -66,9 +66,9 @@ function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLesson
     <>
     <section class=" mt-15 block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
       <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900">Уроки в цьому модулі</h5>
-        <ol class=" ml-2 relative border-s border-gray-200 ">
+        <ol class="relative border-s border-gray-200 pl-1 sm:ml-6 sm:pl-0">
             {sortedLessons.map(lesson => {
-                return <LessonSection handleGoToLessonClick={() => handleGoToLessonClick(lesson.id)} key={lesson.id} lesson={lesson} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
+                return <LessonSection handleGoToLessonClick={() => handleGoToLessonClick(lesson.id)} key={lesson.id} lesson={lesson} handleChangeLessonCompletion={(e) => handleChange(lesson.id, e)}/>
             })}
         </ol>
     </section>
@@ -78,19 +78,27 @@ function LessonsSection({lessons, handleChangeLessonCompletion, handleGoToLesson
 }
 
 function LessonSection({lesson, handleChangeLessonCompletion, handleGoToLessonClick}){
-    const isCompleted = lesson.progress.percentage >= 99 ? true : false
-    function handleChange(lessonId, e) {
-        handleChangeLessonCompletion(lessonId, e)
+    const initialIsCompleted = lesson.progress.percentage >= 99 ? true : false
+    const [lessonIsCompleted, setLessonIsCompleted] = useState(initialIsCompleted)
+
+    useEffect(() => {
+        setLessonIsCompleted(initialIsCompleted)
+    }, [initialIsCompleted])
+
+    function handleToggle(e) {
+        e.stopPropagation()
+        setLessonIsCompleted(prev => !prev)
+        handleChangeLessonCompletion(e)
     }
     return(<>
-    <div onClick={() => handleGoToLessonClick(lesson.id)}>
-    <li class="mb-10 ms-6  hover:bg-gray-100" >            
-      <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 ring-white">
-        <IconIsCompleted isCompleted={isCompleted} id={lesson.id} handleChangeLessonCompletion={() => handleChange(lesson.id, e)}/>
+    <div onClick={() => handleGoToLessonClick(lesson.id)} className="group">
+    <li class={`relative mb-5 ms-7 cursor-pointer rounded-lg py-3 pe-4 ps-2 transition-colors sm:pe-5 ${lessonIsCompleted ? 'bg-blue-50/50 hover:bg-blue-50' : 'hover:bg-gray-100'}`} >            
+      <span class={`absolute -start-10 top-3 flex h-6 w-6 items-center justify-center rounded-full ring-8 ring-white transition-colors ${lessonIsCompleted ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-blue-600 group-hover:bg-blue-50'}`}>
+        <IconIsCompleted isCompleted={lessonIsCompleted} handleToggle={handleToggle}/>
       </span>
      
-      <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900">{lesson.title} </h3>
-      <p class="mb-4 text-base font-normal text-gray-500">{lesson.description}</p>
+      <h3 class={`flex items-center mb-1 text-lg font-semibold ${lessonIsCompleted ? 'text-blue-950' : 'text-gray-900'}`}>{lesson.title} </h3>
+      <p class={`text-base font-normal ${lessonIsCompleted ? 'text-blue-800/70' : 'text-gray-500'}`}>{lesson.description}</p>
     </li>
     </div></>)
 }
@@ -106,17 +114,25 @@ function ModuleProgressBar({progress="0"}) {
   );
 }
 
-function IconIsCompleted({isCompleted, handleChangeLessonCompletion, id}){
-    const [lessonIsCompleted, setLessonIsCompleted] = useState(isCompleted)
-    function handleClick(id,e) {
-        setLessonIsCompleted(prev => !prev)
-        handleChangeLessonCompletion(id, e)
-    }
+function IconIsCompleted({isCompleted, handleToggle}){
     return <>
-    <div class="flex items-center">
-        <input checked={lessonIsCompleted} 
-        onClick={(e) => handleClick(id, e)} id="checked-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm"/>
-    </div>
+        <button
+          type="button"
+          aria-label={isCompleted ? "Mark lesson as incomplete" : "Mark lesson as complete"}
+          aria-pressed={isCompleted}
+          onClick={handleToggle}
+          className="flex h-full w-full items-center justify-center rounded-full"
+        >
+          {isCompleted ? (
+            <svg className="h-3.5 w-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="m5 12 4 4L19 6"/>
+            </svg>
+          ) : (
+            <svg className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 12h14m-6-6 6 6-6 6"/>
+            </svg>
+          )}
+        </button>
     </>
 }
 
