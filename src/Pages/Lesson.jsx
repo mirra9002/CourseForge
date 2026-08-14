@@ -142,13 +142,47 @@ export default function Lesson() {
 }
 
 function CodeBlock(props){
-    return(<>
-    
-    <div className="relative mt-2 mb-4 block max-w-full p-3 bg-gray-100 border border-gray-200 rounded-sm shadow-sm hover:bg-gray-200 ">
-        <code className="text-sm whitespace-pre">{props.data}</code>
-      </div>
+    const [copied, setCopied] = useState(false)
+    const code = String(props.data ?? "")
 
-    </>)
+    async function handleCopy() {
+        try {
+            if (navigator?.clipboard?.writeText) {
+                await navigator.clipboard.writeText(code)
+            } else {
+                const textarea = document.createElement("textarea")
+                textarea.value = code
+                textarea.style.position = "fixed"
+                textarea.style.opacity = "0"
+                document.body.appendChild(textarea)
+                textarea.select()
+                document.execCommand("copy")
+                textarea.remove()
+            }
+
+            setCopied(true)
+            window.setTimeout(() => setCopied(false), 1400)
+        } catch (error) {
+            console.error("Could not copy code", error)
+        }
+    }
+
+    return (
+      <div className="relative mt-3 mb-5 max-w-3xl overflow-hidden rounded-md border border-slate-300 bg-white">
+        <div className="flex items-center justify-end border-b border-slate-200 bg-slate-50 px-4 py-2">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="cursor-pointer rounded-sm px-2 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900"
+          >
+            {copied ? "Copied" : "Copy code"}
+          </button>
+        </div>
+        <pre className="m-0 overflow-x-auto bg-white px-5 py-4">
+          <code className="block cursor-text whitespace-pre font-mono text-sm leading-5 text-slate-900">{code}</code>
+        </pre>
+      </div>
+    )
 }
 
 function SmallHeading(props){
