@@ -1,17 +1,11 @@
+import LessonContent from '../Components/LessonContent.jsx';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import LeftDrawer from "../Components/LeftDrawer";
 import PracticeCode from './PracticeCode';
-import RadioButton from '../Components/RadioButton.jsx';
-import CheckBox from '../Components/CheckBox.jsx';
-import CustomMarkdownReader from '../Components/CustomMarkdownReader';
-import LatexBlock from '../Components/LatexBlock.jsx';
-import { ImageSkeleton } from '../Components/Skeleton';
-import {getNextPageId, getPrevPageId, getCurrentPageIndex} from '../utils/getPageIdsAndIndexes.js'
-import { areSetsEqual } from '../utils/areSetsEqual.js';
+import {getNextPageId, getCurrentPageIndex} from '../utils/getPageIdsAndIndexes.js'
 import {markPageAsRead} from '../sending-data.js'
 
 
@@ -25,11 +19,6 @@ export default function Lesson() {
     const lesson = data.lesson 
     const page = data.page
 
-    function buildCodePracticePath(params) {
-        const { courseId, moduleId, lessonId, pageId } = params;
-        return `/course/${courseId}/module/${moduleId}/lesson/${lessonId}/page/${pageId}/code`;
-    }
-
     const currentPageId = Number(params.pageId)
     const nextPageId = getNextPageId(lesson, currentPageId) // next page id or -1 (if this page is the last)
     // const prevPageId = getPrevPageId(lesson, currentPageId) // prev page id or -1 (if this page is the first)
@@ -41,14 +30,14 @@ export default function Lesson() {
 
 
     useEffect(() => {
-        console.log('useEffect triggered', { page, pageType: page?.type, params });
+        console.log('useEffect triggered', { page, pageType: page?.type });
         if (page && page.type === 'codepractice') {
             console.log('Redirecting to code practice page');
-            const nav = buildCodePracticePath(params)
+            const nav = `/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${params.pageId}/code`;
             console.log('Navigation path:', nav);
             navigate(nav, { replace: true })
         }
-    }, [page, params.courseId, params.moduleId, params.lessonId, params.pageId, navigate]) 
+    }, [page, params.courseId, params.moduleId, params.lessonId, params.pageId, navigate])
 
     console.log('IS CODETASK', page?.type)
     
@@ -80,8 +69,6 @@ export default function Lesson() {
 
     function handleClickLeftDrawer(pageId) {
         if(pageId === currentPageId) return
-        const pageIdx = getCurrentPageIndex(lesson, pageId)
-        // const nextPageId = getNextPageId(lesson, pageIdx)
         if(pageId != -1){
             console.log('inside level 3');
             navigate(`/course/${params.courseId}/module/${params.moduleId}/lesson/${params.lessonId}/page/${pageId}`)
@@ -141,77 +128,8 @@ export default function Lesson() {
   );
 }
 
-function CodeBlock(props){
-    const [copied, setCopied] = useState(false)
-    const code = String(props.data ?? "")
-
-    async function handleCopy() {
-        try {
-            if (navigator?.clipboard?.writeText) {
-                await navigator.clipboard.writeText(code)
-            } else {
-                const textarea = document.createElement("textarea")
-                textarea.value = code
-                textarea.style.position = "fixed"
-                textarea.style.opacity = "0"
-                document.body.appendChild(textarea)
-                textarea.select()
-                document.execCommand("copy")
-                textarea.remove()
-            }
-
-            setCopied(true)
-            window.setTimeout(() => setCopied(false), 1400)
-        } catch (error) {
-            console.error("Could not copy code", error)
-        }
-    }
-
-    return (
-      <div className="relative mt-3 mb-5 max-w-3xl overflow-hidden rounded-md border border-slate-300 bg-white">
-        <div className="flex items-center justify-end border-b border-slate-200 bg-slate-50 px-4 py-2">
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="cursor-pointer rounded-sm px-2 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900"
-          >
-            {copied ? "Copied" : "Copy code"}
-          </button>
-        </div>
-        <pre className="m-0 overflow-x-auto bg-white px-5 py-4">
-          <code className="block cursor-text whitespace-pre font-mono text-sm leading-5 text-slate-900">{code}</code>
-        </pre>
-      </div>
-    )
-}
-
 function SmallHeading(props){
     return(<><h2 class="text-2xl font-bold mb-5">{props.data}</h2></>)
-}
-
-function Image({ data }) {
-    const [isLoaded, setIsLoaded] = useState(false)
-    console.log('image componene:', data);
-    return<>
-    {!isLoaded ? <ImageSkeleton/> : <></>}
-    <img onLoad={() => setIsLoaded(true)} src={data.content} alt={data.alt || ""} className="rounded-md max-w-5xl"/> 
-    </>
-    
-}
-
-function Video({ data }) {
-  return (
-    <figure style={{ width: "100%", margin: 0 }}>
-      <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: "0.5rem",}}>
-        <video src={data.content} poster={data.poster || ""} controls style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", borderRadius: "0.5rem", }}/>
-      </div>
-      {data.caption && (
-        <figcaption style={{fontSize: "0.875rem", color: "#666", marginTop: "0.5rem" }}>
-          {data.caption}
-        </figcaption>
-      )}
-    </figure>
-  );
 }
 
 function MainArea(props){
@@ -223,20 +141,7 @@ function MainArea(props){
     <div class='ml-95 mt-15 mr-35 mb-15'>
         <SmallHeading data={title}></SmallHeading>
         
-        {data.data.map((element, index) => {
-        return (
-            <div key={index} className="mb-5"> 
-                {element.type === "MD" && (<CustomMarkdownReader data={element.content} />)}
-                {element.type === "LATEX" && <LatexBlock data={element.content} />}
-                {element.type === "IMAGE" && <Image data={element} />}
-                {element.type === "CODE" && <CodeBlock data={element.content} />}
-                {element.type === "VIDEO" && <Video data={element}/>}
-                {element.type === "TASK" && <Task task={element}/>}
-                
-            </div>
-            );
-        })}
-        
+        <LessonContent key={data.id} blocks={data.data} />
 
         {/* Кнопки навигации */}
         <div className="flex justify-between mt-8">
@@ -251,95 +156,3 @@ function MainArea(props){
     </>)
     
 }
-
-function Task({task}){
-    
-    const [selectedOptions, setSelectedOptions] = useState(new Set())
-    const [isCorrectAnswer, setIsCorrectAnswer] = useState(null)
-
-    const data = task.content
-    const taskType = data.type
-    let variants;
-    let correctAnswers = []
-    if(taskType === 'single' || taskType === 'multi'){
-        variants = data.spec.items[0].options
-        correctAnswers = data.spec.items[0].correct
-    }
-
-    // useEffect(() => {
-    //     console.log(selectedOptions, correctAnswers);
-    // }, [selectedOptions])
-
-    function handleChangeRadio(e, id) {    
-        if(e.target.checked){
-            setSelectedOptions(new Set([id]))
-        } else {
-            setSelectedOptions(new Set())
-        }
-    }
-
-    function handleChangeCheck(e, id) {  
-        setSelectedOptions(prev => {
-            const newSet = new Set(prev)
-            if(e.target.checked){
-                newSet.add(id);
-            } else {
-                newSet.delete(id);
-            }
-            return newSet
-        })
-    }
-
-
-    function checkAnswers() {
-        var correctAnswersSet;
-        if(taskType === 'single'){
-            correctAnswersSet = new Set(correctAnswers)
-        } else if(taskType === 'multi'){
-            correctAnswersSet = new Set(correctAnswers)
-        }
-        areSetsEqual(correctAnswersSet, selectedOptions) ? setIsCorrectAnswer(true) : setIsCorrectAnswer(false)
-    }
-
-    return (
-
-        <div className="space-y-6 mt-8 ">
-            <div  className="p-4 border border-gray-300 rounded-md shadow-sm">
-                    <h3 className="font-semibold text-gray-800 mb-3">{data.title}</h3>
-                    
-                    {taskType === 'single' ? variants.map(variant => {
-                        return <RadioButton 
-                            key={variant.id} 
-                            title={variant.text}
-                            id={variant.id}
-                            checked={selectedOptions.has(variant.id) } 
-                            onChange={(e) => handleChangeRadio(e, variant.id)}/>
-                    }) : null}
-
-                    {taskType === 'multi' ? variants.map(variant => {
-                        return <CheckBox 
-                            key={variant.id} 
-                            title={variant.text} 
-                            id={variant.id} 
-                            checked={selectedOptions.has(variant.id) } 
-                            onChange={(e) => handleChangeCheck(e, variant.id)}/>
-                    }) : null}
-
-                    {isCorrectAnswer === false ? <SubmitAlert isCorrect={false} boldText={'Неправильно!'} /> : null}
-                    {isCorrectAnswer === true ? <SubmitAlert isCorrect={true} boldText={'Правильно!'}/> : null}
-
-                    <button type="button" onClick={checkAnswers} class="text-blue-800 border-1 hover:bg-blue-200 cursor-pointer border-blue-800 bg-blue-100 font-small rounded-lg text-sm mt-3 px-5 py-2 text-center inline-flex items-center">
-                    Check answer
-                </button>
-                </div>
-        </div>
-    );
-}
-
-
-function SubmitAlert({isCorrect, boldText, normalText}) {
-    return <div class={`p-4 mb-4 text-sm ${isCorrect ? "text-green-800 bg-green-50" : "text-red-800 bg-red-50"} rounded-lg `} role="alert">
-        <span class="font-medium">{boldText || ''}</span> {normalText || ''}
-    </div>
-}
-

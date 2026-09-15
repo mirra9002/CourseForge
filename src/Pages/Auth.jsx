@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import {sendUserRegister, sendUserLogin, sendGoogleLogin, sendActivationResend} from '../sending-data.js'
 import { getMe } from '../fetching-data.js';
@@ -13,6 +13,7 @@ import { GOOGLE_OAUTH_CLIENT_ID } from '../../dev_data.js';
 
 
 export default function Auth() {
+    const location = useLocation();
     useEffect(() => {window.scrollTo(0,0)},[]) 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -30,7 +31,8 @@ export default function Auth() {
     function handleLogin(userData) {
         console.log('handleLogin');
         dispatch(login(userData))
-        navigate(('/'))
+        const destination = location.state?.returnTo;
+        navigate(typeof destination === 'string' && destination.startsWith('/') && !destination.startsWith('//') ? destination : '/');
     }
 
     function handleRegister(userData) {
@@ -210,7 +212,7 @@ function LogIn({input, handleChange, loginUser}) {
         console.log(res);
         
         if(!res || res.error) {
-            setError({isError: true, message: res.data.detail})
+            setError({isError: true, message: res?.message || "Не удалось войти"})
             return null
         }
         

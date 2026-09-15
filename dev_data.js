@@ -4,6 +4,12 @@ const stripApiSuffix = (url) => url.replace(/\/api\/?$/, '');
 
 // Requests in the app already append "/api", so SERVER_URL should be the backend origin.
 const getServerURL = () => {
+  // Production cookie authentication must stay on the page origin. Caddy proxies
+  // /api to Django; using a Railway URL here turns auth/CSRF cookies third-party.
+  if (import.meta.env.PROD) {
+    return window.location.origin;
+  }
+
   const configuredUrl =
     import.meta.env.VITE_API_BASE_URL ||
     import.meta.env.VITE_API_URL;
@@ -12,9 +18,9 @@ const getServerURL = () => {
     return stripApiSuffix(stripTrailingSlash(configuredUrl));
   }
 
-  return import.meta.env.PROD
-    ? window.location.origin
-    : 'http://127.0.0.1:8000';
+  // Keep localhost with localhost and 127.0.0.1 with 127.0.0.1 so SameSite
+  // cookies are accepted during local cookie-based authentication.
+  return `http://${window.location.hostname}:8000`;
 };
 
 export const SERVER_URL = getServerURL();

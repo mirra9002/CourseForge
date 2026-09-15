@@ -9,6 +9,7 @@ import { GOOGLE_OAUTH_CLIENT_ID } from '../dev_data.js';
 
 import './index.css'
 import App from './App.jsx'
+import CourseStudio from './Pages/CourseStudio.jsx';
 
 import Mainpage from './Pages/MainPage.jsx'
 import Courseinfo from './Pages/CourseInfo.jsx'
@@ -29,6 +30,8 @@ import { getAllCourses, getCourseById, getMe, getMyCourses, getPageById , getLes
 import CertValidation from './Pages/CertValidation.jsx';
 import LoadingBar from './Components/LoadingBar.jsx';
 
+// This file owns the router bootstrap, so Fast Refresh cannot safely isolate this component.
+// eslint-disable-next-line react-refresh/only-export-components
 function RootLayout() {
   return (
     <>
@@ -42,6 +45,9 @@ const router = createBrowserRouter([{
     path: '/',
     element: <RootLayout />,
     children: [{
+    path: 'admin/course-studio-7f3c9',
+    element: <CourseStudio />,
+  }, {
     index: true,
     element: <Mainpage />,
     loader: async () => {

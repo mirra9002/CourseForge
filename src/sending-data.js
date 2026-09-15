@@ -64,20 +64,26 @@ export async function sendActivationResend(email) {
 }
 
 export async function sendUserLogin(userInput) {
-
-    const response = await fetch(`${SERVER_URL}/api/users/auth/login/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        },
-       body: JSON.stringify(userInput),
-       credentials: "include"
-    });
-    const data = await response.json()
-    if(response.status === 400 || response.status === 401){
-      return {error: true, message: response.detail, data: data}
+    try {
+      const response = await fetch(`${SERVER_URL}/api/users/auth/login/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userInput),
+        credentials: "include"
+      });
+      const data = await response.json().catch(() => null)
+      if(!response.ok){
+        return {
+          error: true,
+          status: response.status,
+          message: data?.detail || "Не удалось войти. Проверьте email/username и пароль.",
+          data,
+        }
+      }
+      return data
+    } catch {
+      return {error: true, message: "Сервер недоступен. Проверьте, что backend запущен."}
     }
-    return data
 }
 
 

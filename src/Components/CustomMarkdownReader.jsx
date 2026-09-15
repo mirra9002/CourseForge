@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { mediaSource } from '../api.js';
 import '../Styles/markdown.css'
 
 export default function CustomMarkdownReader({ data, className = "" }) {
@@ -9,6 +10,7 @@ export default function CustomMarkdownReader({ data, className = "" }) {
       
       remarkPlugins={[remarkGfm]}
       components={{
+        img: ({ node: _node, src, alt, ...props }) => <img src={mediaSource(src)} alt={alt || ''} className="h-auto max-w-full rounded-md" {...props} />,
         h1: (props) => <h1 className="text-3xl font-bold mt-4 mb-3" {...props} />,
         h2: (props) => <h2 className="text-2xl font-semibold mt-4 mb-2" {...props} />,
         h3: (props) => <h3 className="text-xl font-semibold mt-3 mb-1.5" {...props} />,
