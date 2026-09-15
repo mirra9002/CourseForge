@@ -205,6 +205,7 @@ function PageEditor({ page, onChange, onUploading }) {
 
 export default function CourseStudio() {
   const [user, setUser] = useState(undefined);
+  const [canEdit, setCanEdit] = useState(undefined);
   const [courses, setCourses] = useState([]);
   const [course, setCourse] = useState(null);
   const [saved, setSaved] = useState('');
@@ -234,9 +235,14 @@ export default function CourseStudio() {
         const me = await api('/api/users/me/');
         if (!live) return;
         setUser(me);
-        if (me.is_superuser || me.role === 'teacher') {
+        try {
           const list = await api(endpoint);
-          if (live) setCourses(list);
+          if (live) { setCourses(list); setCanEdit(true); }
+        } catch (err) {
+          if (live) {
+            setCanEdit(false);
+            if (![401, 403].includes(err.status)) setError(err.message);
+          }
         }
       } catch (err) { if (live) { setUser(null); setError(err.status === 401 ? '' : err.message); } }
     }
@@ -289,14 +295,15 @@ export default function CourseStudio() {
   const updatePage = next => change({ ...course, modules: course.modules.map(module => ({ ...module,
     lessons: module.lessons.map(lesson => ({ ...lesson, pages: lesson.pages.map(item => item._key === next._key ? next : item) })),
   })) });
-  if (user === undefined) return <main className="course-studio"><p role="status">Checking access…</p></main>;
-  if (!user || (!user.is_superuser && user.role !== 'teacher')) return <main className="course-studio studio-access">
+  const isSuperuser = user?.is_superuser === true || (user?.is_superuser == null && user?.role === 'staff');
+  if (user === undefined || (user && canEdit === undefined)) return <main className="course-studio"><p role="status">Checking access…</p></main>;
+  if (!user || !canEdit) return <main className="course-studio studio-access">
     <h1>CourseForge · Course Studio</h1><p>{user ? 'Access is limited to teachers and superusers.' : 'Sign in with a teacher or superuser account.'}</p>
     {error && <p role="alert">{error}</p>}
     <Link to="/auth/0" state={{ returnTo: window.location.pathname }}>Sign in</Link><Link to="/">Back to site</Link>
   </main>;
   return <main className="course-studio">
-    <header className="studio-header"><div><h1>CourseForge · Course Studio</h1><p>{user.username} · {user.is_superuser ? 'Superuser — all courses' : 'Teacher — my courses'}</p></div><Link to="/">Back to site</Link></header>
+    <header className="studio-header"><div><h1>CourseForge · Course Studio</h1><p>{user.username} · {isSuperuser ? 'Superuser — all courses' : 'Teacher — my courses'}</p></div><Link to="/">Back to site</Link></header>
     <div className="studio-notices" aria-live="polite">
       {error && <p className="studio-error" role="alert">{error}</p>}
       {message && <p className="studio-success">{message}</p>}
