@@ -8,7 +8,7 @@ export default function Topcourses({courses}) {
     const startIndex = (currentPage - 1) * 3; 
     const lastIndex = startIndex + 3;
 
-    const sortedCoursesByRating = [...courses.results].sort((a, b) => b.rating - a.rating)
+    const sortedCoursesByRating = [...(courses.results || [])].sort((a, b) => b.rating - a.rating)
     const currentPageSortedCourses = sortedCoursesByRating.slice(startIndex, lastIndex)
 
 
@@ -18,7 +18,7 @@ export default function Topcourses({courses}) {
         <div className="mx-auto mt-8 grid w-full max-w-[90rem] grid-cols-2 items-center gap-4 px-4 sm:px-6 lg:mt-10 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-5">
             <ScrollArrowButton direction="left" isActive={currentPage !== 1} onClick={() => setCurrentPage((p) => p - 1)}/>
 
-            <div className="col-span-2 col-start-1 row-start-1 grid min-w-0 w-full grid-cols-1 items-stretch gap-4 md:grid-cols-3 lg:col-span-1 lg:col-start-2 xl:gap-6">
+            <div className="col-span-2 col-start-1 row-start-1 mx-auto grid min-w-0 w-full max-w-lg grid-cols-1 items-stretch gap-4 md:max-w-none md:grid-cols-3 lg:col-span-1 lg:col-start-2 xl:gap-6">
                 {currentPageSortedCourses.map((c) => (
                 <TopCourseCardComponent data={c} key={c.id} />
                 ))}
@@ -101,4 +101,3 @@ export function TopCourseCardComponent({data}) {
     
     </div>)
 }
-

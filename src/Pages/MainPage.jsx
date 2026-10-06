@@ -1,10 +1,7 @@
 import { useLoaderData } from 'react-router-dom';
-import AuthInit from '../State/AuthInit';
 import Navbar from '../Components/NavBar'
 import Topsearcharea from '../Components/TopSearchArea'
 import Topcourses from '../Components/TopCourses'
-import CourseFilters from '../Components/CourseFilters'
-import Allcoursessection from '../Components/AllCoursesSection'
 import TopCategories from '../Components/TopCategories';
 import Footer from '../Components/Footer'
 import mascot_course_forge1 from '../assets/mascot_course_forge1.png'
@@ -12,15 +9,13 @@ import { useEffect } from 'react';
 
 export default function Mainpage() {
   const courses = useLoaderData()
-  console.log('courses in main', courses);
   useEffect(() => {window.scrollTo(0,0)},[])
 
     return <>
-    {/* <AuthInit /> */}
     <Navbar/>
-    <div className='bg-gray-100 min-h-screen '>
+    <main className="min-h-screen bg-gray-100 pb-4">
       
-        <Topsearcharea courses={courses}/>
+        <Topsearcharea />
         <div className="relative hidden justify-center sm:flex sm:mt-28 lg:mt-35">
           <img
             src={mascot_course_forge1}
@@ -34,6 +29,6 @@ export default function Mainpage() {
             <TopCategories/>
           </div>
         <Footer/>
-        </div>
+        </main>
         </>
 }

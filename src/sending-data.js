@@ -9,9 +9,9 @@ export async function sendUserRegister(userInput) {
         },
        body: JSON.stringify(userInput)
     });
-    const data = await response.json();
-    if(response.status === 400 || response.status === 401){
-      return {error: true, message: response.detail, data: data}
+    const data = await response.json().catch(() => null);
+    if(!response.ok){
+      return {error: true, status: response.status, message: data?.detail || 'Не вдалося створити акаунт. Спробуйте ще раз.', data}
     }
     return data
 }
@@ -32,7 +32,7 @@ export async function sendUserActivation(uid, token) {
     return {
       error: true,
       status: response.status,
-      message: data?.detail || data?.uid?.[0] || data?.token?.[0] || "Activation link is invalid or expired",
+      message: data?.detail || data?.uid?.[0] || data?.token?.[0] || "Посилання недійсне або застаріле.",
       data
     }
   }
@@ -55,7 +55,7 @@ export async function sendActivationResend(email) {
     return {
       error: true,
       status: response.status,
-      message: data?.email?.[0] || data?.detail || "Could not resend verification email",
+      message: data?.email?.[0] || data?.detail || "Не вдалося надіслати лист. Спробуйте ще раз.",
       data
     }
   }
@@ -76,13 +76,13 @@ export async function sendUserLogin(userInput) {
         return {
           error: true,
           status: response.status,
-          message: data?.detail || "Не удалось войти. Проверьте email/username и пароль.",
+          message: data?.detail || "Не вдалося увійти. Спробуйте ще раз.",
           data,
         }
       }
       return data
     } catch {
-      return {error: true, message: "Сервер недоступен. Проверьте, что backend запущен."}
+      return {error: true, code: 'network_error', message: "Немає зв’язку із сервером. Спробуйте ще раз."}
     }
 }
 
@@ -140,7 +140,7 @@ export async function sendGoogleLogin(credential) {
     return {
       error: true,
       status: response.status,
-      message: data?.detail || data?.message || "Google sign-in failed",
+      message: data?.detail || data?.message || "Не вдалося увійти через Google. Спробуйте ще раз.",
       data
     }
   }

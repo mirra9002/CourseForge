@@ -29,21 +29,23 @@ import { getAllCourses, getCourseById, getMe, getMyCourses, getPageById , getLes
 
 import CertValidation from './Pages/CertValidation.jsx';
 import LoadingBar from './Components/LoadingBar.jsx';
+import { withDeviceAccess } from './utils/deviceAccess.js';
 
 // This file owns the router bootstrap, so Fast Refresh cannot safely isolate this component.
 // eslint-disable-next-line react-refresh/only-export-components
 function RootLayout() {
   return (
-    <>
+    <App>
       <LoadingBar />
       <Outlet />
-    </>
+    </App>
   );
 }
 
 const router = createBrowserRouter([{
     path: '/',
     element: <RootLayout />,
+    errorElement: <App><Notfound /></App>,
     children: [{
     path: 'admin/course-studio-7f3c9',
     element: <CourseStudio />,
@@ -225,13 +227,20 @@ const router = createBrowserRouter([{
   path: "certificate",
   element: <CertValidation/>,
   errorElement: <Notfound/>,
+},
+{
+  path: '*',
+  element: <Notfound />,
 }
 // {
 //   path: "/create/course/:courseId",
 //   element: <CreateCourseDetails/>,
 //   errorElement: <Notfound/>
 // }
-]}],
+].map(route => ({
+  ...route,
+  ...(route.loader ? { loader: withDeviceAccess(route.loader) } : {}),
+}))}],
 {
   fallbackElement: <div>Loading page...</div>  
 })
@@ -240,9 +249,7 @@ const router = createBrowserRouter([{
 const app = (
   <StrictMode>
     <Provider store={store}>
-        <App>
-          <RouterProvider router={router} />
-        </App>  
+        <RouterProvider router={router} />
     </Provider>
   </StrictMode>
 )

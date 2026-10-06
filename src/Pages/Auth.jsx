@@ -1,299 +1,222 @@
-import {useState, useEffect} from 'react'
-import { useLoaderData, useLocation } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import {sendUserRegister, sendUserLogin, sendGoogleLogin, sendActivationResend} from '../sending-data.js'
-import { getMe } from '../fetching-data.js';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLoaderData, useLocation, useNavigate } from 'react-router-dom'
+import { GoogleLogin } from '@react-oauth/google'
+import { useDispatch } from 'react-redux'
+import { sendUserRegister, sendUserLogin, sendGoogleLogin, sendActivationResend } from '../sending-data.js'
+import { getMe } from '../fetching-data.js'
+import Navbar from '../Components/NavBar'
+import AuthLayout from '../Components/AuthLayout'
+import AuthError from '../Components/AuthError'
+import { authErrorMessage, isEmailAlreadyRegistered, requiredAuthFieldMessage } from '../utils/authErrors.js'
+import { login } from '../State/authSlice.js'
+import { GOOGLE_OAUTH_CLIENT_ID } from '../../dev_data.js'
 
-import Navbar from "../Components/NavBar";
-
-import {login} from '../State/authSlice.js'
-import { GOOGLE_OAUTH_CLIENT_ID } from '../../dev_data.js';
-
+const primaryButton = 'inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-blue-700 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-800 focus-visible:ring-4 focus-visible:ring-blue-300 disabled:cursor-wait disabled:opacity-60'
+const secondaryButton = 'inline-flex min-h-12 w-full items-center justify-center rounded-lg border border-blue-200 px-4 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:ring-4 focus-visible:ring-blue-300 disabled:cursor-wait disabled:opacity-60'
 
 export default function Auth() {
-    const location = useLocation();
-    useEffect(() => {window.scrollTo(0,0)},[]) 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const isRegister = useLoaderData() 
+  const isRegister = useLoaderData() === 1
+  useEffect(() => { window.scrollTo(0, 0) }, [isRegister])
 
-    const [input, setInput] = useState({})
-    const handleChange = (e) => {
-        const {name, value} = e.target
-        setInput(prev => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-
-    function handleLogin(userData) {
-        console.log('handleLogin');
-        dispatch(login(userData))
-        const destination = location.state?.returnTo;
-        navigate(typeof destination === 'string' && destination.startsWith('/') && !destination.startsWith('//') ? destination : '/');
-    }
-
-    function handleRegister(userData) {
-        console.log('handleReg');
-        dispatch(login(userData))
-        navigate(('/'))
-    }
-
-
-    return (
+  return (
     <>
-    <Navbar/>
-    <div className='-mt-20'>
-        {isRegister === 1 ? 
-        <Register input={input} handleChange={handleChange} registerUser={(data) => handleRegister(data)} /> :
-        <LogIn input={input} handleChange={handleChange} loginUser={(data) => handleLogin(data)}/>}
-    </div>
+      <Navbar />
+      <AuthForm key={isRegister ? 'register' : 'login'} isRegister={isRegister} />
     </>
-    
-  );
+  )
 }
 
+function AuthForm({ isRegister }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [input, setInput] = useState({})
+  const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
+  const [verificationEmail, setVerificationEmail] = useState('')
+  const [canResendVerification, setCanResendVerification] = useState(false)
+  const [resent, setResent] = useState(false)
 
-function Register({input, handleChange, registerUser}) {
+  function handleChange(event) {
+    const { name, value } = event.target
+    setInput(previous => ({ ...previous, [name]: value }))
+  }
 
-    const navigate = useNavigate()
+  function finishLogin(user) {
+    dispatch(login(user))
+    const destination = location.state?.returnTo
+    navigate(!isRegister && typeof destination === 'string' && destination.startsWith('/') && !destination.startsWith('//') ? destination : '/')
+  }
 
-    const [error, setError] = useState({isError: null, message: null})
-    const [success, setSuccess] = useState(null)
-    const [verificationEmail, setVerificationEmail] = useState('')
-    const [canResendVerification, setCanResendVerification] = useState(false)
-
-    async function sendData(data) {
-        setError({isError: null, message: null})
-        setSuccess(null)
-        setVerificationEmail('')
-        setCanResendVerification(false)
-        
-        const responseRegister = await sendUserRegister(data)
-        if(responseRegister.error) {
-            authErrorHandling(responseRegister.data)
-            console.log('error while registering...');
-           return 
-        }
-
-        setSuccess(true)
-        setVerificationEmail(data.email)
+  async function submit(event) {
+    event.preventDefault()
+    if (pending) return
+    setError('')
+    setCanResendVerification(false)
+    const invalidField = Array.from(event.currentTarget.elements).find(field => field.willValidate && !field.validity.valid)
+    if (invalidField) {
+      setError(invalidField.validity.valueMissing
+        ? requiredAuthFieldMessage(invalidField.name, isRegister ? 'register' : 'login')
+        : 'Перевірте email, наприклад name@example.com.')
+      invalidField.focus()
+      return
     }
-
-    async function resendVerificationEmail() {
-        setError({isError: null, message: null})
-        setSuccess(null)
-
-        const email = input.email
-        if(!email){
-            setError({isError: true, message: "Enter your email first"})
-            return
-        }
-
-        const response = await sendActivationResend(email)
-        if(response.error){
-            setError({isError: true, message: response.message})
-            return
-        }
-
-        setSuccess(true)
-        setVerificationEmail(email)
-        setCanResendVerification(false)
+    if (isRegister && input.password !== input.re_password) {
+      setError('Паролі не збігаються.')
+      event.currentTarget.elements.re_password.focus()
+      return
     }
-
-    async function handleGoogleSuccess(credentialResponse) {
-        setError({isError: null, message: null})
-        setSuccess(null)
-
-        if(!credentialResponse?.credential){
-            setError({isError: true, message: "Google did not return a credential"})
-            return
-        }
-
-        const res = await sendGoogleLogin(credentialResponse.credential)
-        if(!res || res.error) {
-            setError({isError: true, message: res?.message || "Google sign-in failed"})
-            return
-        }
-
-        const me = await getMe()
-        if(!me){
-            setError({isError: true, message: "Cannot fetch user"})
-            return
-        }
-
-        registerUser(me)
+    setPending(true)
+    try {
+      const response = isRegister
+        ? await sendUserRegister(input)
+        : await sendUserLogin({ username: input.username, password: input.password })
+      if (!response || response.error) {
+        setError(authErrorMessage(response, isRegister ? 'register' : 'login'))
+        setCanResendVerification(isRegister && isEmailAlreadyRegistered(response))
+        return
+      }
+      if (isRegister) {
+        setVerificationEmail(input.email)
+      } else {
+        finishLogin({ username: input.username })
+      }
+    } catch {
+      setError(authErrorMessage({ code: 'network_error' }))
+    } finally {
+      setPending(false)
     }
+  }
 
-    function authErrorHandling(data){
-        console.log(data);
-        if(data.username){
-            setError(prev => ({...prev, isError: true, message: data.username[0]}));
-        } else if (data.email) {
-            const message = data.email[0]
-            setError(prev => ({...prev, isError: true, message: message}));
-            setCanResendVerification(message.toLowerCase().includes("already exists"))
-        } else if (data.non_field_errors) {
-            setError(prev => ({...prev, isError: true, message: data.non_field_errors[0]}));
-        } else if (data.password){
-            setError(prev => ({...prev, isError: true, message: data.password[0]}));
-        }
-         else {
-            setError(prev => ({...prev, isError: true, message: "Invalid credentials"}));
-        }
+  async function resendVerificationEmail() {
+    if (pending) return
+    const email = verificationEmail || input.email
+    if (!email) {
+      setError('Спочатку введіть email.')
+      return
     }
-
-
-    return  <>
-        <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-        <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
-            <h2 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Зарєструватися</h2>
-        
-            <form class="space-y-6">
-                <div>
-                <input 
-                    onChange={(e) => handleChange(e)} value={input.username || ''} name="username"
-                    type="username" id="username" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Username" required />
-            </div>
-            <div>
-                <input 
-                    onChange={(e) => handleChange(e)} value={input.email || ''} name="email"
-                    type="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Email" required />
-            </div>
-            <div>
-                <input 
-                    onChange={(e) => handleChange(e)} value={input.password || ''} name="password"
-                    type="password" id="password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Password" required />
-            </div>
-            <div>
-                <input 
-                    onChange={(e) => handleChange(e)} value={input.re_password || ''} name="re_password"
-                    type="password" id="re_password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Repeat password" required />
-            </div>
-            <div class="flex items-start">
-                <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Вже маєте акаунт? <button type="button" onClick={()=> navigate('/auth/0')} class="cursor-pointer bg-transparent p-0 text-blue-600 hover:underline">Увійти</button></label>
-            </div>
-            {error.isError && <p className="text-red-500 text-sm">{error.message}</p>}
-            {canResendVerification && (
-                <button
-                    type="button"
-                    onClick={resendVerificationEmail}
-                    class="w-full border border-blue-600 text-blue-700 hover:bg-blue-50 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center"
-                >
-                    Resend verification email
-                </button>
-            )}
-            {success && (
-                <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700">
-                    We sent a verification link to {verificationEmail || 'your email address'}. Open that link to activate your account and continue.
-                </div>
-            )}
-            <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center">Register</button>
-            <GoogleAuthOption onSuccess={handleGoogleSuccess} onError={() => setError({isError: true, message: "Google sign-in was cancelled or failed"})} />
-            </form>
-        </div>
-        </div>
-    </>
-}
-
-function LogIn({input, handleChange, loginUser}) {
-    
-    const navigate = useNavigate()
-    const [error, setError] = useState({isError: false, message: ''})
-    const [success, setSuccess] = useState(null)
-
-
-    async function sendData(data){
-        setError(null)
-        setSuccess(null)
-        const res = await sendUserLogin({username: data.username, password: data.password})
-        console.log(res);
-        
-        if(!res || res.error) {
-            setError({isError: true, message: res?.message || "Не удалось войти"})
-            return null
-        }
-        
-        setError(false)
-        loginUser({username: data.username, password: data.password})
+    setError('')
+    setPending(true)
+    try {
+      const response = await sendActivationResend(email)
+      if (response.error) {
+        setError(authErrorMessage(response, 'resend'))
+        return
+      }
+      setVerificationEmail(email)
+      setCanResendVerification(false)
+      setResent(true)
+    } catch {
+      setError(authErrorMessage({ code: 'network_error' }))
+    } finally {
+      setPending(false)
     }
+  }
 
-    async function handleGoogleSuccess(credentialResponse) {
-        setError(null)
-        setSuccess(null)
-
-        if(!credentialResponse?.credential){
-            setError({isError: true, message: "Google did not return a credential"})
-            return
-        }
-
-        const res = await sendGoogleLogin(credentialResponse.credential)
-        if(!res || res.error) {
-            setError({isError: true, message: res?.message || "Google sign-in failed"})
-            return
-        }
-
-        const me = await getMe()
-        if(!me){
-            setError({isError: true, message: "Cannot fetch user"})
-            return
-        }
-
-        loginUser(me)
+  async function handleGoogleSuccess(credentialResponse) {
+    if (pending) return
+    setError('')
+    if (!credentialResponse?.credential) {
+      setError(authErrorMessage(null, 'google'))
+      return
     }
-
-    
-    return  <>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-    <div class="w-full max-w-md p-8 bg-white border border-gray-200 rounded-2xl shadow-md">
-        <h2 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Увійти</h2>
-    
-        <form class="space-y-6">
-        <div>
-            <input onChange={(e) => handleChange(e)} value={input.username || ''} name="username"
-            type="username" id="username" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Email or username" required />
-        </div>
-        <div>
-            <input onChange={(e) => handleChange(e)} value={input.password || ''} name="password"
-            type="password" id="password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Password" required />
-        </div>
-        <div class="flex items-start">
-            <label for="terms" class="ms-2 text-sm font-medium text-gray-900">Don't have an account? <button type="button" onClick={()=> navigate('/auth/1')} class="cursor-pointer bg-transparent p-0 text-blue-600 hover:underline">Register</button></label>
-        </div>
-        {error && <p className="text-red-500 text-sm">{error.message}</p>}
-        {success && <p className="text-green-500 text-sm">Successfully logged in!</p>}
-        <button onClick={(e) => {e.preventDefault(); sendData(input)}} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-3 text-center">Log In</button>
-        <GoogleAuthOption onSuccess={handleGoogleSuccess} onError={() => setError({isError: true, message: "Google sign-in was cancelled or failed"})} />
-        </form>
-    </div>
-    </div>
-    </>
-}
-
-function GoogleAuthOption({onSuccess, onError}) {
-    if(!GOOGLE_OAUTH_CLIENT_ID){
-        return null
+    setPending(true)
+    try {
+      const response = await sendGoogleLogin(credentialResponse.credential)
+      if (!response || response.error) {
+        setError(authErrorMessage(response, 'google'))
+        return
+      }
+      const user = await getMe()
+      if (!user) {
+        setError('Повторіть вхід, будь ласка.')
+        return
+      }
+      finishLogin(user)
+    } catch {
+      setError(authErrorMessage({ code: 'network_error' }))
+    } finally {
+      setPending(false)
     }
+  }
 
+  if (verificationEmail) {
     return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-gray-200" />
-                <span className="text-xs font-medium uppercase tracking-wide text-gray-500">or</span>
-                <div className="h-px flex-1 bg-gray-200" />
-            </div>
-            <div className="flex justify-center">
-                <GoogleLogin
-                    onSuccess={onSuccess}
-                    onError={onError}
-                    useOneTap={false}
-                    theme="outline"
-                    size="large"
-                    width="320"
-                />
-            </div>
+      <AuthLayout title="Перевірте вашу пошту" description="Залишився один крок — підтвердити email.">
+        <div className="space-y-5 text-sm leading-6">
+          <div role="status" className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-800">
+            {resent ? 'Ми повторно надіслали лист на' : 'Ми надіслали посилання для підтвердження на'}
+            <strong className="mt-1 block break-all">{verificationEmail}</strong>
+          </div>
+          <p className="text-gray-600">Відкрийте лист і натисніть посилання — це можна зробити прямо з телефона. Якщо листа немає, перевірте папку «Спам».</p>
+          <p className="rounded-xl bg-blue-50 p-4 text-blue-900">Після підтвердження увійдіть у свій акаунт з ноутбука чи комп’ютера, щоб почати навчання.</p>
+          <AuthError message={error} />
+          <button type="button" disabled={pending} onClick={resendVerificationEmail} className={secondaryButton}>{pending ? 'Надсилаємо…' : 'Надіслати лист повторно'}</button>
+          <Link to="/auth/0" className={primaryButton}>Перейти до входу</Link>
+          <Link to="/" className="block py-2 text-center font-medium text-blue-700 hover:underline">На головну</Link>
         </div>
+      </AuthLayout>
     )
+  }
+
+  return (
+    <AuthLayout
+      title={isRegister ? 'Зареєструватися' : 'Раді бачити вас знову'}
+      description={isRegister ? 'Вітаємо на CourseForge! Створіть акаунт та підтвердіть ваш email' : 'Увійдіть у свій акаунт CourseForge.'}>
+      <form onSubmit={submit} noValidate className="space-y-5" aria-busy={pending} aria-describedby={error ? 'auth-error' : undefined}>
+        <fieldset disabled={pending} className="min-w-0 space-y-4">
+          <AuthField name="username" label={isRegister ? 'Ім’я користувача' : 'Email або ім’я користувача'} autoComplete="username" input={input} onChange={handleChange} />
+          {isRegister && <AuthField name="email" label="Email" type="email" autoComplete="email" input={input} onChange={handleChange} />}
+          <AuthField name="password" label="Пароль" type="password" autoComplete={isRegister ? 'new-password' : 'current-password'} input={input} onChange={handleChange} />
+          {isRegister && <AuthField name="re_password" label="Повторіть пароль" type="password" autoComplete="new-password" input={input} onChange={handleChange} />}
+        </fieldset>
+        <AuthError message={error} />
+        {canResendVerification && <button type="button" disabled={pending} onClick={resendVerificationEmail} className={secondaryButton}>Надіслати лист підтвердження повторно</button>}
+        <button type="submit" disabled={pending} className={primaryButton}>{pending ? 'Зачекайте…' : isRegister ? 'Створити акаунт' : 'Увійти'}</button>
+        <GoogleAuthOption onSuccess={handleGoogleSuccess} onError={() => setError(authErrorMessage(null, 'google'))} />
+        <p className="text-center text-sm leading-6 text-gray-600">
+          {isRegister ? 'Вже маєте акаунт? ' : 'Ще не маєте акаунта? '}
+          <Link to={isRegister ? '/auth/0' : '/auth/1'} state={location.state} className="inline-block py-1 font-semibold text-blue-700 hover:underline">{isRegister ? 'Увійти' : 'Зареєструватися'}</Link>
+        </p>
+      </form>
+    </AuthLayout>
+  )
+}
+
+function AuthField({ name, label, type = 'text', autoComplete, input, onChange }) {
+  return (
+    <div>
+      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-gray-700">{label}</label>
+      <input id={name} name={name} type={type} autoComplete={autoComplete} autoCapitalize="none" spellCheck={false}
+        value={input[name] || ''} onChange={onChange} required
+        className="block min-h-12 w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2.5 text-base text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200" />
+    </div>
+  )
+}
+
+function GoogleAuthOption({ onSuccess, onError }) {
+  const container = useRef(null)
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    if (!container.current) return
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.floor(Math.min(entry.contentRect.width, 400))))
+    observer.observe(container.current)
+    return () => observer.disconnect()
+  }, [])
+
+  if (!GOOGLE_OAUTH_CLIENT_ID) return null
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-gray-200" />
+        <span className="text-xs font-medium uppercase tracking-wide text-gray-500">або</span>
+        <div className="h-px flex-1 bg-gray-200" />
+      </div>
+      <div ref={container} className="flex min-h-11 w-full min-w-0 justify-center">
+        {width > 0 && <GoogleLogin onSuccess={onSuccess} onError={onError} useOneTap={false} theme="outline" size="large" width={String(width)} />}
+      </div>
+    </div>
+  )
 }

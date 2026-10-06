@@ -1,118 +1,91 @@
-import React from "react";
-import {useState, useEffect} from 'react'
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import course_forge_test_logo from '../assets/course-forge-test-logo.png'
 import icon_user_black100 from '../assets/icon_user_black100.png'
 import icon_mycourses_black100 from '../assets/icon_mycourses_black100.png'
-import icon_settings_black100 from '../assets/icon_settings_black100.png'
-import icon_messages_black100 from '../assets/icon_messages_black100.png'
 import icon_logout_black100 from '../assets/icon_logout_black100.png'
-import {login, logout} from '../State/authSlice.js'
-import { useSelector, useDispatch } from "react-redux";
-import {LogOut} from '../sending-data.js'
+import { logout } from '../State/authSlice.js'
+import { LogOut } from '../sending-data.js'
 
 export default function Navbar() {
-    const { user, status } = useSelector(s => s.auth);
+  const { user, status } = useSelector(s => s.auth)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const isAuthed = status === 'authed' && user
+  const userInitials = user?.username?.slice(0, 2).toUpperCase()
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch()
-    const location = useLocation();
-    function havigateToPage(location){
-        navigate(location)
-    }
+  function closeMenus() {
+    setProfileMenuOpen(false)
+    setMobileMenuOpen(false)
+  }
 
-    async function LogOutUser() {
-        const res = await LogOut();
-        console.log(res);
-        dispatch(logout())
-        navigate('/')
-    }
+  async function logOutUser() {
+    await LogOut()
+    dispatch(logout())
+    closeMenus()
+    navigate('/')
+  }
 
-    const [profileMenuOpen, setProfileMenuOpen] = useState(false)
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  return (
+    <>
+      <nav aria-label="Головна навігація" className="fixed top-0 start-0 z-20 w-full border-b border-gray-200 bg-white">
+        <div className="mx-auto flex min-h-18 max-w-screen-xl flex-wrap items-center justify-between gap-x-2 px-3 py-3 sm:px-6">
+          <Link to="/" onClick={closeMenus} className="flex shrink-0 items-center gap-2">
+            <img src={course_forge_test_logo} className="h-7 w-7 object-contain sm:h-8 sm:w-8" alt="" />
+            <span className="text-base font-semibold text-gray-900 sm:text-2xl">CourseForge</span>
+          </Link>
 
-    const userInitials = user?.username ? user.username.slice(0, 2).toUpperCase() : null;
-    console.log(user, status);
-    return(<>
-  
-    <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-gray-200">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <div onClick={() => havigateToPage('/')} className="cursor-pointer flex items-center space-x-3 rtl:space-x-reverse">
-            <img src={course_forge_test_logo} className="h-8" alt="CourseForge Logo"/>
-            <span className="self-center text-xl font-semibold whitespace-nowrap sm:text-2xl">CourseForge</span>
-        </div>
-        {(status === 'authed' && user) ? 
-            <>
-            <div className="relative flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse group">
-            {/* Clickable avatar */}
-            <div onClick={() => setProfileMenuOpen(prev=>!prev)} className="cursor-pointer relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 hover:bg-gray-200 rounded-full">
-                <span className="font-medium text-gray-600">
-                {userInitials || null}
-                </span>
-                
-            </div>
-
-
-                {/* Dropdown menu */}
-                <div id="userDropdown" className={`absolute right-0 top-full  mt-2 z-10 w-62 bg-white divide-y divide-gray-100 rounded-lg shadow-sm transform transition-all duration-200 ease-out
-                    ${profileMenuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-2 invisible"}`}
-                    >
-                    <div className="px-4 py-3 text-sm text-gray-900">
-                        <div>{user?.username || null}</div>
-                        <div className="font-medium truncate">{user?.email || null}</div>
-                    </div>
-                    <ul className="py-2 text-sm text-gray-700" aria-labelledby="avatarButton">
-                        <li onClick={() => navigate('/me')}>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_user_black100} className="h-4" />Профіль</a>
-                        </li>
-                        {/* <li>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_settings_black100} className="h-4" />Налаштування</a>
-                        </li> */}
-                        <li onClick={() => navigate('/mycourses')}>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_mycourses_black100} className="h-4" />Мої курси</a>
-                        </li>
-                        {/* <li>
-                            <a className="cursor-pointer flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_messages_black100} className="h-4" />Повідомлення</a>
-                        </li> */}
-                       </ul>
-                    <div className="py-1">
-                        <a onClick={LogOutUser} 
-                        className="cursor-pointer flex text-sm items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_logout_black100} className="h-4" />Вийти</a>
-                    </div>
-                </div>
-            </div>
-            </>
-             : 
-            <div className="flex md:order-2 space-x-2 md:space-x-0 rtl:space-x-reverse">
-                <button onClick={() => havigateToPage('/auth/1')} type="button" className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xs px-3 py-2 text-center sm:text-sm sm:px-4">Зарєструватися</button>
-                <button onClick={() => setMobileMenuOpen(prev => !prev)} type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-sticky" aria-expanded={mobileMenuOpen}>
-                    <span className="sr-only">Open main menu</span>
-                    <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15"/>
-                    </svg>
+          <div className="flex items-center gap-2 lg:order-2">
+            {isAuthed ? (
+              <div className="relative">
+                <button type="button" onClick={() => { setProfileMenuOpen(open => !open); setMobileMenuOpen(false) }}
+                  aria-label="Меню профілю" aria-expanded={profileMenuOpen} aria-controls="user-dropdown"
+                  className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-gray-100 font-medium text-gray-600 hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-blue-600">
+                  {userInitials}
                 </button>
-            </div>
-            
-        }
-        
-        <div className={`${mobileMenuOpen ? 'block' : 'hidden'} items-center justify-between w-full md:flex md:w-auto md:order-1`} id="navbar-sticky">
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white">
-            <li>
-              <div onClick={() => havigateToPage('/')} class={`cursor-pointer block py-2 px-3 text-gray-900 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 ${location.pathname === '/' ? 'bg-blue-700 md:bg-transparent md:text-blue-700' : 'hover:bg-gray-100'}`} aria-current={location.pathname === '/' ? 'page' : undefined}>Головна</div></li>
-            <li>
-               <div onClick={() => havigateToPage('/search')} class={`cursor-pointer block py-2 px-3 text-gray-900 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 ${location.pathname === '/search' ? 'bg-blue-700 md:bg-transparent md:text-blue-700' : 'hover:bg-gray-100'}`} aria-current={location.pathname === '/search' ? 'page' : undefined}>Курси</div></li>
-            <li>
-            <div onClick={() => havigateToPage('/certificate')} class={`cursor-pointer block py-2 px-3 text-gray-900 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 ${location.pathname === '/certificate' ? 'bg-blue-700 md:bg-transparent md:text-blue-700' : 'hover:bg-gray-100'}`} aria-current={location.pathname === '/certificate' ? 'page' : undefined}>Сертифікати</div></li>
-            
-            
-            {/* <li>
-                <div class=" cursor-pointer block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0">Контакти</div>
-            </li> */}
-            </ul>
-        </div>
-        </div>
-        </nav>
-        <div className="h-16"></div>
+                {profileMenuOpen && (
+                  <div id="user-dropdown" className="absolute right-0 top-full mt-2 w-60 max-w-[calc(100vw-2rem)] divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white shadow-lg">
+                    <div className="px-4 py-3 text-sm text-gray-900">
+                      <div className="truncate font-semibold">{user.username}</div>
+                      <div className="truncate text-gray-500">{user.email}</div>
+                    </div>
+                    <div className="py-1 text-sm text-gray-700">
+                      <Link to="/me" onClick={closeMenus} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_user_black100} className="h-4" alt="" />Профіль</Link>
+                      <Link to="/mycourses" onClick={closeMenus} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-100"><img src={icon_mycourses_black100} className="h-4" alt="" />Мої курси</Link>
+                    </div>
+                    <button type="button" onClick={logOutUser} className="flex w-full cursor-pointer items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"><img src={icon_logout_black100} className="h-4" alt="" />Вийти</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/auth/1" onClick={closeMenus} className="inline-flex min-h-11 items-center rounded-full bg-blue-700 px-3 text-xs font-medium text-white hover:bg-blue-800 focus-visible:ring-4 focus-visible:ring-blue-300 sm:px-5 sm:text-sm">
+                <span className="sm:hidden">Реєстрація</span><span className="hidden sm:inline">Зареєструватися</span>
+              </Link>
+            )}
+            <button type="button" onClick={() => { setMobileMenuOpen(open => !open); setProfileMenuOpen(false) }}
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-600 lg:hidden"
+              aria-controls="navbar-menu" aria-expanded={mobileMenuOpen} aria-label={mobileMenuOpen ? 'Закрити меню' : 'Відкрити меню'}>
+              <svg className="h-5 w-5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d={mobileMenuOpen ? 'M6 6l12 12M6 18L18 6' : 'M3 6h18M3 12h18M3 18h18'} />
+              </svg>
+            </button>
+          </div>
 
-</>)
+          <div className={`${mobileMenuOpen ? 'block' : 'hidden'} w-full lg:order-1 lg:block lg:w-auto`} id="navbar-menu">
+            <ul className="mt-3 flex flex-col gap-1 rounded-xl bg-gray-50 p-2 font-medium lg:mt-0 lg:flex-row lg:gap-6 lg:bg-white lg:p-0">
+              {[['/', 'Головна'], ['/search', 'Курси'], ['/certificate', 'Сертифікати'], ...(!isAuthed ? [['/auth/0', 'Увійти']] : [])].map(([to, label]) => (
+                <li key={to}>
+                  <NavLink to={to} end onClick={closeMenus} className={({ isActive }) => `block rounded-lg px-3 py-3 text-sm lg:px-0 ${isActive ? 'bg-blue-50 text-blue-700 lg:bg-transparent' : 'text-gray-700 hover:bg-gray-100 hover:text-blue-700 lg:hover:bg-transparent'}`}>{label}</NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div className="h-18" aria-hidden="true" />
+    </>
+  )
 }
